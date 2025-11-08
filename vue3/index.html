@@ -5,22 +5,22 @@
   <meta charset="UTF-8">
   <link rel="icon" href="/favicon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>PocketTogether</title>
+  <title>PocketChat</title>
 
   <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="PocketTogether">
+  <meta property="og:title" content="PocketChat">
   <meta property="og:description"
-    content="一个基于 PocketBase 与 Vue3 的实时群聊与同步观看平台 | A real-time group chat and synchronized viewing platform built with PocketBase and Vue3.">
+    content="一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3.">
   <meta property="og:image" content="/social.jpg">
   <meta property="og:url" content="https://sakiko.top/">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="PocketTogether">
+  <meta property="og:site_name" content="PocketChat">
 
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="PocketTogether">
+  <meta name="twitter:title" content="PocketChat">
   <meta name="twitter:description"
-    content="一个基于 PocketBase 与 Vue3 的实时群聊与同步观看平台 | A real-time group chat and synchronized viewing platform built with PocketBase and Vue3.">
+    content="一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3.">
   <meta name="twitter:image" content="/social.jpg">
   <meta name="twitter:site" content="@harukiO_0">
 
@@ -37,11 +37,13 @@
       --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
       --color-background: var(--vt-c-white);
       --color-text: var(--vt-c-text-light-1);
+      --color-text-soft: #6b6b70;
     }
 
     :root.dark {
       --color-background: var(--vt-c-black);
       --color-text: var(--vt-c-text-dark-2);
+      --color-text-soft: #96969d;
     }
 
     *,
@@ -56,7 +58,7 @@
       /* 窄滚动条 */
       scrollbar-width: thin;
       /* 滑块颜色 + 轨道透明 */
-      scrollbar-color: var(--my-neutral) transparent;
+      scrollbar-color: var(--color-text-soft) transparent;
     }
 
     html {
@@ -152,21 +154,14 @@
     }
   </style>
   <script>
-    // 立即调用函数表达式（IIFE） 来创建一个局部作用域。这样可以防止 scheme、isDarkMode 等变量泄漏到全局。
+    // 立即执行的箭头函数创建局部作用域。防止 scheme、isDarkMode 等变量泄漏到全局。
     ; (() => {
       /* 在 index.html 中就初始化颜色，以避免加载过程中的白屏 */
       // 读取本地存储中的 vueuse-color-scheme 值
       const scheme = localStorage.getItem('vueuse-color-scheme') || 'auto';
       // 根据 vueuse-color-scheme 的值设置主题
-      // if (scheme === 'dark' || (scheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      //   document.documentElement.classList.add('dark');
-      // }
       const isDarkMode = scheme === 'dark' || (scheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)
       document.documentElement.classList.toggle('dark', isDarkMode)
-
-      // 【251019】不再使用原生滚动条（不再需要担心滚动条宽度引起的抖动）
-      // // 禁用滚动，将在 App.vue 中恢复（同时进行防止抖动的处理）
-      // document.documentElement.style.overflowY = 'hidden'
     })()
   </script>
 </head>
