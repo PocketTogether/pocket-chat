@@ -4,10 +4,8 @@ import {
   onPbResErrorStatus401AuthClear,
   pb,
   type Create,
-  type FilesResponse,
   type MessagesRecord,
   type MessagesResponse,
-  type RoomsResponse,
   type Update,
   type UsersResponse,
 } from '@/lib'
@@ -35,16 +33,16 @@ export const pbMessagesSendChatApi = async (data: {
   const createData: Create<Collections.Messages> = {
     author: pb.authStore.record.id,
     content: content,
-    room: (() => {
-      if (roomId == null) {
-        return undefined
-      }
-      if (roomId === '') {
-        // 其实返回空字符串也可以
-        return undefined
-      }
-      return roomId
-    })(),
+    // room: (() => {
+    //   if (roomId == null) {
+    //     return undefined
+    //   }
+    //   if (roomId === '') {
+    //     // 其实返回空字符串也可以
+    //     return undefined
+    //   }
+    //   return roomId
+    // })(),
     replyMessage: (() => {
       if (replyMessageId == null) {
         return undefined

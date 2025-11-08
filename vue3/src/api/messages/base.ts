@@ -1,12 +1,6 @@
 /** messages pb查询时一般要用的 Expand ，将在多个api中使用 */
 
-import type {
-  FilesResponse,
-  MessagesRecord,
-  MessagesResponse,
-  RoomsResponse,
-  UsersResponse,
-} from '@/lib'
+import type { MessagesRecord, MessagesResponse, UsersResponse } from '@/lib'
 import type { Group, KeyValueMirror } from '@/types'
 
 // 📦 定义 PocketBase 扩展字段的响应类型
@@ -18,14 +12,10 @@ export type MessagesResponseWidthExpandReplyMessage =
 // 🎯 指定集合中需要展开的关联字段及其响应类型
 type MessagesRecordExpand = {
   author?: UsersResponse
-  quoteRoom?: RoomsResponse
-  quoteFile?: FilesResponse
   replyMessage?: MessagesResponseWidthExpandReplyMessage
 }
 type MessagesRecordExpandReplyMessage = {
   author?: UsersResponse
-  quoteRoom?: RoomsResponse
-  quoteFile?: FilesResponse
 }
 // 🧠 类型安全地构造 expand 字符串
 export const messagesExpand = (() => {
@@ -48,8 +38,6 @@ export const messagesExpand = (() => {
    */
   const recordKeys = {
     author: 'author',
-    quoteRoom: 'quoteRoom',
-    quoteFile: 'quoteFile',
     replyMessage: 'replyMessage',
   } as const satisfies Group<
     // 限制键必须来自 `[CollectionName]Record`，可选（允许只使用部分字段）
@@ -60,8 +48,6 @@ export const messagesExpand = (() => {
   >
   const recordKeysReplyMessage = {
     author: 'author',
-    quoteRoom: 'quoteRoom',
-    quoteFile: 'quoteFile',
   } as const satisfies Group<
     // 限制键必须来自 `[CollectionName]Record`，可选（允许只使用部分字段）
     Partial<Record<keyof MessagesRecord, string>>
@@ -72,7 +58,7 @@ export const messagesExpand = (() => {
 
   // 🧩 将字段键拼接为 expand 查询字符串
   // 模板字面量类型（Template Literal Types）可以在类型层面进行字符串拼接、组合和约束。
-  // type const = "author,quoteRoom,quoteFile,replyMessage.author,replyMessage.quoteFile,replyMessage.quoteRoom"
+  // type const = "author,replyMessage.author"
 
-  return `${recordKeys.author},${recordKeys.quoteRoom},${recordKeys.quoteFile},${recordKeys.replyMessage}.${recordKeysReplyMessage.author},${recordKeys.replyMessage}.${recordKeysReplyMessage.quoteFile},${recordKeys.replyMessage}.${recordKeysReplyMessage.quoteRoom}` as const
+  return `${recordKeys.author},${recordKeys.replyMessage}.${recordKeysReplyMessage.author}` as const
 })()

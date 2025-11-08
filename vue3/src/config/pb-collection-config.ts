@@ -4,7 +4,6 @@ import { z } from 'zod'
 export const pbCollectionConfigSchema = {
   'allow-users-to-register': z.boolean(),
   'allow-anonymous-view': z.boolean(),
-  'allow-basic-users-upload': z.boolean(),
   'email-update-rate-limit-second': z.number(),
   'email-verify-rate-limit-second': z.number(),
   'password-update-rate-limit-second': z.number(),
@@ -42,8 +41,6 @@ export const pbCollectionConfigDefaultGetFn = () => {
     'allow-users-to-register': true,
     /** 是否允许任何人查看，不登录也能查看（游客访问） */
     'allow-anonymous-view': true,
-    /** 是否允许基础用户上传文件 */
-    'allow-basic-users-upload': true,
     /** 邮箱修改最短秒数（由 客户端/前端 实现的速率限制，单位秒） */
     'email-update-rate-limit-second': 30,
     /** 邮箱验证最短秒数 */

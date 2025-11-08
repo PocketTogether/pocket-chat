@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ContainerDialog } from '@/components'
-import { useDialogOptimization, useRouteControlDialog } from '@/composables'
+import { useRouteControlDialog } from '@/composables'
 import { fileUserAvatarConfig } from '@/config'
 import { useI18nStore } from '@/stores'
 import {

@@ -2,7 +2,7 @@ import type { UsersResponse } from '@/lib'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-type ProfileQueryData = UsersResponse<unknown, unknown>
+type ProfileQueryData = UsersResponse
 
 // 用于 useProfileQuery 的 placeholderData
 export const usePlaceholderDataProfileStore = defineStore(

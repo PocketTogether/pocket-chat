@@ -21,8 +21,6 @@ onBootstrap((e) => {
     'allow-users-to-register': true,
     /** 是否允许任何人查看，不登录也能查看（游客访问） */
     'allow-anonymous-view': true,
-    /** 是否允许基础用户上传文件 */
-    'allow-basic-users-upload': true,
     /** 邮箱修改最短秒数（由 客户端/前端 实现的速率限制，单位秒） */
     'email-update-rate-limit-second': 30,
     /** 邮箱验证最短秒数 */
@@ -37,14 +35,14 @@ onBootstrap((e) => {
      * 网站名称 
      * 此值特殊，在前端为空字符串，在后端为'PocketTogether' 
      */
-    'website-name': 'PocketTogether',
+    'website-name': 'PocketChat',
     /**
      * 社交媒体等图标外链（显示在登录页底部的图标链接） https://remixicon.com/
      * 此值特殊，在前端为空数组，在后端为
      * [
      *   {
      *     icon: 'ri-github-line',
-     *     link: 'https://github.com/haruki1953/pocket-together',
+     *     link: 'https://github.com/haruki1953/pocket-chat',
      *     name: 'github',
      *   },
      *   {
@@ -57,7 +55,7 @@ onBootstrap((e) => {
     'external-links-to-social-media-icons-etc': [
       {
         icon: 'ri-github-line',
-        link: 'https://github.com/haruki1953/pocket-together',
+        link: 'https://github.com/haruki1953/pocket-chat',
         name: 'github',
       },
       {

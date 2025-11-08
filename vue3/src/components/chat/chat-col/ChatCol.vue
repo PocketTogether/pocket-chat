@@ -8,6 +8,8 @@ const props = defineProps<{
   couldGoBack: boolean
   /** 房间id，空字符串为全局聊天 */
   roomId: string
+  /** 聊天标题 */
+  chatTitle: string
 }>()
 </script>
 
@@ -18,6 +20,7 @@ const props = defineProps<{
       :refScrollWarp="refScrollWarp"
       :couldGoBack="couldGoBack"
       :roomId="roomId"
+      :chatTitle="chatTitle"
     >
       <template #chatTopBarMoreMenu>
         <!-- 聊天顶栏菜单项 插槽 -->

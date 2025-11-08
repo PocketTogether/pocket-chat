@@ -14,7 +14,6 @@ import {
   useChatInputBarDispaly,
 } from './composables'
 import { RouterLink } from 'vue-router'
-import { RiLoginBoxLine } from '@remixicon/vue'
 
 const props = defineProps<{
   /** 房间id，空字符串为全局聊天 */

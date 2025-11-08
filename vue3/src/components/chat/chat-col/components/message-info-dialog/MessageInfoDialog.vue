@@ -131,7 +131,9 @@ const authStore = useAuthStore()
           </div>
           <!-- 消息卡片 -->
           <div class="mt-[10px]">
-            <div class="flow-root rounded-[20px] bg-color-background-soft">
+            <div
+              class="message-box flow-root rounded-[20px] bg-color-background-soft"
+            >
               <div class="my-[10px]">
                 <!-- 回复的消息 -->
                 <div
@@ -262,13 +264,13 @@ const authStore = useAuthStore()
               <!-- 用户已登录才显示的操作按钮 -->
               <template v-if="authStore.isValid">
                 <!-- 收藏 -->
-                <div
+                <!-- <div
                   class="flow-root cursor-pointer transition-colors hover:text-el-warning"
                 >
                   <div class="m-[5px]">
                     <RiBookmarkLine size="24px"></RiBookmarkLine>
                   </div>
-                </div>
+                </div> -->
                 <!-- 回复 -->
                 <Transition name="fade">
                   <div
@@ -338,5 +340,9 @@ const authStore = useAuthStore()
     // opacity: 0.1;
     opacity: 0;
   }
+}
+
+.message-box {
+  box-shadow: 0 0 6px 6px var(--color-background);
 }
 </style>

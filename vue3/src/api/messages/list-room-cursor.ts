@@ -46,7 +46,6 @@ export const pbMessagesListRoomCursorApi = async (data: {
     const recordKeys = {
       created: 'created',
       id: 'id',
-      room: 'room',
     } as const satisfies Group<
       // 限制键必须来自 `MessagesRecord` 且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
       Partial<KeyValueMirror<keyof MessagesRecord>>
@@ -59,7 +58,7 @@ export const pbMessagesListRoomCursorApi = async (data: {
     return (() => {
       // 第一次查询，无需游标
       if (pageParam == null) {
-        return `${recordKeys.room}='${roomId}'`
+        return ''
       }
       // 不是第一次查询，需控制游标
       /**
@@ -67,8 +66,6 @@ export const pbMessagesListRoomCursorApi = async (data: {
        * 需要考虑到created相同的情况，所以需要借助id来固定顺序，
        * 上面的sort是（日期相同时）id升序，所以created相等时查询id比游标所指小的
        * ```
-       * (
-       *   room='' &&
        *   (
        *     created<'2025-08-22 11:14:09.288Z' ||
        *     (
@@ -76,13 +73,10 @@ export const pbMessagesListRoomCursorApi = async (data: {
        *       id>'syta3u7m0eeud1a'
        *     )
        *   )
-       * )
        * ```
        */
       // const filterStr =
       return `
-      (
-        ${recordKeys.room}='${roomId}' &&
         (
           ${recordKeys.created}<'${pageParam.created}' ||
           (
@@ -90,7 +84,6 @@ export const pbMessagesListRoomCursorApi = async (data: {
             ${recordKeys.id}>'${pageParam.id}'
           )
         )
-      )
       `
       // console.log(filterStr)
       // return filterStr
@@ -188,7 +181,6 @@ export const pbMessagesListRoomCursorNextIncludeCursorApi = async (data: {
     const recordKeys = {
       created: 'created',
       id: 'id',
-      room: 'room',
     } as const satisfies Group<
       // 限制键必须来自 `MessagesRecord` 且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
       Partial<KeyValueMirror<keyof MessagesRecord>>
@@ -203,8 +195,6 @@ export const pbMessagesListRoomCursorNextIncludeCursorApi = async (data: {
      * 需要考虑到created相同的情况，所以需要借助id来固定顺序，
      * 上面的sort是（日期相同时）id升序，所以created相等时查询id比游标所指小或等于的（即包括游标所指的）
      * ```
-     * (
-     *   room='' &&
      *   (
      *     created<'2025-08-22 11:14:09.288Z' ||
      *     (
@@ -212,12 +202,9 @@ export const pbMessagesListRoomCursorNextIncludeCursorApi = async (data: {
      *       id>='syta3u7m0eeud1a'
      *     )
      *   )
-     * )
      * ```
      */
     return `
-    (
-      ${recordKeys.room}='${roomId}' &&
       (
         ${recordKeys.created}<'${pageParam.created}' ||
         (
@@ -225,7 +212,6 @@ export const pbMessagesListRoomCursorNextIncludeCursorApi = async (data: {
           ${recordKeys.id}>='${pageParam.id}'
         )
       )
-    )
     `
   })()
 
@@ -278,7 +264,6 @@ export const pbMessagesListRoomCursorPreviousNotIncludeCursorApi =
       const recordKeys = {
         created: 'created',
         id: 'id',
-        room: 'room',
       } as const satisfies Group<
         // 限制键必须来自 `MessagesRecord` 且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
         Partial<KeyValueMirror<keyof MessagesRecord>>
@@ -293,8 +278,6 @@ export const pbMessagesListRoomCursorPreviousNotIncludeCursorApi =
        * 需要考虑到created相同的情况，所以需要借助id来固定顺序，
        * 上面的sort是（日期相同时）id降序，所以created相等时查询id比游标所指大的
        * ```
-       * (
-       *   room='' &&
        *   (
        *     created>'2025-08-22 11:14:09.288Z' ||
        *     (
@@ -302,12 +285,9 @@ export const pbMessagesListRoomCursorPreviousNotIncludeCursorApi =
        *       id<'syta3u7m0eeud1a'
        *     )
        *   )
-       * )
        * ```
        */
       return `
-      (
-        ${recordKeys.room}='${roomId}' &&
         (
           ${recordKeys.created}>'${pageParam.created}' ||
           (
@@ -315,7 +295,6 @@ export const pbMessagesListRoomCursorPreviousNotIncludeCursorApi =
             ${recordKeys.id}<'${pageParam.id}'
           )
         )
-      )
       `
     })()
 

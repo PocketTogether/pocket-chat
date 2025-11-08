@@ -136,6 +136,6 @@ defineExpose({
 
 <style lang="scss" scoped>
 .content-box {
-  // box-shadow: 0 0 6px 6px var(--color-background);
+  box-shadow: 0 0 6px 6px var(--color-background);
 }
 </style>

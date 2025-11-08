@@ -24,6 +24,8 @@ const props = defineProps<{
   couldGoBack: boolean
   /** 房间id，空字符串为全局聊天 */
   roomId: string
+  /** 聊天标题 */
+  chatTitle: string
 }>()
 // 供封装的组件或组合式函数使用
 export type PropsType = typeof props
@@ -279,6 +281,7 @@ useChatColPageRecoverDataSetOnBeforeUnmountAndRouteLeave({
         :chatRoomMessagesRealtimeUnReadNumber="
           chatRoomMessagesRealtimeUnReadNumber
         "
+        :chatTitle="chatTitle"
       >
         <template #chatTopBarMoreMenu>
           <!-- 聊天顶栏菜单项 插槽 -->

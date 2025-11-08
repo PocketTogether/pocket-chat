@@ -2,7 +2,6 @@ import {
   Collections,
   onPbResErrorStatus401AuthClear,
   pb,
-  UsersLevelOptions,
   type Create,
   type Update,
 } from '@/lib'
@@ -77,8 +76,6 @@ export const pbUsersCreateRegisterApi = async (data: {
     email: data.email,
     password: data.password,
     passwordConfirm: data.passwordConfirm,
-    // 默认等级为basic，如果擅自设置为premium则会被api规则阻止
-    level: UsersLevelOptions.basic,
   }
 
   // 通过 pocketbase SDK 请求

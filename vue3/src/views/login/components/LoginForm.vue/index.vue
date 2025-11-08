@@ -108,7 +108,7 @@ const allowAnonymousView = computed(() => {
           class="mx-2 cursor-pointer truncate text-xs text-el-primary hover:text-el-primary-light-3"
           @click="
             // 跳转至首页
-            $router.push(routerDict.HomePage.path)
+            $router.push(routerDict.ChatHome.path)
           "
         >
           {{ i18nStore.t('loginVisitorText')() }}

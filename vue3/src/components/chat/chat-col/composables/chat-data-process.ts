@@ -62,9 +62,11 @@ export const useChatDataProcessMessagesTwoway = (data: {
   const realtimeMessagesStore = useRealtimeMessagesStore()
   // 从实时消息中，获取本房间的消息
   const chatRoomMessagesRealtime = computed(() => {
-    return realtimeMessagesStore.createList.filter(
-      (i) => i.room === chatRoomId.value
-    )
+    // return realtimeMessagesStore.createList.filter(
+    //   (i) => i.room === chatRoomId.value
+    // )
+    // 【251108】pocket-chat暂时没有房间
+    return realtimeMessagesStore.createList
   })
 
   // 【251103】将此从 chatRoomMessagesListAndRealtime 重命名为 chatRoomMessagesListAndRealtimeStep1Process ，即融合的初步处理 Step1Process

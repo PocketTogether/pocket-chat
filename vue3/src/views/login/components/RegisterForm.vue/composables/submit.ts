@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/vue-query'
 import { PotoFormValidationError } from '@/classes'
-import { pb, UsersLevelOptions, Collections, type Create } from '@/lib'
+import { pb, Collections, type Create } from '@/lib'
 import { useI18nStore } from '@/stores'
 import { fetchWithTimeoutPreferred, potoMessage } from '@/utils'
 import { ClientResponseError } from 'pocketbase'

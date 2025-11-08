@@ -2,7 +2,7 @@
 import { pbUsersRequestPasswordResetApi } from '@/api'
 import { PotoFormValidationError } from '@/classes'
 import { ConfirmContainer, ContainerDialog } from '@/components'
-import { useDialogOptimization, useRouteControlDialog } from '@/composables'
+import { useRouteControlDialog } from '@/composables'
 import { pbCollectionConfigDefaultGetFn } from '@/config'
 import { Collections, onPbResErrorStatus401AuthClear, pb } from '@/lib'
 import { queryRetryPbNetworkError, usePbCollectionConfigQuery } from '@/queries'

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useI18nStore } from '@/stores'
-import { RiLockUnlockLine, RiMailLine } from '@remixicon/vue'
 import type { ElForm } from 'element-plus'
 import { useRegisterFormRules, useRegisterFormSubmit } from './composables'
 

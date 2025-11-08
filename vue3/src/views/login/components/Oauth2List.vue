@@ -4,7 +4,7 @@ import { potoMessage, urlJoinUtil } from '@/utils'
 import { pocketbaseConfig } from '@/config'
 import type { AuthProviderInfo } from 'pocketbase'
 import { Collections } from '@/lib'
-import { pb, UsersLevelOptions, type Create } from '@/lib'
+import { pb, type Create } from '@/lib'
 import { useListAuthMethodsQuery } from '@/queries'
 import { useRouter } from 'vue-router'
 import { routerDict } from '@/config'
@@ -28,21 +28,22 @@ const oauth2List = computed(() => {
 const router = useRouter()
 
 const authWithOAuth2 = async (providerName: AuthProviderInfo['name']) => {
-  const createData: {
-    level: Create<Collections.Users>['level']
-  } = {
-    level: UsersLevelOptions.basic,
-  }
+  // const createData: {
+  //   level: Create<Collections.Users>['level']
+  // } = {
+  //   level: UsersLevelOptions.basic,
+  // }
 
   try {
     // authWithOAuth2 比较复杂，暂不使用useMutation与fetchWithTimeoutPreferred
-    const res = await pb
-      .collection(Collections.Users)
-      .authWithOAuth2({ provider: providerName, createData })
+    const res = await pb.collection(Collections.Users).authWithOAuth2({
+      provider: providerName,
+      // createData
+    })
 
     console.log(res)
 
-    router.push(routerDict.HomePage.path)
+    router.push(routerDict.ChatHome.path)
   } catch (error) {
     potoMessage({
       type: 'error',

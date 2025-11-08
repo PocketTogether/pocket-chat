@@ -5,7 +5,6 @@ import { useWatchSourceToHoldTimeAndStep } from '@/utils'
 import { onClickOutside } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import { ChatTopBarMoreMenuItem } from '.'
-import { useRoomsGetOneQuery } from '@/queries'
 import { useRouterHistoryTool } from '@/composables'
 
 const props = defineProps<{
@@ -15,6 +14,8 @@ const props = defineProps<{
   couldGoBack: boolean
   /** 房间id，空字符串为全局聊天 */
   roomId: string
+  /** 聊天标题 */
+  chatTitle: string
 }>()
 
 const isShowMoreMenu = ref(false)
@@ -72,7 +73,7 @@ const { routerBackSafe } = useRouterHistoryTool()
 
 const chatTopBarBack = () => {
   routerBackSafe({
-    fallbackTo: routerDict.HomePage.path,
+    fallbackTo: routerDict.ChatHome.path,
   })
 }
 
@@ -84,22 +85,23 @@ const isGlobalChat = computed(() => {
   return false
 })
 /** 房间信息 */
-const roomsGetOneQuery = useRoomsGetOneQuery({
-  roomId: computed(() => props.roomId),
-})
+// const roomsGetOneQuery = useRoomsGetOneQuery({
+//   roomId: computed(() => props.roomId),
+// })
 
 /** 房间标题 */
 const roomTitle = computed(() => {
-  // 当前为全局聊天，返回全局聊天标题
-  if (isGlobalChat.value) {
-    return i18nStore.t('chatTopBarGlobalChatTitle')()
-  }
-  // 房间信息有数据，返回房间标题
-  if (roomsGetOneQuery.data.value != null) {
-    return roomsGetOneQuery.data.value.title
-  }
-  // 无数据，返回空字符串
-  return ''
+  // // 当前为全局聊天，返回全局聊天标题
+  // if (isGlobalChat.value) {
+  //   return i18nStore.t('chatTopBarGlobalChatTitle')()
+  // }
+  // // 房间信息有数据，返回房间标题
+  // if (roomsGetOneQuery.data.value != null) {
+  //   return roomsGetOneQuery.data.value.title
+  // }
+  // // 无数据，返回空字符串
+  // return ''
+  return props.chatTitle
 })
 </script>
 

@@ -86,7 +86,7 @@ export const useLoginFormSubmit = (data: {
 
   const submit = async () => {
     await mutation.mutateAsync()
-    router.push(routerDict.HomePage.path)
+    router.push(routerDict.ChatHome.path)
   }
 
   return {

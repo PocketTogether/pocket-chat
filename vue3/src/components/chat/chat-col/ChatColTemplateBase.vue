@@ -11,7 +11,6 @@ import {
 } from './components'
 import { useI18nStore } from '@/stores'
 import { ContainerBar } from '@/components'
-import { RiMessage3Fill } from '@remixicon/vue'
 import type {
   ChatDisplayDependentDataInitializationChooseType,
   ChatColPageRecoverDataCheckType,
@@ -55,6 +54,8 @@ const props = defineProps<{
   chatBackBottomDisplayable: boolean
   chatBackBottomFn: () => Promise<void>
   chatRoomMessagesRealtimeUnReadNumber: number
+  /** 聊天标题 */
+  chatTitle: string
 }>()
 
 // 消息详情对话框
@@ -122,6 +123,7 @@ const chatRoomMessagesForShowWithOnMounted = computed(() => {
               "
               :couldGoBack="couldGoBack"
               :roomId="roomId"
+              :chatTitle="chatTitle"
             >
               <template #chatTopBarMoreMenu>
                 <!-- 聊天顶栏菜单项 插槽 -->

@@ -11,7 +11,6 @@ import {
   useMessageDisplay,
   useMessageRealtimeUpdate,
 } from './composables'
-import { RiDeleteBin7Fill } from '@remixicon/vue'
 import { useI18nStore } from '@/stores'
 
 const props = defineProps<{
@@ -326,7 +325,7 @@ const {
           // 不与下一条消息一起显示时，才显示头像和名称
           isMessagesDispalyTogetherNext === false
         "
-        class="mb-3 flex items-center"
+        class="mb-3 flex select-none items-center"
         :class="{
           // 消息为当前用户发送，flex-row-reverse使其靠右显示
           'flex-row-reverse': isMessageCurrentUser,

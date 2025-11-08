@@ -14,9 +14,9 @@ export const i18nMessagesRegisterPart = {
     'zh-TW': () => '僅支援字母、數字和底線。' as const,
   },
   registerRulesUsernamePatternLengthMessage: {
-    'en-US': () => '1–32 characters.' as const,
-    'zh-CN': () => '1–32个字符。' as const,
-    'zh-TW': () => '1–32個字元。' as const,
+    'en-US': () => '1-32 characters.' as const,
+    'zh-CN': () => '1-32个字符。' as const,
+    'zh-TW': () => '1-32個字元。' as const,
   },
   registerRulesPasswordRequiredMessage: {
     'en-US': () => 'Please enter password' as const,

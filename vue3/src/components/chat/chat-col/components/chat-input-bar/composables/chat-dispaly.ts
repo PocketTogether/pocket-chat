@@ -87,7 +87,8 @@ export const useChatInputBarDispaly = (
       return 'backBottom' as const
     }
     // menu 正常状时为 输入栏+菜单按钮
-    return 'menu' as const
+    // return 'menu' as const
+    return 'send' as const
   })
 
   // 实现回到底部和新消息提示循环闪烁显示，间隔 2000ms
