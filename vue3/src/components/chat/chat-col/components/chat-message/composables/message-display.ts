@@ -9,6 +9,7 @@ import { compareDatesSafeGetSecondsBetween } from '@/utils'
 import { pb } from '@/lib'
 import { useTimeAgo } from '@vueuse/core'
 import type { MessagesResponseWidthExpand } from '@/api'
+import { useCurrentMessageUserDataOptimization } from '@/composables'
 
 // 封装 消息的显示逻辑
 export const useMessageDisplay = (data: {
@@ -25,29 +26,14 @@ export const useMessageDisplay = (data: {
   // 响应式的 pb.authStore
   const authStore = useAuthStore()
 
-  /** 消息是否为当前用户发送判断函数 */
-  const determineMessageCurrentUserFn = (
-    messagesItem: ChatRoomMessagesItem | null
-  ) => {
-    // 消息为null，即为false
-    if (messagesItem == null) {
-      return false
-    }
-    // 未登录，即为false
-    if (!authStore.isValid || authStore.record == null) {
-      return false
-    }
-    // 消息为当前用户发送
-    if (messagesItem.author === authStore.record.id) {
-      return true
-    }
-    return false
-  }
-
-  /** 当前消息是否为当前用户发送 */
-  const isMessageCurrentUser = computed(() =>
-    determineMessageCurrentUserFn(currentMessageData.value)
-  )
+  const {
+    /** 当前消息是否为当前用户发送 */
+    isMessageCurrentUser,
+    /** 如果当前消息为当前用户，则判断消息中的用户数据 与 profileQuery中的用户数据哪个更新，采用更新的数据 */
+    currentMessageUserData,
+  } = useCurrentMessageUserDataOptimization({
+    messageData: currentMessageData,
+  })
 
   /**
    * 判断两条消息是否一起显示
@@ -162,18 +148,18 @@ export const useMessageDisplay = (data: {
   // 头像
   const messageUserAvatarUrl = computed(() => {
     // expand.author == null 这是异常（可能pb配置或前端api调用有误），但不抛错了，返回默认头像算了
-    if (currentMessageData.value.expand.author == null) {
+    if (currentMessageUserData.value == null) {
       console.error('currentMessageData.value.expand.author == null')
       return appUserDefaultAvatar
     }
     // 无头像，返回默认头像
-    if (currentMessageData.value.expand.author.avatar === '') {
+    if (currentMessageUserData.value.avatar === '') {
       return appUserDefaultAvatar
     }
     // 有头像，返回头像url
     return pb.files.getURL(
-      currentMessageData.value.expand.author,
-      currentMessageData.value.expand.author.avatar,
+      currentMessageUserData.value,
+      currentMessageUserData.value.avatar,
       { thumb: fileUserAvatarConfig.thumb200x200f }
     )
   })
@@ -181,16 +167,16 @@ export const useMessageDisplay = (data: {
   // 用户名
   const messageUserName = computed(() => {
     // expand.author == null 这是异常（可能pb配置或前端api调用有误），但不抛错了，返回空字符串算了
-    if (currentMessageData.value.expand.author == null) {
+    if (currentMessageUserData.value == null) {
       console.error('currentMessageData.value.expand.author == null')
       return ''
     }
     // 无名称，返回用户名
-    if (currentMessageData.value.expand.author.name === '') {
-      return currentMessageData.value.expand.author.username
+    if (currentMessageUserData.value.name === '') {
+      return currentMessageUserData.value.username
     }
     // 有名称，返回名称
-    return currentMessageData.value.expand.author.name
+    return currentMessageUserData.value.name
   })
 
   const i18nStore = useI18nStore()
@@ -204,28 +190,31 @@ export const useMessageDisplay = (data: {
     }
   )
 
+  const { currentMessageUserData: replyMessageUserData } =
+    useCurrentMessageUserDataOptimization({
+      messageData: computed(() => currentMessageData.value.expand.replyMessage),
+    })
+
   // 回复的消息的用户头像
   const messageReplyMessageUserAvatarUrl = computed(() => {
     // expand.replyMessage == null，此情况不会显示，返回默认头像
-    if (currentMessageData.value.expand.replyMessage == null) {
+    if (replyMessageUserData.value == null) {
       return appUserDefaultAvatar
     }
 
     // expand.author == null 这是异常（可能pb配置或前端api调用有误），但不抛错了，返回默认头像算了
-    if (currentMessageData.value.expand.replyMessage.expand.author == null) {
+    if (replyMessageUserData.value == null) {
       console.error('currentMessageData.value.expand.author == null')
       return appUserDefaultAvatar
     }
     // 无头像，返回默认头像
-    if (
-      currentMessageData.value.expand.replyMessage.expand.author.avatar === ''
-    ) {
+    if (replyMessageUserData.value.avatar === '') {
       return appUserDefaultAvatar
     }
     // 有头像，返回头像url
     return pb.files.getURL(
-      currentMessageData.value.expand.replyMessage.expand.author,
-      currentMessageData.value.expand.replyMessage.expand.author.avatar,
+      replyMessageUserData.value,
+      replyMessageUserData.value.avatar,
       { thumb: fileUserAvatarConfig.thumb200x200f }
     )
   })

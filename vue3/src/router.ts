@@ -1,8 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { routerDict } from './config'
+import { pbCollectionConfigDefaultGetFn, routerDict } from './config'
 
 import { ChatHome, ChatSetting, LayoutSimple, LoginPage } from './views'
-import { useAuthStore, useRouterHistoryStore } from './stores'
+import {
+  useAuthStore,
+  usePlaceholderDataPbCollectionConfigStore,
+  useRouterHistoryStore,
+} from './stores'
 import { getAppMainElScrollbarWrap } from './utils'
 import { usePbCollectionConfigQuery } from './queries'
 import { pb } from './lib'
@@ -42,14 +46,26 @@ router.beforeEach((to, from) => {
     return
   }
 
-  const pbCollectionConfigQuery = usePbCollectionConfigQuery()
+  // 【251109】
+  // 路由守卫中使用 usePbCollectionConfigQuery（useQuery）是不应该的，
+  // 退而求其次使用 usePlaceholderDataPbCollectionConfigStore（之后写为 useP31gStore ）
+  // const pbCollectionConfigQuery = usePbCollectionConfigQuery()
+  const placeholderDataPbCollectionConfigStore =
+    usePlaceholderDataPbCollectionConfigStore()
   // 是否允许所有人查看
   const allowAnonymousView = (() => {
-    const val = pbCollectionConfigQuery.data.value?.['allow-anonymous-view']
-    // val == null 只为了类型确定，理论上此值不会为空，默认为true
-    if (val == null) {
-      return true
-    }
+    // const val = pbCollectionConfigQuery.data.value?.['allow-anonymous-view']
+    const val = (() => {
+      // useP31gStore可能未初始化，此时使用默认值
+      if (placeholderDataPbCollectionConfigStore.data == null) {
+        return pbCollectionConfigDefaultGetFn()['allow-anonymous-view']
+      }
+      return placeholderDataPbCollectionConfigStore.data['allow-anonymous-view']
+    })()
+    // // val == null 只为了类型确定，理论上此值不会为空，默认为true
+    // if (val == null) {
+    //   return true
+    // }
     return val
   })()
   // 如果当前为不允许所有人查看，且当前用户未登录，则拦截到登录页

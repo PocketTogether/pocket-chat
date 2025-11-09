@@ -37,6 +37,7 @@ const {
   chatRoomMessagesGetOneQuery,
   messageUserAvatarUrl,
   messageUserName,
+  messageUserUsername,
   messageReplyMessageUserAvatarUrl,
   isMessageSendByCurrentUser,
 } = useMessageDispaly({
@@ -115,10 +116,7 @@ const authStore = useAuthStore()
                       {{ messageUserName }}
                     </div>
                     <div class="truncate text-[12px] text-color-text-soft">
-                      @{{
-                        chatRoomMessagesGetOneQuery.data.value.expand.author
-                          ?.username
-                      }}
+                      @{{ messageUserUsername }}
                     </div>
                   </div>
                 </div>

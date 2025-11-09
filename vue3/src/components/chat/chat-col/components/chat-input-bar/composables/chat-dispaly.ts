@@ -2,7 +2,10 @@ import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import { onClickOutside } from '@vueuse/core'
 import type { ElButton } from 'element-plus'
-import { useAutoCyclicValue } from '@/composables'
+import {
+  useAutoCyclicValue,
+  useCurrentMessageUserDataOptimization,
+} from '@/composables'
 import type { ChatInputBarDataType } from './chat-data'
 import type { ChatInputBarPropsType } from './dependencies'
 import { useAuthStore } from '@/stores'
@@ -28,6 +31,11 @@ export const useChatInputBarDispaly = (
   const messageSendSubmitRunning = ref(false)
   const messageEditSubmitRunning = ref(false)
 
+  const { currentMessageUserData: charReplyMessageUserData } =
+    useCurrentMessageUserDataOptimization({
+      messageData: computed(() => chatReplyMessage.value),
+    })
+
   // 回复的消息的用户头像
   const chatReplyMessageUserAvatarUrl = computed(() => {
     // chatReplyMessage.value == null，此情况不会显示，返回默认头像
@@ -36,18 +44,18 @@ export const useChatInputBarDispaly = (
     }
 
     // expand.author == null 这是异常（可能pb配置或前端api调用有误），但不抛错了，返回默认头像算了
-    if (chatReplyMessage.value.expand.author == null) {
+    if (charReplyMessageUserData.value == null) {
       console.error('props.chatRoomMessagesItem.expand.author == null')
       return appUserDefaultAvatar
     }
     // 无头像，返回默认头像
-    if (chatReplyMessage.value.expand.author.avatar === '') {
+    if (charReplyMessageUserData.value.avatar === '') {
       return appUserDefaultAvatar
     }
     // 有头像，返回头像url
     return pb.files.getURL(
-      chatReplyMessage.value.expand.author,
-      chatReplyMessage.value.expand.author.avatar,
+      charReplyMessageUserData.value,
+      charReplyMessageUserData.value.avatar,
       { thumb: fileUserAvatarConfig.thumb200x200f }
     )
   })

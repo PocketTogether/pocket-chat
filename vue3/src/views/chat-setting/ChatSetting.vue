@@ -29,7 +29,6 @@ const showChatWidthLargerTrueWidthSmallerFalse = computed(() => {
 
 <template>
   <div
-    class="mx-[8px]"
     :class="{
       'mx-[40px]': showChatWidthLargerTrueWidthSmallerFalse,
       'mx-[8px]': !showChatWidthLargerTrueWidthSmallerFalse,

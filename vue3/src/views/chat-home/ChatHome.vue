@@ -23,9 +23,9 @@ const authStore = useAuthStore()
 
 const { width: windowWidth } = useWindowSize()
 
-/** 窗口宽度大于1024时聊天栏宽度较大，小于则聊天栏宽度较小 */
+/** 窗口宽度大于600时聊天栏边距宽度较大，小于则聊天栏边距宽度较小 */
 const showChatWidthLargerTrueWidthSmallerFalse = computed(() => {
-  if (windowWidth.value >= 1024) {
+  if (windowWidth.value >= 600) {
     return true
   }
   return false
@@ -49,12 +49,17 @@ const profileQuery = useProfileQuery()
 </script>
 
 <template>
-  <div class="mx-[8px]">
+  <div
+    :class="{
+      'mx-[40px]': showChatWidthLargerTrueWidthSmallerFalse,
+      'mx-[8px]': !showChatWidthLargerTrueWidthSmallerFalse,
+    }"
+  >
     <div
-      class="mx-auto"
+      class="mx-auto max-w-[768px]"
       :class="{
-        'max-w-[768px]': showChatWidthLargerTrueWidthSmallerFalse,
-        'max-w-[512px]': !showChatWidthLargerTrueWidthSmallerFalse,
+        // 'max-w-[768px]': showChatWidthLargerTrueWidthSmallerFalse,
+        // 'max-w-[512px]': !showChatWidthLargerTrueWidthSmallerFalse,
       }"
     >
       <ChatCol
