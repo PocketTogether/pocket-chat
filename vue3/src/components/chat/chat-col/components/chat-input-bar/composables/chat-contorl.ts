@@ -28,7 +28,7 @@ export const useChatInputBarControl = (
     messageSendSubmitRunning,
     messageEditSubmitRunning,
     // chatReplyMessageUserAvatarUrl,
-    // chatInputBarFunctionChoose,
+    chatInputBarFunctionChoose,
     // autoCyclicValueToShowNewMessageAndBackBottom,
     // isHaveNewMessage,
     // isShowMoreMenu,
@@ -102,6 +102,9 @@ export const useChatInputBarControl = (
 
   // 消息发送提交
   const messageSendSubmit = async () => {
+    if (chatInputContent.value.trim() === '') {
+      return
+    }
     if (messageSendSubmitRunning.value === true) {
       return
     }
@@ -165,6 +168,9 @@ export const useChatInputBarControl = (
 
   // 消息编辑提交
   const messageEditSubmit = async () => {
+    if (chatInputContent.value.trim() === '') {
+      return
+    }
     if (messageEditSubmitRunning.value === true) {
       return
     }
@@ -192,6 +198,17 @@ export const useChatInputBarControl = (
     chatEditMessageSet(null)
   }
 
+  // 输入栏回车的处理
+  const handleChatInputKeydownEnter = (event: Event | KeyboardEvent) => {
+    console.log('回车触发:', chatInputContent.value)
+
+    if (chatInputBarFunctionChoose.value === 'send') {
+      messageSendSubmit()
+    } else if (chatInputBarFunctionChoose.value === 'edit') {
+      messageEditSubmit()
+    }
+  }
+
   return {
     //
     chatReplyMessageCancel,
@@ -199,6 +216,7 @@ export const useChatInputBarControl = (
     messageSendSubmit,
     messageEditSubmit,
     messageEditCancel,
+    handleChatInputKeydownEnter,
   }
 }
 export type ChatInputBarControlType = ReturnType<typeof useChatInputBarControl>

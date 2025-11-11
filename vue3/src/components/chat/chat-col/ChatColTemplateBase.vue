@@ -296,6 +296,7 @@ const chatRoomMessagesForShowWithOnMounted = computed(() => {
   &.is-loading:before {
     // background-color: transparent;
     background-color: var(--color-background-a30);
+    display: none;
   }
   &.top {
     border-radius: 0 0 20px 20px;

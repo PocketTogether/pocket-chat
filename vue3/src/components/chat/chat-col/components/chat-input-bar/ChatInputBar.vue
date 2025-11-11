@@ -79,6 +79,7 @@ const {
   messageSendSubmit,
   messageEditSubmit,
   messageEditCancel,
+  handleChatInputKeydownEnter,
 } = chatInputBarControl
 
 defineExpose({
@@ -248,6 +249,7 @@ defineExpose({
                 resize="none"
                 :rows="1"
                 :autosize="{ minRows: 1, maxRows: 10 }"
+                @keydown.enter.exact.prevent="handleChatInputKeydownEnter"
               />
             </div>
           </template>
@@ -272,7 +274,12 @@ defineExpose({
             <div class="flex">
               <div>
                 <!-- 取消 -->
-                <ElButton circle type="info" @click="messageEditCancel">
+                <ElButton
+                  circle
+                  type="info"
+                  :disabled="messageEditSubmitRunning"
+                  @click="messageEditCancel"
+                >
                   <template #icon>
                     <RiCloseFill></RiCloseFill>
                   </template>
@@ -286,7 +293,7 @@ defineExpose({
                   type="primary"
                   :loading="messageEditSubmitRunning"
                   :disabled="
-                    chatInputContent === '' && !messageEditSubmitRunning
+                    chatInputContent.trim() === '' && !messageEditSubmitRunning
                   "
                   @click="messageEditSubmit"
                 >
@@ -303,8 +310,10 @@ defineExpose({
               circle
               type="primary"
               :loading="messageSendSubmitRunning"
-              :disabled="chatInputContent === '' && !messageSendSubmitRunning"
-              @click="messageSendSubmit()"
+              :disabled="
+                chatInputContent.trim() === '' && !messageSendSubmitRunning
+              "
+              @click="messageSendSubmit"
             >
               <template #icon>
                 <RiSendPlane2Fill></RiSendPlane2Fill>
