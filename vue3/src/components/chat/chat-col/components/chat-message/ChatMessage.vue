@@ -12,6 +12,7 @@ import {
   useMessageRealtimeUpdate,
 } from './composables'
 import { useI18nStore } from '@/stores'
+import { TextWithLink } from '@/components/tool'
 
 const props = defineProps<{
   /** 消息数据 */
@@ -248,7 +249,23 @@ const {
                     <div
                       class="wrap-long-text mx-3 text-[15px] text-color-text"
                     >
-                      {{ currentMessageData.content }}
+                      <!-- 消息是否为自己发送，背景色会不一样，所以链接的颜色也不一样 -->
+                      <!-- 还需要判断为已删除背景色的情况 -->
+                      <TextWithLink
+                        v-if="isCurrentMessageRealtimeUpdatedIsDeleted"
+                        :data="currentMessageData.content"
+                        aTwcss="text-el-danger-dark-3 hover:underline"
+                      ></TextWithLink>
+                      <TextWithLink
+                        v-else-if="isMessageCurrentUser"
+                        :data="currentMessageData.content"
+                        aTwcss="text-el-primary-dark-3 hover:underline"
+                      ></TextWithLink>
+                      <TextWithLink
+                        v-else
+                        :data="currentMessageData.content"
+                        aTwcss="text-el-primary hover:underline"
+                      ></TextWithLink>
                     </div>
                   </div>
                 </div>

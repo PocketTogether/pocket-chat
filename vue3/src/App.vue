@@ -12,12 +12,25 @@ import {
   type AppMainElScrollbar,
 } from './composables'
 import type { ElScrollbar } from 'element-plus'
-import { usePbCollectionConfigQuery } from './queries'
+import {
+  useChatRoomMessagesInfiniteTwowayQuery,
+  usePbCollectionConfigQuery,
+  useProfileQuery,
+} from './queries'
 import { watchUntilQueryReady, watchUntilSourceCondition } from './utils'
 import { useRouter } from 'vue-router'
 
 const i18nStore = useI18nStore()
+// 配置信息
 const pbCollectionConfigQuery = usePbCollectionConfigQuery()
+// 个人信息
+const profileQuery = useProfileQuery()
+// 聊天页消息 游标分页无限查询
+const chatRoomMessagesInfiniteTwowayQuery =
+  useChatRoomMessagesInfiniteTwowayQuery({
+    roomId: computed(() => ''),
+    twowayPositioningCursorData: computed(() => null),
+  })
 
 const websiteName = computed(
   () => pbCollectionConfigQuery.data.value?.['website-name']
@@ -40,8 +53,10 @@ useSeoMeta({
 // 控制首次数据的加载，以及加载动画遮罩的关闭
 useFirstDataLoadingAndAnimationMaskClose({
   dataFirstLoadService: async () => {
-    // 遮罩的关闭会等待pbCollectionConfigQuery
+    // 遮罩的关闭会等待主要的query
     await watchUntilQueryReady(pbCollectionConfigQuery)
+    await watchUntilQueryReady(profileQuery)
+    await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery)
   },
 })
 

@@ -45,7 +45,7 @@ const testPbSendMessage = async () => {
   }
 }
 
-const profileQuery = useProfileQuery()
+const isDev = import.meta.env.DEV
 </script>
 
 <template>
@@ -69,9 +69,9 @@ const profileQuery = useProfileQuery()
         :chatTitle="websiteName"
       >
         <template #chatTopBarMoreMenu>
-          <!-- 测试批量添加消息 -->
-          <!-- v-if="import.meta.env.DEV" -->
-          <ChatTopBarMoreMenuItem @click="testPbSendMessage">
+          <!-- 测试批量添加消息，开发时才显示 -->
+          <ChatTopBarMoreMenuItem v-if="isDev" @click="testPbSendMessage">
+            <!-- <ChatTopBarMoreMenuItem @click="testPbSendMessage"> -->
             <template #icon>
               <RiFlaskLine size="18px"></RiFlaskLine>
             </template>

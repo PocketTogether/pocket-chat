@@ -61,3 +61,6 @@ export const chatRoomMessagesScrollBottomGtThisValueCanBackTopConfig =
 
 /** 聊天页输入栏默认高度（为空时的高度） */
 export const chatInputBarDefaultHeightConfig = 64 as const
+
+/** 聊天内容中的链接，在显示时的最大长度 */
+export const chatLinkContentMaxLength = 30 as const

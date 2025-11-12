@@ -178,14 +178,15 @@ const submit = mutation.mutateAsync
             <div
               class="cursor-pointer rounded-full border-2 border-dashed border-color-text-soft transition-colors hover:border-el-primary"
             >
-              <div
-                class="m-[1px] h-[100px] w-[100px] overflow-hidden rounded-full"
-              >
-                <img
-                  :src="imageForShow"
-                  alt="App Icon"
-                  class="h-full w-full object-cover"
-                />
+              <div class="h-[100px] w-[100px] overflow-hidden rounded-full">
+                <div
+                  class="h-full w-full rounded-full border-2 border-color-background-soft bg-color-background-soft"
+                  :style="{
+                    backgroundImage: `url('${imageForShow}')`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }"
+                ></div>
               </div>
             </div>
           </ElUpload>
