@@ -8,4 +8,4 @@ cd "$SCRIPT_DIR"
 # 运行前进行迁移
 ./pocketbase migrate up
 # 运行 pocketbase
-./pocketbase serve
+./pocketbase serve --http 127.0.0.1:58090

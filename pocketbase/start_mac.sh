@@ -11,4 +11,4 @@ cd "$SCRIPT_DIR" || exit 1
 ./pocketbase migrate up
 
 # 运行 pocketbase
-./pocketbase serve
+./pocketbase serve --http 127.0.0.1:58090

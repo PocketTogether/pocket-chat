@@ -2,7 +2,7 @@ let baseUrl: string
 if (import.meta.env.DEV) {
   // console.log('当前是开发环境')
   // 开发时使用的
-  baseUrl = 'http://127.0.0.1:8090/' as const
+  baseUrl = 'http://127.0.0.1:58090/' as const
 }
 // if (import.meta.env.PROD)
 else {

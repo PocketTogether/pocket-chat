@@ -58,19 +58,7 @@ export const pbCollectionConfigDefaultGetFn = () => {
     'website-name': '',
     /**
      * 社交媒体等图标外链（显示在登录页底部的图标链接） https://remixicon.com/
-     * 此值特殊，在前端为空数组，在后端为
-     * [
-     *   {
-     *     icon: 'ri-github-line',
-     *     link: 'https://github.com/haruki1953/pocket-together',
-     *     name: 'github',
-     *   },
-     *   {
-     *     icon: 'ri-discord-line',
-     *     link: 'https://discord.gg/aZq6u3Asak',
-     *     name: 'discord',
-     *   },
-     * ],
+     * 此值特殊，在前端为空数组，在后端为默认图标数组
      */
     'external-links-to-social-media-icons-etc': [],
   } satisfies PbCollectionConfigType as PbCollectionConfigType
