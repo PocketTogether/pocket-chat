@@ -35,7 +35,7 @@ const targetMoreMenuToggleShowButton = useTemplateRef<HTMLElement>(
   'targetMoreMenuToggleShowButton'
 )
 onClickOutside(targetMoreMenu, (event) => {
-  console.log(event)
+  // console.log(event)
   // 菜单未打开，直接返回
   if (targetMoreMenu == null || isShowMoreMenu.value === false) {
     return

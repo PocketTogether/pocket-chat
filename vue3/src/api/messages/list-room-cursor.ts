@@ -105,7 +105,7 @@ export const pbMessagesListRoomCursorApi = async (data: {
       }
     )
   // pbRes.items[0].expand
-  console.log(pbRes)
+  // console.log(pbRes)
   return pbRes
 }
 /**
@@ -229,7 +229,7 @@ export const pbMessagesListRoomCursorNextIncludeCursorApi = async (data: {
         fetch: fetchWithTimeoutPreferred,
       }
     )
-  console.log(pbRes)
+  // console.log(pbRes)
   return pbRes
 }
 
@@ -312,6 +312,6 @@ export const pbMessagesListRoomCursorPreviousNotIncludeCursorApi =
           fetch: fetchWithTimeoutPreferred,
         }
       )
-    console.log(pbRes)
+    // console.log(pbRes)
     return pbRes
   }

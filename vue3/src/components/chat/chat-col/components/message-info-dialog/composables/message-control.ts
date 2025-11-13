@@ -81,7 +81,7 @@ export const useMessageControl = (data: {
     })
     // 拼接网址链接
     const link = urlJoinWithOriginUtil(window.location.origin, resolved.href)
-    console.log(link)
+    // console.log(link)
 
     // 浏览支持复制
     if (clipboard.isSupported.value) {

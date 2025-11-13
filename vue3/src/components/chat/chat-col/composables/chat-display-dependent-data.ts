@@ -112,13 +112,13 @@ export const useChatDisplayDependentDataInitializationChoose = () => {
   const chatColPageRecoverData =
     routerHistoryStore.currentGetPageRecoverDataForChatColItem()
 
-  console.log('routerHistoryStore.currentUuid', routerHistoryStore.currentUuid)
+  // console.log('routerHistoryStore.currentUuid', routerHistoryStore.currentUuid)
   ;(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000))
-    console.log(
-      'routerHistoryStore.currentUuid',
-      routerHistoryStore.currentUuid
-    )
+    // console.log(
+    //   'routerHistoryStore.currentUuid',
+    //   routerHistoryStore.currentUuid
+    // )
   })()
 
   // 决定使用哪种初始化
@@ -274,9 +274,9 @@ export const useChatDisplayDependentDataInitialization = (data: {
     chatColPageRecoverData,
   } = chatDisplayDependentDataInitializationChoose
 
-  console.log('chooseInitialization', chooseInitialization)
-  console.log('chatColPageRecoverData', chatColPageRecoverData)
-  console.log('chatColPageRecoverDataCheck', chatColPageRecoverDataCheck)
+  // console.log('chooseInitialization', chooseInitialization)
+  // console.log('chatColPageRecoverData', chatColPageRecoverData)
+  // console.log('chatColPageRecoverDataCheck', chatColPageRecoverDataCheck)
 
   // 根据页面恢复数据初始化
   if (
@@ -339,19 +339,19 @@ export const useChatColPageRecoverDataSetOnBeforeUnmountAndRouteLeave = (data: {
   // 所以需要将 onBeforeUnmount 和 beforeRouteLeave结合，同时使用这两个，只要让这两个不会执行两次即可
 
   const chatColPageRecoverDataSet = () => {
-    console.log(
-      'routerHistoryStore.currentUuid',
-      routerHistoryStore.currentUuid
-    )
+    // console.log(
+    //   'routerHistoryStore.currentUuid',
+    //   routerHistoryStore.currentUuid
+    // )
     if (
       props.refScrollWarp == null ||
       refChatColTemplateBase.value?.refChatInputBar == null ||
       refChatColTemplateBase.value?.refMessageInfoDialog == null
     ) {
-      console.log(`
-    props.refScrollWarp == null ||
-    refChatColTemplateBase.value?.refChatInputBar == null
-    `)
+      // console.log(`
+      // props.refScrollWarp == null ||
+      // refChatColTemplateBase.value?.refChatInputBar == null
+      // `)
       return
     }
     const {
@@ -384,7 +384,7 @@ export const useChatColPageRecoverDataSetOnBeforeUnmountAndRouteLeave = (data: {
       chatRoomMessagesRealtimeReadNumber:
         chatRoomMessagesRealtimeReadNumber.value,
     })
-    console.log(routerHistoryStore.pageRecoverDataForChatCol)
+    // console.log(routerHistoryStore.pageRecoverDataForChatCol)
   }
   // chatColPageRecoverDataSet 是否已执行
   let chatColPageRecoverDataSetHasRun = false

@@ -53,7 +53,7 @@ export const useRegisterFormSubmit = (data: {
         passwordConfirm: formModel.value.passwordConfirm,
       })
 
-      console.log(pbRes)
+      // console.log(pbRes)
       return pbRes
     },
 

@@ -85,10 +85,10 @@ export const useChatControlFunctions = (data: {
       // 重新加载数据
       await chatRoomMessagesInfiniteTwowayQuery.refetch()
       // 【251112】网络问题
-      console.log(
-        'chatRoomMessagesInfiniteTwowayQuery.isError',
-        chatRoomMessagesInfiniteTwowayQuery.isError.value
-      )
+      // console.log(
+      //   'chatRoomMessagesInfiniteTwowayQuery.isError',
+      //   chatRoomMessagesInfiniteTwowayQuery.isError.value
+      // )
       if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
         potoMessage({
           type: 'error',
@@ -187,10 +187,10 @@ export const useChatControlFunctions = (data: {
         () => {}
       )
       // 【251112】网络问题
-      console.log(
-        'chatRoomMessagesInfiniteTwowayQuery.isError',
-        chatRoomMessagesInfiniteTwowayQuery.isError.value
-      )
+      // console.log(
+      //   'chatRoomMessagesInfiniteTwowayQuery.isError',
+      //   chatRoomMessagesInfiniteTwowayQuery.isError.value
+      // )
       if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
         potoMessage({
           type: 'error',
@@ -270,10 +270,10 @@ export const useChatControlFunctions = (data: {
           () => {}
         )
         // 【251112】网络问题
-        console.log(
-          'chatRoomMessagesInfiniteTwowayQuery.isError',
-          chatRoomMessagesInfiniteTwowayQuery.isError.value
-        )
+        // console.log(
+        //   'chatRoomMessagesInfiniteTwowayQuery.isError',
+        //   chatRoomMessagesInfiniteTwowayQuery.isError.value
+        // )
         if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
           potoMessage({
             type: 'error',

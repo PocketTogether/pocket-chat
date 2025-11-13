@@ -20,10 +20,10 @@ export const useChatDataProcessMessagesTwoway = (data: {
         () => twowayPositioningCursorData.value
       ),
     })
-  console.log(
-    'chatRoomMessagesInfiniteTwowayQuery.data.value',
-    chatRoomMessagesInfiniteTwowayQuery.data.value
-  )
+  // console.log(
+  //   'chatRoomMessagesInfiniteTwowayQuery.data.value',
+  //   chatRoomMessagesInfiniteTwowayQuery.data.value
+  // )
 
   /** 是否精细化控制Query数据为null */
   const whetherToSetChatFinelyControlledQueryDataToNull = ref(false)
@@ -76,7 +76,7 @@ export const useChatDataProcessMessagesTwoway = (data: {
       return null
     }
     // 【双向】如果有更新的数据还没有请求，则不与 MessagesRealtime 融合，这是双向查询需要注意的
-    console.log(chatRoomMessagesInfiniteTwowayQuery.hasPreviousPage.value)
+    // console.log(chatRoomMessagesInfiniteTwowayQuery.hasPreviousPage.value)
     if (chatRoomMessagesInfiniteTwowayQuery.hasPreviousPage.value === true) {
       return chatRoomMessagesList.value
     }

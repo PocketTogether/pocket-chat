@@ -41,7 +41,7 @@ const authWithOAuth2 = async (providerName: AuthProviderInfo['name']) => {
       // createData
     })
 
-    console.log(res)
+    // console.log(res)
 
     router.push(routerDict.ChatHome.path)
   } catch (error) {

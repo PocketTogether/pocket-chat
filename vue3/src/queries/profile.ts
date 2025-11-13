@@ -27,7 +27,7 @@ export const useProfileQuery = () => {
       }
       // pb请求
       const pbRes = await pbUsersGetOneApi(pb.authStore.record.id)
-      console.log(pbRes)
+      // console.log(pbRes)
 
       // 将 pbRes 持久化，以用于 placeholderData
       placeholderDataStore.set(pbRes)

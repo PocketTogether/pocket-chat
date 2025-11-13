@@ -61,7 +61,7 @@ const mutation = useMutation({
   mutationFn: async () => {
     // 通过 pocketbase SDK 请求
     const pbRes = await pbUsersRequestPasswordResetApi(formModel.value.email)
-    console.log(pbRes)
+    // console.log(pbRes)
     return pbRes
   },
   // ✅ 在网络错误时重试

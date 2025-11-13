@@ -41,7 +41,7 @@ const messageDeleteMutation = useMutation({
     const pbRes = await pbMessagesDeleteChatApi({
       messageId: props.dialogMessageId,
     })
-    console.log(pbRes)
+    // console.log(pbRes)
     return pbRes
   },
   // 一些收尾工作

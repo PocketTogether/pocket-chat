@@ -216,7 +216,7 @@ export const useChatShowLimitControlTwoway = (data: {
         ) {
           return 'no-limit'
         }
-        console.log('newLimitBottomCursorIndex', newLimitBottomCursorIndex)
+        // console.log('newLimitBottomCursorIndex', newLimitBottomCursorIndex)
         // 正常情况
         return chatRoomMessagesListAndRealtime.value[newLimitBottomCursorIndex]
           .id
@@ -245,10 +245,10 @@ export const useChatShowLimitControlTwoway = (data: {
         () => {}
       )
       // 【251112】网络问题
-      console.log(
-        'chatRoomMessagesInfiniteTwowayQuery.isError',
-        chatRoomMessagesInfiniteTwowayQuery.isError.value
-      )
+      // console.log(
+      //   'chatRoomMessagesInfiniteTwowayQuery.isError',
+      //   chatRoomMessagesInfiniteTwowayQuery.isError.value
+      // )
       if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
         // 这里不需要错误提示
         // potoMessage({

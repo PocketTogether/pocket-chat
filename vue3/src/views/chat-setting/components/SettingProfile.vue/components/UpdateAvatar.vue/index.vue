@@ -110,7 +110,7 @@ const mutation = useMutation({
       avatar: imageFile,
     })
 
-    console.log(pbRes)
+    // console.log(pbRes)
     return pbRes
   },
   // ✅ 在网络错误时重试

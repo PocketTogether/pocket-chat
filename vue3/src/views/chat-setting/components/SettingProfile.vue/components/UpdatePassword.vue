@@ -49,7 +49,7 @@ const mutation = useMutation({
       profileQuery.data.value.email
     )
 
-    console.log(pbRes)
+    // console.log(pbRes)
     return pbRes
   },
   // ✅ 在网络错误时重试

@@ -25,7 +25,7 @@ export const usePbCollectionConfigQuery = () => {
     queryFn: async () => {
       // pb 请求
       const pbRes = await pbConfigGetFullListApi()
-      console.log(pbRes)
+      // console.log(pbRes)
 
       // 数据处理
       // 首先用 默认数据初始化一个对象 queryData
@@ -73,7 +73,7 @@ export const usePbCollectionConfigQuery = () => {
         }
         queryDataKeyValueUpdate(key, findKeyItemParseResult.data)
       })
-      console.log(queryData)
+      // console.log(queryData)
 
       // 将完成的queryData持久化，以用于placeholderData
       placeholderDataStore.set(queryData)

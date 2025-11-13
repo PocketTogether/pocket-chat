@@ -1,12 +1,12 @@
 let baseUrl: string
 if (import.meta.env.DEV) {
-  console.log('当前是开发环境')
+  // console.log('当前是开发环境')
   // 开发时使用的
   baseUrl = 'http://127.0.0.1:8090/' as const
 }
 // if (import.meta.env.PROD)
 else {
-  console.log('当前是生产环境')
+  // console.log('当前是生产环境')
   // 部署时，将由后端来托管前端，设置为根路径
   baseUrl = '/' as const
 }

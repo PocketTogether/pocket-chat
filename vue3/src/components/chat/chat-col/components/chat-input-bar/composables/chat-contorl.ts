@@ -71,7 +71,7 @@ export const useChatInputBarControl = (
         roomId: props.roomId,
         replyMessageId: chatReplyMessage.value?.id,
       })
-      console.log(pbRes)
+      // console.log(pbRes)
       return pbRes
     },
     // 一些收尾工作
@@ -164,7 +164,7 @@ export const useChatInputBarControl = (
         content: chatInputContent.value,
         replyMessageId: chatReplyMessage.value?.id,
       })
-      console.log(pbRes)
+      // console.log(pbRes)
       return pbRes
     },
     // 一些收尾工作
@@ -243,7 +243,7 @@ export const useChatInputBarControl = (
 
   // 输入栏回车的处理
   const handleChatInputKeydownEnter = (event: Event | KeyboardEvent) => {
-    console.log('回车触发:', chatInputContent.value)
+    // console.log('回车触发:', chatInputContent.value)
 
     if (chatInputBarFunctionChoose.value === 'send') {
       messageSendSubmit()

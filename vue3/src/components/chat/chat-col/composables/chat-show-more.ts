@@ -146,10 +146,10 @@ export const useChatShowMoreOnTopOrBottomTwoway = (data: {
         throw new Error('isUnmounted')
       }
       // 【251112】网络问题
-      console.log(
-        'chatRoomMessagesInfiniteTwowayQuery.isError',
-        chatRoomMessagesInfiniteTwowayQuery.isError.value
-      )
+      // console.log(
+      //   'chatRoomMessagesInfiniteTwowayQuery.isError',
+      //   chatRoomMessagesInfiniteTwowayQuery.isError.value
+      // )
       if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
         potoMessage({
           type: 'error',
@@ -305,10 +305,10 @@ export const useChatShowMoreOnTopOrBottomTwoway = (data: {
         throw new Error('isUnmounted')
       }
       // 【251112】网络问题
-      console.log(
-        'chatRoomMessagesInfiniteTwowayQuery.isError',
-        chatRoomMessagesInfiniteTwowayQuery.isError.value
-      )
+      // console.log(
+      //   'chatRoomMessagesInfiniteTwowayQuery.isError',
+      //   chatRoomMessagesInfiniteTwowayQuery.isError.value
+      // )
       if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
         potoMessage({
           type: 'error',

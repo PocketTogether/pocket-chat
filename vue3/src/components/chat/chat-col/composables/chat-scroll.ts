@@ -118,10 +118,10 @@ export const useChatScrollMessageChangeTwoway = (data: {
         () => {}
       )
       // 【251112】网络问题
-      console.log(
-        'chatRoomMessagesInfiniteTwowayQuery.isError',
-        chatRoomMessagesInfiniteTwowayQuery.isError.value
-      )
+      // console.log(
+      //   'chatRoomMessagesInfiniteTwowayQuery.isError',
+      //   chatRoomMessagesInfiniteTwowayQuery.isError.value
+      // )
       if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
         // 这里不需要错误提示
         // potoMessage({
@@ -261,8 +261,8 @@ export const useChatScrollMessageChangeTwoway = (data: {
       )
       return
     }
-    console.log(props.refScrollWarp.scrollHeight)
-    console.log(props.refScrollWarp.scrollTop)
+    // console.log(props.refScrollWarp.scrollHeight)
+    // console.log(props.refScrollWarp.scrollTop)
     /**
      * 判断消息数组顶部为增加还是减少（只有顶部的增减会影响滚动）
      * ```
@@ -288,7 +288,7 @@ export const useChatScrollMessageChangeTwoway = (data: {
       console.error('isListTopAddOrReduce === 0')
       return
     }
-    console.log('isListTopAddOrReduce', isListTopAddOrReduce)
+    // console.log('isListTopAddOrReduce', isListTopAddOrReduce)
     // 统计消息数据的变化
     const listTopDelta = (() => {
       if (isListTopAddOrReduce === 1) {
@@ -323,13 +323,13 @@ export const useChatScrollMessageChangeTwoway = (data: {
 
     // // 缓存一下 scrollTop 值，让之后的计算更精准
     // const cacheScrollTopVal = props.refScrollWarp.scrollTop
-    console.log(props.refScrollWarp.scrollHeight)
-    console.log(props.refScrollWarp.scrollTop)
+    // console.log(props.refScrollWarp.scrollHeight)
+    // console.log(props.refScrollWarp.scrollTop)
 
     await nextTick() // 等待 DOM 更新
 
-    console.log(props.refScrollWarp.scrollHeight)
-    console.log(props.refScrollWarp.scrollTop)
+    // console.log(props.refScrollWarp.scrollHeight)
+    // console.log(props.refScrollWarp.scrollTop)
 
     // 计算高度变化，将用于调整滚动
     const heightDeltaForScroll = (() => {
@@ -352,7 +352,7 @@ export const useChatScrollMessageChangeTwoway = (data: {
           (elItem) =>
             listTopDelta.find((msgItem) => msgItem.id === elItem.id) != null
         )
-        console.log(elements)
+        // console.log(elements)
         // 统计高度
         let height = 0
         elements.forEach((el) => {

@@ -41,7 +41,7 @@ export const useRealtimeMessagesStore = defineStore(
         if (e.action === 'delete') {
           deleteListRef.value.push(e.record)
         }
-        console.log(e)
+        // console.log(e)
       })
       unSubscribeFunc.value = pbRes
       return 'pbMessagesSubscribeAllApi'

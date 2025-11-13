@@ -178,6 +178,6 @@ export const pbMessagesGetOneApi = async (messageId: string) => {
       // timeout为5000
       fetch: fetchWithTimeoutPreferred,
     })
-  console.log(pbRes)
+  // console.log(pbRes)
   return pbRes
 }

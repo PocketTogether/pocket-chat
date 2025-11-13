@@ -104,16 +104,16 @@ router.afterEach(() => {
 
 // // 测试
 // router.beforeEach((to, from) => {
-//   console.log('beforeEach')
-//   console.log('location.href', location.href)
-//   console.log('to.fullPath', to.fullPath)
-//   console.log('from.fullPath', from.fullPath)
+//   // console.log('beforeEach')
+//   // console.log('location.href', location.href)
+//   // console.log('to.fullPath', to.fullPath)
+//   // console.log('from.fullPath', from.fullPath)
 // })
 // router.afterEach((to, from) => {
-//   console.log('afterEach')
-//   console.log('location.href', location.href)
-//   console.log('to.fullPath', to.fullPath)
-//   console.log('from.fullPath', from.fullPath)
+//   // console.log('afterEach')
+//   // console.log('location.href', location.href)
+//   // console.log('to.fullPath', to.fullPath)
+//   // console.log('from.fullPath', from.fullPath)
 // })
 
 export default router

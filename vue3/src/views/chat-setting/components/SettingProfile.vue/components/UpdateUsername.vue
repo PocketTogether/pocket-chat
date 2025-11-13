@@ -144,7 +144,7 @@ const mutation = useMutation({
     const pbRes = await pbUsersUpdateUsernameApi({
       username: formModel.value.username,
     })
-    console.log(pbRes)
+    // console.log(pbRes)
     return pbRes
   },
   // 一些收尾工作
