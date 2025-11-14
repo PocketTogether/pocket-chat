@@ -39,6 +39,8 @@ export const useFirstDataLoadingAndAnimationMaskClose = (data: {
       ]),
       new Promise((resolve) => setTimeout(resolve, minTimeout)),
     ])
+    // 首屏遮罩增加额外300ms等待时间，以等待聊天页的加载图标过渡结束
+    await new Promise((resolve) => setTimeout(resolve, 300))
   }
 
   // 关闭加载遮罩，恢复滚动条，同时防止抖动
