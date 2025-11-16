@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `pocketbase/start` script updated to use LF line endings  
-  `pocketbase/start` 脚本改为 LF 换行符
+- `pocketbase/start.sh` `pocketbase/start.sh` script updated to use LF line endings  
+  `pocketbase/start.sh` `pocketbase/start_mac.sh` 脚本改为 LF 换行符
 - Documentation reorganized for clarity  
   文档整理与结构优化
 
