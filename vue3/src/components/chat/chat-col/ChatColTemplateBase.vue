@@ -20,7 +20,7 @@ import {
   appIconNotif,
   chatInputBarDefaultHeightConfig,
 } from '@/config'
-import { useFavicon, useTitle } from '@vueuse/core'
+import { useFavicon } from '@vueuse/core'
 
 const i18nStore = useI18nStore()
 

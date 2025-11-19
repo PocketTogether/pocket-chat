@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { i18nLocaleInfo, routerDict } from './config'
-import { useAuthStore, useI18nStore, useRealtimeMessagesStore } from './stores'
+import { i18nLocaleInfo } from './config'
+import { useI18nStore, useRealtimeMessagesStore } from './stores'
 import { useDark } from '@vueuse/core'
 import { computed } from 'vue'
 import { darkTheme, lightTheme } from 'naive-ui'
@@ -17,8 +17,7 @@ import {
   usePbCollectionConfigQuery,
   useProfileQuery,
 } from './queries'
-import { watchUntilQueryReady, watchUntilSourceCondition } from './utils'
-import { useRouter } from 'vue-router'
+import { watchUntilQueryReady } from './utils'
 
 const i18nStore = useI18nStore()
 // 配置信息

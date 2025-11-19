@@ -386,15 +386,15 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-.chat-input-bar {
-  // 背景色 --color-background
-  // 渐变，透明
-  // background: linear-gradient(
-  //   to bottom,
-  //   transparent 0%,
-  //   var(--color-background) 12px
-  // );
-}
+// .chat-input-bar {
+// 背景色 --color-background
+// 渐变，透明
+// background: linear-gradient(
+//   to bottom,
+//   transparent 0%,
+//   var(--color-background) 12px
+// );
+// }
 .chat-input-box {
   border-radius: 24px 24px 0 0;
   box-shadow: 0 0 6px 6px var(--color-background);
