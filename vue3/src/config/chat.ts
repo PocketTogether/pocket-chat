@@ -67,3 +67,6 @@ export const chatLinkContentMaxLength = 30 as const
 
 /** 发送、修改、删除，等消息操作后的实时等待，其最大等待时间（超时时间），单位毫秒ms */
 export const chatMessageControlRealtimeWaitTimeoutMsConfig = 5000 as const
+
+/** 消息实时订阅连接时，用于断线重连补偿的请求，请求最新的几条消息，配置消息的数量 */
+export const chatMessageRealtimeReConnectListNumberConfig = 40 as const

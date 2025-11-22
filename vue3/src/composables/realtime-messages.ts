@@ -1,5 +1,7 @@
 import {
+  pbMessagesRealtimeReConnectListApi,
   pbMessagesSubscribeAllApi,
+  pbRealtimeSubscribePBCONNECT,
   type MessagesResponseWidthExpand,
 } from '@/api'
 import { appUserDefaultAvatar, routerDict } from '@/config'
@@ -11,14 +13,6 @@ import { useRoute } from 'vue-router'
 export const useRealtimeMessagesSubscribe = () => {
   const realtimeMessagesStore = useRealtimeMessagesStore()
   const route = useRoute()
-
-  // // 实验页面可见性
-  // ;(async () => {
-  //   while (true) {
-  //     await new Promise((resolve) => setTimeout(resolve, 1000))
-  //     console.log('document.visibilityState', document.visibilityState)
-  //   }
-  // })()
 
   // 收到新消息时调用，根据情况决定是否通知
   const newMessageCheckAndNotif = (newMessage: MessagesResponseWidthExpand) => {
@@ -92,18 +86,74 @@ export const useRealtimeMessagesSubscribe = () => {
     }
     realtimeMessagesStore.isSubscribeStartedSetTrue()
 
-    // PB_CONNECT，断线重连消息补偿
-    await pb.realtime.subscribe('PB_CONNECT', (e) => {
-      console.log('PB_CONNECT', e)
+    // pb实时连接订阅，PB_CONNECT，断线重连消息补偿
+    await pbRealtimeSubscribePBCONNECT(async (e) => {
+      // console.log('PB_CONNECT', e)
+
+      // pb实时订阅连接时（断线重连时），请求最新的消息，不必用 useMutation（感觉在这里错误重试并不是很必要）
+      const messageList = await pbMessagesRealtimeReConnectListApi()
+
+      // 判断是否为第一次连接
+      // 是，为firstPbConnectMessage赋值
+      if (realtimeMessagesStore.firstPbConnectMessage == null) {
+        // 有消息，设置数据
+        if (messageList.items.length > 0) {
+          realtimeMessagesStore.firstPbConnectMessageSet(messageList.items[0])
+        }
+        // 无消息，设置 'none'
+        else {
+          realtimeMessagesStore.firstPbConnectMessageSet('none')
+        }
+      }
+      // 否，尝试进行补偿
+      else {
+        // 最终补偿要达到的目的效果为，让 createList 的数据完整：
+        // createList 的数据完整范围，firstPbConnectMessage 到 messageList 中最新的
+        // 关键字段 MessagesResponseWidthExpand['created'] 例 "created": "2022-01-01 10:00:00.123Z"
+
+        // 实现
+        // 第一步：过滤出需要补偿的消息
+        // 在 messageList 中过滤，得到比 firstPbConnectMessage.created 大的
+        // （如果 firstPbConnectMessage 为 none 则直接返回 messageList）
+        const msgItemsGtFirst = (() => {
+          const firstPbConnectMessage =
+            realtimeMessagesStore.firstPbConnectMessage
+          if (firstPbConnectMessage === 'none') {
+            return messageList.items
+          }
+          return messageList.items.filter(
+            (i) => i.created > firstPbConnectMessage.created
+          )
+        })()
+        // 第二步：过滤出 createList 中不存在的消息
+        // 在 msgItemsGtFirst 过滤，得到 realtimeMessagesStore.createList 中没有的，也就是需要插入的
+        const msgItemsNeedInsert = msgItemsGtFirst.filter(
+          (i) =>
+            realtimeMessagesStore.createList.find((item) => item.id === i.id) ==
+            null
+        )
+        // 第三步：遍历并插入，并通知
+        // 反转后遍历（原数组为created降序，升序遍历更合理），调用 realtimeMessagesStore.createListCheckAndInsert
+        msgItemsNeedInsert.reverse().forEach((msg) => {
+          const isAdded = realtimeMessagesStore.createListCheckAndInsert(msg)
+          if (isAdded) {
+            // 判断是否进行通知
+            newMessageCheckAndNotif(msg)
+          }
+        })
+      }
     })
+    // pb实时消息订阅
     await pbMessagesSubscribeAllApi(async (e) => {
       // // 模拟延迟
       // await new Promise((resolve) => setTimeout(resolve, 6000))
 
       if (e.action === 'create') {
-        realtimeMessagesStore.createListCheckAndPush(e.record)
-        // 判断是否进行通知
-        newMessageCheckAndNotif(e.record)
+        const isAdded = realtimeMessagesStore.createListCheckAndPush(e.record)
+        if (isAdded) {
+          // 判断是否进行通知
+          newMessageCheckAndNotif(e.record)
+        }
       }
       if (e.action === 'update') {
         realtimeMessagesStore.updateListPush(e.record)

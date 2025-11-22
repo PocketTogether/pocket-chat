@@ -1,4 +1,4 @@
-import { chatRoomMessagesInfiniteQueryPerPageNumberConfig } from '@/config'
+import { chatMessageRealtimeReConnectListNumberConfig } from '@/config'
 import {
   Collections,
   onPbResErrorStatus401AuthClear,
@@ -179,5 +179,37 @@ export const pbMessagesGetOneApi = async (messageId: string) => {
       fetch: fetchWithTimeoutPreferred,
     })
   // console.log(pbRes)
+  return pbRes
+}
+
+/** 消息实时订阅连接时，用于断线重连补偿的请求，请求最新的几条消息 */
+export const pbMessagesRealtimeReConnectListApi = async () => {
+  // expand 字符串
+  const expand = messagesExpand
+  // 类型安全地构造 sort 字符串
+  const sort = (() => {
+    const recordKeys = {
+      created: 'created',
+      id: 'id',
+    } as const satisfies Group<Partial<KeyValueMirror<keyof MessagesRecord>>>
+    // 日期降序，（日期相同时）id升序
+    // type const = "-created,id"
+    return `-${recordKeys.created},${recordKeys.id}` as const
+  })()
+
+  const pbRes = await pb
+    .collection(Collections.Messages)
+    .getList<MessagesResponseWidthExpand>(
+      1,
+      chatMessageRealtimeReConnectListNumberConfig,
+      {
+        expand,
+        sort,
+        skipTotal: true,
+        // timeout为5000
+        fetch: fetchWithTimeoutPreferred,
+      }
+    )
+  // console.log('pbMessagesRealtimeReConnectListApi', pbRes)
   return pbRes
 }

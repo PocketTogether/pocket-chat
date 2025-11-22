@@ -7,6 +7,7 @@ import { pbUsersAuthRefreshApi } from '@/api'
 import { useRouter } from 'vue-router'
 import { appIconNotif, routerDict } from '@/config'
 import { useWebNotification } from '@vueuse/core'
+import { watchUntilQueryReady } from '@/utils'
 
 // 组合式的意义就是封装和复用有状态逻辑
 // https://cn.vuejs.org/guide/reusability/composables.html
@@ -126,6 +127,8 @@ export const useInitWebNotif = () => {
   ;(async () => {
     const testPermissions = await useWebNotification().ensurePermissions()
     console.log('testPermissions', testPermissions)
+
+    await watchUntilQueryReady(pbCollectionConfigQuery)
 
     // 未取得网站名时不通知
     if (
