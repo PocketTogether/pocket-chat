@@ -274,6 +274,8 @@ PocketBase OAuth2 docs: https://pocketbase.io/docs/authentication/#authenticate-
 
 In the users collection → Settings → Options → OAuth2 → Add provider.
 
+![](./assets/collage(6).png)
+
 Example with GitHub:
 
 Go to https://github.com/settings/developers → New OAuth App

@@ -8,35 +8,28 @@
 const fs = require("fs");
 const path = require("path");
 const archiver = require("archiver");
-
-// === 可配置变量 ===
-/** @type {string} */
-const PROJECT_NAME = "pocket_chat"; // 项目名
-/** @type {string} */
-const POCKETBASE_VERSION = "0.33.0"; // pocketbase版本
-/** @type {string[]} */
-const PLATFORMS = [
-  'darwin_amd64',
-  'darwin_arm64',
-  'linux_amd64',
-  'linux_arm64',
-  'linux_armv7',
-  'linux_ppc64le',
-  'linux_s390x',
-  'windows_amd64',
-  'windows_arm64',
-]; // 打包平台数组
+const {
+  PROJECT_NAME,
+  POCKETBASE_VERSION,
+  POCKETBASE_PLATFORMS,
+  PROJECT_ROOT_DIR
+} = require("./project-config");
 
 // === 参数解析 ===
 /** @type {string|undefined} */
 const version = process.argv[2];
-if (!version) {
+if (version == null) {
   console.error("❌ 请提供版本号，如: node project-package.js 0.0.1");
   process.exit(1);
 }
 
+// （或许没必要）TODO 正则匹配 结尾的版本号
+// version 可能为 这些字符串：0.0.1 、 v0.0.1 、 refs/tags/v0.0.1 、 dev/0.0.1
+// 我想能统一解析为 如 0.0.1 这样的
+// 上面初始接收的 version 变量名帮我重命名，我想让最终的结果为 version
+
 // === 路径定义 ===
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = PROJECT_ROOT_DIR
 const OUT_DIR = path.join(ROOT, "out", version);
 const DIST_DIR = path.join(OUT_DIR, "dist");
 const RELEASE_DIR = path.join(OUT_DIR, "release");
@@ -52,23 +45,14 @@ function ensureDir(dir) {
 }
 
 /**
- * 递归复制文件或目录
+ * 复制文件或目录（递归）
  * @param {string} src
  * @param {string} dest
  * @returns {void}
  */
 function copyRecursive(src, dest) {
   if (!fs.existsSync(src)) return;
-  const stat = fs.statSync(src);
-  if (stat.isDirectory()) {
-    ensureDir(dest);
-    for (const file of fs.readdirSync(src)) {
-      copyRecursive(path.join(src, file), path.join(dest, file));
-    }
-  } else {
-    ensureDir(path.dirname(dest));
-    fs.copyFileSync(src, dest);
-  }
+  fs.cpSync(src, dest, { recursive: true });
 }
 
 /**
@@ -109,7 +93,7 @@ function preCheck(version) {
   }
 
   // 2. 检查 pocketbase-release-file 中各平台文件是否存在
-  for (const platform of PLATFORMS) {
+  for (const platform of POCKETBASE_PLATFORMS) {
     const pbReleaseDir = path.join(
       ROOT,
       "pocketbase-release-file",
@@ -165,7 +149,11 @@ ensureDir(DIST_DIR);
 ensureDir(RELEASE_DIR);
 
 (async () => {
-  for (const platform of PLATFORMS) {
+  /** 
+   * 封装单个平台的打包逻辑
+   * @param {string} platform 当前版本号
+   */
+  async function buildPlatform(platform) {
     const outName = `${PROJECT_NAME}_${version}_${platform}`;
     const outPath = path.join(DIST_DIR, outName);
 
@@ -177,6 +165,7 @@ ensureDir(RELEASE_DIR);
     copyRecursive(path.join(ROOT, "pocketbase", "start.bat"), path.join(outPath, "start.bat"));
     copyRecursive(path.join(ROOT, "pocketbase", "start.sh"), path.join(outPath, "start.sh"));
     copyRecursive(path.join(ROOT, "pocketbase", "start_mac.sh"), path.join(outPath, "start_mac.sh"));
+    copyRecursive(path.join(ROOT, "pocketbase", "start_docker.sh"), path.join(outPath, "start_docker.sh"));
 
     // 2. pb_public 来自 vue3/dist
     copyRecursive(path.join(ROOT, "vue3", "dist"), path.join(outPath, "pb_public"));
@@ -199,4 +188,7 @@ ensureDir(RELEASE_DIR);
     await zipDir(outPath, zipFile);
     console.log(`✅ 已生成: ${zipFile}`);
   }
+
+  // 并行执行所有平台的打包
+  await Promise.all(POCKETBASE_PLATFORMS.map((i) => buildPlatform(i)));
 })();
