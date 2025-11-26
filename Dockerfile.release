@@ -1,0 +1,62 @@
+FROM alpine:3.19.9 AS base
+
+# 构建阶段
+FROM base AS builder
+
+WORKDIR /app
+
+# 将 CI/CD 准备好的 docker-temp 复制到本阶段
+COPY ./docker-temp ./docker-temp
+
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+RUN echo "Platform: $TARGETPLATFORM" && \
+    echo "OS: $TARGETOS" && \
+    echo "Arch: $TARGETARCH" && \
+    echo "Variant: $TARGETVARIANT"
+
+RUN set -eux; \
+    # 根据 TARGETPLATFORM 判断，得到当前构建平台字符串
+    case "${TARGETPLATFORM}" in \
+        linux/amd64)   DOCKER_BUILD_PLATFORM="linux_amd64" ;; \
+        linux/arm64)   DOCKER_BUILD_PLATFORM="linux_arm64" ;; \
+        linux/arm/v7)  DOCKER_BUILD_PLATFORM="linux_armv7" ;; \
+        linux/ppc64le) DOCKER_BUILD_PLATFORM="linux_ppc64le" ;; \
+        linux/s390x)   DOCKER_BUILD_PLATFORM="linux_s390x" ;; \
+        *) echo "Unsupported platform: ${TARGETPLATFORM}"; exit 1 ;; \
+    esac; \
+    echo "Resolved DOCKER_BUILD_PLATFORM=${DOCKER_BUILD_PLATFORM}"; \
+    \
+    # 在 docker-temp 中查找以当前平台结尾的目录（只查找第一层）
+    PLATFORM_DIR=$(find /app/docker-temp -maxdepth 1 -type d -name "*${DOCKER_BUILD_PLATFORM}"); \
+    echo "Found platform dir: $PLATFORM_DIR"; \
+    \
+    # 创建 docker-build 文件夹
+    mkdir -p /app/docker-build; \
+    \
+    # 将找到的目录里的所有文件复制到 docker-build 文件夹中
+    cp -r "$PLATFORM_DIR"/* /app/docker-build/
+
+# 运行阶段
+FROM base AS runner
+
+WORKDIR /app
+
+# 安装根证书，确保容器内的 PocketBase 等服务能正常进行 HTTPS/TLS 通信
+RUN apk add --no-cache \
+    ca-certificates
+
+# 将 构建阶段 准备好的 docker-build 文件夹里的全部内容复制到运行阶段的 /app 目录。
+COPY --from=builder /app/docker-build /app
+
+# 确保 pocketbase 二进制文件有执行权限
+RUN chmod +x pocketbase
+
+# 暴露容器端口 58090，PocketBase 会在这个端口提供服务
+EXPOSE 58090
+
+# 设置容器启动时的入口点，执行 start.sh 脚本
+ENTRYPOINT ["sh", "start_docker.sh"]

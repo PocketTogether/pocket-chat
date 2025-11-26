@@ -16,7 +16,6 @@ FROM alpine
 
 WORKDIR /app
 
-
 ARG PB_VERSION=0.33.0
 
 RUN apk add --no-cache \
@@ -27,15 +26,14 @@ RUN apk add --no-cache \
 ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
 RUN unzip /tmp/pb.zip -d /app/
 
-
 COPY ./pocketbase/pb_hooks ./pb_hooks
 COPY ./pocketbase/pb_migrations ./pb_migrations
+COPY ./pocketbase/start_docker.sh ./start_docker.sh
 
 COPY --from=build-dist /app/dist ./pb_public
 
+RUN chmod +x pocketbase
 
 EXPOSE 58090
 
-RUN ./pocketbase migrate up
-
-CMD [ "./pocketbase", "serve", "--http", "0.0.0.0:58090" ]
+ENTRYPOINT ["sh", "start_docker.sh"]

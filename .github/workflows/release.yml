@@ -1,0 +1,217 @@
+name: Release
+
+on:
+  release:
+    types: [published]   # 当发布 Release 时触发
+  workflow_dispatch:     # 也允许手动触发
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+permissions:
+  id-token: write        # 用于 OIDC 身份令牌，生成签名证明
+  contents: write        # 需要写权限才能上传 Release 资产，同时包含读权限
+  attestations: write    # 写入 attestation 记录
+  packages: write        # 如果工件要发布到 GitHub Packages，需要写权限
+
+jobs:
+  # 构建前端、打包项目并上传至Release
+  build-vue3-and-project-package-and-upload-release-zips:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 打印 Release 信息，prerelease
+      - name: Print release info
+        run: |
+          echo "Tag (github.event.release.tag_name): ${{ github.event.release.tag_name }}"
+          echo "Is prerelease (github.event.release.prerelease): ${{ github.event.release.prerelease }}"
+
+      # 从当前 GitHub tag 名中提取版本号，并写入环境变量 VERSION
+      # ${GITHUB_REF_NAME#v} 表示去掉 tag 前缀 "v"，例如 "v0.0.3" 会变成 "0.0.3"
+      # >> $GITHUB_ENV 会把 VERSION 变量持久化到 GitHub Actions 环境中，
+      # 后续步骤可以通过 ${{ env.VERSION }} 使用该版本号
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
+      # 拉取仓库代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 安装指定版本的 pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.8.1
+
+      # 为 project-tools-node 子项目设置 Node.js 环境，并启用 pnpm 缓存
+      # 使用 cache-dependency-path 指定该子项目的 lockfile，确保依赖缓存命中准确
+      - name: Setup Node.js (project-tools-node)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: project-tools-node/pnpm-lock.yaml
+
+      # 为 vue3 前端子项目设置 Node.js 环境，并启用 pnpm 缓存
+      # 同样指定 vue3 的 lockfile，避免不同子项目的依赖缓存互相干扰
+      - name: Setup Node.js (vue3)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: vue3/pnpm-lock.yaml
+
+      # 安装前端依赖
+      - name: Install vue3 dependencies
+        run: |
+          cd ${{ github.workspace }}/vue3
+          pnpm install --frozen-lockfile
+
+      # 构建前端项目，生成 vue3/dist/
+      - name: Build frontend
+        run: |
+          cd ${{ github.workspace }}/vue3
+          pnpm build
+
+      # 安装工具脚本依赖
+      - name: Install project-tools-node dependencies
+        run: |
+          cd ${{ github.workspace }}/project-tools-node
+          pnpm install --frozen-lockfile
+
+      # 执行下载脚本，获取 PocketBase 各平台二进制文件
+      - name: Download PocketBase release files
+        run: |
+          cd ${{ github.workspace }}/project-tools-node
+          node project-pocketbase-download.js
+
+      # 执行打包脚本，传入版本号（去掉 v 前缀）
+      # 将输出到 out/${{ env.VERSION }}/dist 和 out/${{ env.VERSION }}/release
+      - name: Package project
+        run: |
+          cd ${{ github.workspace }}/project-tools-node
+          node project-package.js ${{ env.VERSION }}
+
+      # 上传 dist/ 目录作为 CI 工件，方便调试或后续 job 使用
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: out-dist
+          path: ${{ github.workspace }}/out/${{ env.VERSION }}/dist/
+
+      # 将 release/*.zip 上传到 GitHub Release 页面
+      # overwrite: true 表示覆盖已有同名文件
+      # file_glob: true 表示允许 Action 展开通配符，把匹配到的多个文件都上传到 Release。
+      - name: Upload release zips
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/out/${{ env.VERSION }}/release/*.zip
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
+
+      # 生成构建证明 (artifact-attestations)，绑定到 Release 资产
+      # 用户下载时可验证 zip 文件确实由 GitHub Actions 构建
+      - name: Generate build provenance
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ github.workspace }}/out/${{ env.VERSION }}/release/*.zip
+
+  # 构建并上传docker镜像
+  build-docker-image-and-push: 
+    runs-on: ubuntu-latest
+
+    # 依赖 build-vue3-and-project-package-and-upload-release-zips
+    needs: build-vue3-and-project-package-and-upload-release-zips
+
+    steps:
+      # 从当前 GitHub tag 名中提取版本号，并写入环境变量 VERSION
+      # ${GITHUB_REF_NAME#v} 表示去掉 tag 前缀 "v"，例如 "v0.0.3" 会变成 "0.0.3"
+      # >> $GITHUB_ENV 会把 VERSION 变量持久化到 GitHub Actions 环境中，
+      # 后续步骤可以通过 ${{ env.VERSION }} 使用该版本号
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
+      # 拉取仓库代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 将 out-dist 工件下载到工作目录下的 docker-temp 文件夹
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: out-dist
+          path: ${{ github.workspace }}/docker-temp
+
+      # https://docs.github.com/zh/actions/tutorials/publish-packages/publish-docker-images#%E5%8F%91%E5%B8%83%E6%98%A0%E5%83%8F%E5%88%B0-github-packages
+      # 登录到容器镜像仓库
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 步骤名称：提取 Docker 镜像的元数据（标签和 labels）
+      - name: Extract metadata (tags, labels) for Docker
+        # 给这个步骤一个 ID，后续步骤可以通过 steps.meta.outputs 引用它的输出
+        id: meta
+        # 使用官方的 docker/metadata-action，用来自动生成镜像的标签和元数据
+        uses: docker/metadata-action@v4
+        with:
+          # 指定镜像的基础名称，由环境变量 REGISTRY（仓库地址）和 IMAGE_NAME（镜像名）拼接
+          # 例如：ghcr.io/owner/repo 或 docker.io/username/image
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # 使用从当前 GitHub tag 名中提取的版本号
+          # prerelease 时不加 latest
+          tags: |
+            type=raw,value=${{ env.VERSION }}
+            type=raw,value=latest,enable=${{ github.event.release.prerelease == false }}
+
+      # 步骤名称：安装并启用 QEMU，用于在当前 runner 上模拟其他 CPU 架构
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      # 步骤名称：安装并配置 Docker Buildx，支持多架构构建和高级构建功能
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      # 步骤名称：构建并推送 Docker 镜像
+      - name: Build and push Docker image
+        # 给这个步骤一个 ID，后续步骤可以通过 steps.push.outputs 引用它的输出
+        id: push
+        # 使用官方的 docker/build-push-action 来执行构建和推送操作
+        uses: docker/build-push-action@v4
+        with:
+          # 构建上下文目录，通常是仓库根目录（.）
+          context: .
+          # 指定使用前面 Buildx 步骤创建的构建器名称
+          builder: ${{ steps.buildx.outputs.name }}
+          # 定义要构建并推送的多架构平台列表
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
+          # 指定 Dockerfile 文件，这里用的是 Dockerfile.release
+          file: Dockerfile.release
+          # 是否推送镜像到远程仓库，true 表示推送
+          push: true
+          # 镜像标签，引用前面 metadata-action 步骤生成的 tags
+          # 例如：ghcr.io/owner/repo:1.2.3 或 latest
+          tags: ${{ steps.meta.outputs.tags }}
+          # 镜像的 labels（元数据），引用 metadata-action 步骤生成的 labels
+          # 包含源码地址、版本号、commit SHA、构建时间等信息
+          labels: ${{ steps.meta.outputs.labels }}
+      
+      # 生成镜像的供应链溯源证明（artifact attestation）
+      # 按照规范本应设置 push-to-registry: true，将证明随镜像一起推送到 GHCR，
+      # 但由于 GHCR UI 会额外显示 digest 标签，导致页面出现两行不同的条目，
+      # 为避免混淆，这里改为 push-to-registry: false。
+      # 即使不推送到镜像仓库，证明仍会生成并保存在 GitHub，
+      # 可在 https://github.com/<owner>/<repo>/attestations 页面查看和下载。
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
