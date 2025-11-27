@@ -47,8 +47,6 @@
 
 </details>
 
----
-
 <details>
 <summary>💡 <b>Development Plan</b></summary>
 
