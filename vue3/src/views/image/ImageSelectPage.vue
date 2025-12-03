@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ContainerBar, ContainerCol2 } from '@/components'
-import { ImagePageBottomBar, ImagePageTopBar } from './components'
+import {
+  ImagePageBottomBar,
+  ImagePageControlPanel,
+  ImagePageTopBar,
+} from './components'
 </script>
 
 <template>
@@ -25,7 +29,10 @@ import { ImagePageBottomBar, ImagePageTopBar } from './components'
                     <ImagePageTopBar></ImagePageTopBar>
                   </div>
                   <!-- 操作面板 -->
-                  <div class="my-4 h-[1200px] bg-red-950"></div>
+                  <div class="mt-4">
+                    <ImagePageControlPanel></ImagePageControlPanel>
+                  </div>
+                  <!-- <div class="my-4 h-[1200px] bg-red-950"></div> -->
                   <!-- 上传列表 -->
                   <!-- 图片预览 -->
                 </div>

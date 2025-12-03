@@ -19,7 +19,7 @@
           <div
             class="select-none truncate text-[14px] font-bold text-color-text"
           >
-          请选择图片
+            请选择图片
           </div>
         </div>
         <!-- 右按钮 确认 -->

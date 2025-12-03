@@ -8,4 +8,14 @@ src\views
 src\router.ts
 src\config\router.ts
 src\components\chat\chat-col\components\chat-input-bar\ChatInputBar.vue
+
+顶栏样式
+底栏样式
+控制面板样式
+上传中图片样式
+图片预览样式
+图片列表样式
+响应式布局
+
+上传功能
 ```

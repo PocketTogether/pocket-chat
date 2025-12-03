@@ -50,6 +50,7 @@ declare module 'vue' {
     RiMoreFill: typeof import('@remixicon/vue')['RiMoreFill']
     RiRefreshLine: typeof import('@remixicon/vue')['RiRefreshLine']
     RiRestartLine: typeof import('@remixicon/vue')['RiRestartLine']
+    RiSearchLine: typeof import('@remixicon/vue')['RiSearchLine']
     RiSendPlane2Fill: typeof import('@remixicon/vue')['RiSendPlane2Fill']
     RiSettingsLine: typeof import('@remixicon/vue')['RiSettingsLine']
     RiSunLine: typeof import('@remixicon/vue')['RiSunLine']

@@ -6,3 +6,5 @@ export {
   ImagePageTopBar,
   ImagePageBottomBar,
 }
+
+export * from './image-page-control-panel'
