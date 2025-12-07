@@ -13,13 +13,13 @@ import {
 <template>
   <div>
     <!-- 大屏 双列 -->
-    <div>
+    <div class="">
       <ContainerCol2
         col1Position="right"
         :col2StyleValue="{
           width: '500px',
         }"
-        col1Twcss="flex-1"
+        col1Twcss="flex-1 overflow-hidden"
       >
         <!-- 顶栏 底栏 操作面板 -->
         <template #col2>
@@ -69,6 +69,7 @@ import {
         </template>
       </ContainerCol2>
     </div>
+    <!-- 小屏 单列 -->
   </div>
 </template>
 

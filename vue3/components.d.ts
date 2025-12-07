@@ -23,6 +23,8 @@ declare module 'vue' {
     RiArrowDownLongLine: typeof import('@remixicon/vue')['RiArrowDownLongLine']
     RiArrowDownWideLine: typeof import('@remixicon/vue')['RiArrowDownWideLine']
     RiArrowLeftSFill: typeof import('@remixicon/vue')['RiArrowLeftSFill']
+    RiArrowLeftWideFill: typeof import('@remixicon/vue')['RiArrowLeftWideFill']
+    RiArrowRightWideFill: typeof import('@remixicon/vue')['RiArrowRightWideFill']
     RiArrowUpWideLine: typeof import('@remixicon/vue')['RiArrowUpWideLine']
     RiAttachmentLine: typeof import('@remixicon/vue')['RiAttachmentLine']
     RiCheckFill: typeof import('@remixicon/vue')['RiCheckFill']
