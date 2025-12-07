@@ -46,6 +46,27 @@
  *
  */
 
+/*
+CMD
+node dev-flatten-text-to-ai.js ^
+"E:\Project\pocket-chat\vue3\src\views\image" ^
+"E:\Project\pocket-chat\vue3\src\components" ^
+"E:\Project\pocket-chat\vue3\src\utils"
+
+PowerShell
+node dev-flatten-text-to-ai.js `
+"E:\Project\pocket-chat\vue3\src\views\image" `
+"E:\Project\pocket-chat\vue3\src\components" `
+"E:\Project\pocket-chat\vue3\src\utils"
+
+Bash
+node dev-flatten-text-to-ai.js \
+"E:/Project/pocket-chat/vue3/src/views/image" \
+"E:/Project/pocket-chat/vue3/src/components" \
+"E:/Project/pocket-chat/vue3/src/utils"
+
+*/
+
 const fs = require("fs");
 const path = require("path");
 
@@ -53,11 +74,30 @@ const path = require("path");
  * 可配置变量：要处理的文件类型
  * @type {string[]}
  */
-const FILE_TYPES = [".js", ".ts", ".vue"];
+const FILE_TYPES = [".js", ".JS", ".ts", ".TS", ".vue", ".VUE", '.md', '.json', '.sh', '.html', 'Dockerfile', 'Dockerfile.release'];
+
+// 可配置变量：要排除的文件类型
+/** @type {string[]} */
+const EXCLUDE_TYPES = ["pnpm-lock.yaml"];
+
+// 可配置变量：要排除的路径片段（目录或文件路径）
+// 注意：统一转小写，并把斜杠和反斜杠都当成 "/"
+const EXCLUDE_PATHS = [
+  "node_modules",
+  "pocketbase/pb_migrations",
+  "pocketbase/pb_data",
+  "pocket-chat/out",
+  "pocket-chat/temp",
+  "pocket-chat/note",
+  "pocket-chat/pocketbase-release-file",
+  "pocket-chat/resources",
+  "vue3/public/remixicon@4.6.0",
+  "vue3/dist",
+  "vue3/src/assets/styles/nunito.css",
+];
 
 /**
  * 获取当前时间字符串，格式：YYYYMMDD-HHmmss-SSS
- * @returns {string}
  */
 function getTimestampPrefix() {
   const now = new Date();
@@ -85,17 +125,36 @@ function sanitizeFileName(inputPath) {
 }
 
 /**
- * 遍历文件夹，收集所有符合类型的文件
+ * 统一路径格式：转小写，斜杠和反斜杠都替换为 "/"
+ * @param {string} p
+ */
+function normalizePath(p) {
+  return p.replace(/[\\/]+/g, "/").toLowerCase();
+}
+
+/**
+ * 遍历文件夹，收集所有符合条件的文件
  * @param {string} targetPath
- * @returns {string[]} 文件绝对路径数组
+ * @returns {string[]}
  */
 function collectFiles(targetPath) {
   /** @type {string[]} */
   const results = [];
 
   const stat = fs.statSync(targetPath);
+  const normPath = normalizePath(targetPath);
+
+  // 路径排除检查
+  const isPathExcluded = EXCLUDE_PATHS.some(ex => normPath.includes(normalizePath(ex)));
+  if (isPathExcluded) {
+    return results; // 直接跳过整个路径
+  }
+
   if (stat.isFile()) {
-    if (FILE_TYPES.some(ext => targetPath.endsWith(ext))) {
+    const isIncluded = FILE_TYPES.some(ext => normPath.endsWith(ext));
+    const isExcluded = EXCLUDE_TYPES.some(ext => normPath.endsWith(ext));
+
+    if (isIncluded && !isExcluded) {
       results.push(targetPath);
     }
   } else if (stat.isDirectory()) {
@@ -128,23 +187,27 @@ function buildOutput(files) {
 function main() {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error("请提供一个文件或文件夹的绝对路径作为参数");
+    console.error("请至少提供一个文件或文件夹的绝对路径作为参数");
     process.exit(1);
   }
 
-  const targetPath = path.resolve(args[0]);
-  const files = collectFiles(targetPath);
+  /** @type {string[]} */
+  let allFiles = [];
+  for (const arg of args) {
+    const targetPath = path.resolve(arg);
+    allFiles.push(...collectFiles(targetPath));
+  }
 
-  if (files.length === 0) {
+  if (allFiles.length === 0) {
     console.error("没有找到符合条件的文件");
     process.exit(1);
   }
 
   const timestamp = getTimestampPrefix();
-  const baseName = sanitizeFileName(targetPath);
+  const baseName = sanitizeFileName(path.resolve(args[0])); // 以第一个路径为准
   const outputFileName = `${timestamp}_${baseName}.txt`;
 
-  const outputContent = buildOutput(files);
+  const outputContent = buildOutput(allFiles);
   const outputPath = path.join(process.cwd(), "temp", outputFileName);
 
   // 确保 temp 文件夹存在
@@ -152,9 +215,8 @@ function main() {
 
   fs.writeFileSync(outputPath, outputContent, "utf-8");
 
-  // ✅ 新增：输出处理过的文件列表
   console.log("已处理以下文件：");
-  for (const file of files) {
+  for (const file of allFiles) {
     console.log(" - " + file);
   }
 
