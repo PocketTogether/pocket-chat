@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { pbImageUploadApi } from '@/api'
+import { pbImageUploadApi, pbImageUploadWithAxios } from '@/api'
 import type { UploadFile } from 'element-plus'
 
 /*
@@ -7,7 +7,9 @@ import type { UploadFile } from 'element-plus'
 */
 
 const imageUploadAdd = async (uploadFile: UploadFile) => {
-  await pbImageUploadApi(uploadFile)
+  // await pbImageUploadApi(uploadFile)
+  const res = await pbImageUploadWithAxios(uploadFile)
+  console.log(res)
   console.log(uploadFile)
   /*
 {
