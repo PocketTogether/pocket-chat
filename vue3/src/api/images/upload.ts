@@ -123,9 +123,10 @@ export const pbImageUploadWithAxios = async (
 
   // Axios 请求
   const res = await axios.post(
-    `${axiosConfig.baseUrl}api/collections/${Collections.Images}/records`,
+    `/api/collections/${Collections.Images}/records`,
     formData,
     {
+      baseURL: axiosConfig.baseUrl,
       headers: {
         Authorization: pb.authStore.token,
         'Content-Type': 'multipart/form-data',

@@ -31,11 +31,11 @@ src\components\chat\chat-col\components\chat-input-bar\ChatInputBar.vue
 
 上传功能
 ```
-TODO
 简单上传实现
 完善头像上传，可以拖拽上传
 图片上传
 
+TODO
 上传列表实现
 上传进度实现
 图片处理实现

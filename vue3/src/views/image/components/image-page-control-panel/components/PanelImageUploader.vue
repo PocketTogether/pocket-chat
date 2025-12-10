@@ -2,10 +2,6 @@
 import { pbImageUploadApi, pbImageUploadWithAxios } from '@/api'
 import type { UploadFile } from 'element-plus'
 
-/*
-关于图片上传的实现，自己的一些看法
-*/
-
 const imageUploadAdd = async (uploadFile: UploadFile) => {
   // await pbImageUploadApi(uploadFile)
   const res = await pbImageUploadWithAxios(uploadFile)
