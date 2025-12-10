@@ -32,6 +32,8 @@ ts文件 文件名习惯的命名规范为 kebab 如 example-ts-file.ts
 
 本人不喜欢defineEmits（事件），喜欢通过props传入函数的方式来实现同样的效果
 
+本人喜欢使用箭头函数 () => {}
+
 状态管理使用pinia，已配置了状态管理
 自己习惯例如这样： E:\Project\pocket-chat\vue3\src\stores\test.ts
 import { defineStore } from 'pinia'

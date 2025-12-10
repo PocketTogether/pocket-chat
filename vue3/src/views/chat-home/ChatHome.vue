@@ -68,6 +68,7 @@ const isDev = import.meta.env.DEV
         roomId=""
         :chatTitle="websiteName"
       >
+        <!-- 插槽 -->
         <template #chatTopBarMoreMenu>
           <!-- 测试批量添加消息，开发时才显示 -->
           <ChatTopBarMoreMenuItem v-if="isDev" @click="testPbSendMessage">
@@ -77,6 +78,7 @@ const isDev = import.meta.env.DEV
             </template>
             <template #text> 测试批量添加消息 </template>
           </ChatTopBarMoreMenuItem>
+
           <!-- 转到设置，已登录时才显示 -->
           <ChatTopBarMoreMenuItem
             v-if="authStore.isValid"

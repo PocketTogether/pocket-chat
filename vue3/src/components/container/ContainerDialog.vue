@@ -4,7 +4,12 @@ import type { ElScrollbar } from 'element-plus'
 
 const props = withDefaults(
   defineProps<{
+    /** 控制对话框是否显示的值 */
     dialogVisible: boolean
+    /**
+     * 对话框的关闭方法，需要传入函数，才能让其点击遮罩时关闭，如
+     * () => { dialogVisible.value = false }
+     */
     dialogCloseFn: () => void
     /** 是否可以通过点击遮罩关闭 Dialog，默认为true */
     closeOnClickOverlay?: boolean
@@ -14,12 +19,15 @@ const props = withDefaults(
     overlayBlur?: boolean
     /** 是否半透明遮罩，为false即全透明，默认为true */
     overlayTranslucent?: boolean
+    /** 对话框最大宽度 默认为500px*/
+    dialogMaxWidth?: number
   }>(),
   {
     closeOnClickOverlay: true,
     verticalAlignRatio: 0.3,
     overlayBlur: true,
     overlayTranslucent: true,
+    dialogMaxWidth: 500,
   }
 )
 
@@ -77,7 +85,8 @@ const dialogOverlayOnClickFn = () => {
               <div
                 class="mx-auto"
                 :style="{
-                  'max-width': '500px',
+                  // 'max-width': '500px',
+                  'max-width': `${dialogMaxWidth}px`,
                 }"
               >
                 <!-- 高度最小为屏幕高度，以实现如果内容高度较小就垂直居中 -->
