@@ -3,7 +3,10 @@ import { uploadImageStoreRecordStatusKeyConfig as UISRSKC } from '@/config'
 import type { UploadFile } from 'element-plus'
 
 import { v4 as uuidv4 } from 'uuid'
-import type { UploadImageStoreDependenciesDataForModule } from './dependencies'
+import type {
+  UploadImageStoreDependenciesDataForModule,
+  UploadRecordWithFileAndProgressInfo,
+} from './dependencies'
 
 /** 封装上传管理相关函数 */
 export const useUploadImageSystemControlModule = (
@@ -33,8 +36,18 @@ export const useUploadImageSystemControlModule = (
       (i) => i.uuid === uuid
     )
 
-    return { record, file, progressInfo }
+    return {
+      record,
+      file,
+      progressInfo,
+    } satisfies UploadRecordWithFileAndProgressInfo
   }
+  /** 获取全部上传记录信息 */
+  const uploadRecordWithFileAndProgressInfoList = computed(() => {
+    return uploadRecordList.value
+      .map((i) => getUploadRecordWithFileAndProgressInfo(i.uuid))
+      .filter((i) => i != null) satisfies UploadRecordWithFileAndProgressInfo[]
+  })
 
   /** 添加上传任务 */
   const addUpload = (uploadFile: UploadFile) => {
@@ -133,6 +146,8 @@ export const useUploadImageSystemControlModule = (
   return {
     //
     getUploadRecordWithFileAndProgressInfo,
+    uploadRecordWithFileAndProgressInfoList,
+
     addUpload,
 
     canAbortAll,

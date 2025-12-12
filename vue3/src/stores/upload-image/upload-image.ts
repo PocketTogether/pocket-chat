@@ -21,6 +21,7 @@ export interface UploadImageStoreRecord {
   size: number
   addedAt: string
   status: UploadImageStoreRecordStatus
+  errorContent?: string
 }
 
 export interface UploadImageStoreFile {
@@ -35,6 +36,12 @@ export interface UploadImageStoreProgressInfo {
   total?: number
   rate?: number // bytes/sec
   estimated?: number // seconds
+}
+
+export interface UploadRecordWithFileAndProgressInfo {
+  record: UploadImageStoreRecord
+  file: UploadImageStoreFile | undefined
+  progressInfo: UploadImageStoreProgressInfo | undefined
 }
 
 // 方便封装在 ./modules 中的文件使用
