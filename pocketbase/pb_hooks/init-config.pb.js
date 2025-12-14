@@ -27,9 +27,23 @@ onBootstrap((e) => {
     'email-verify-rate-limit-second': 30,
     /** 密码修改最短秒数 */
     'password-update-rate-limit-second': 30,
+    /** 图片上传前的处理配置， */
+    'upload-image-process-options': {
+      bigConfig: {
+        sumWidthHeightLimit: 4000,
+        format: 'image/webp',
+        quality: 0.9,
+      },
+      smallConfig: {
+        sumWidthHeightLimit: 1400,
+        format: 'image/webp',
+        quality: 0.8,
+      },
+    },
     /*
       【pbCollectionConfigDefault_public END】
     */
+
 
     /** 
      * 网站名称 

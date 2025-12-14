@@ -5,6 +5,7 @@ import type { UploadFile } from 'element-plus'
 import { v4 as uuidv4 } from 'uuid'
 import type {
   UploadImageStoreDependenciesDataForModule,
+  UploadImageStoreFile,
   UploadRecordWithFileAndProgressInfo,
 } from './dependencies'
 
@@ -50,7 +51,10 @@ export const useUploadImageSystemControlModule = (
   })
 
   /** 添加上传任务 */
-  const addUpload = (uploadFile: UploadFile) => {
+  const addUpload = (
+    uploadFile: UploadImageStoreFile['uploadFile'],
+    options: UploadImageStoreFile['options']
+  ) => {
     // uploadFile.raw 不能为null，返回null代表失败
     if (uploadFile.raw == null) {
       return null
@@ -71,6 +75,7 @@ export const useUploadImageSystemControlModule = (
     uploadFileList.value.push({
       uuid,
       uploadFile,
+      options,
     })
 
     // 上传任务添加后，立即进行一次上传调度，以立即响应

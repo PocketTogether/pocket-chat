@@ -109,8 +109,11 @@ export type ImagesRecord = {
 	image: string
 	imageHeight?: number
 	imageSmall?: string
+	imageSmallHeight?: number
+	imageSmallWidth?: number
 	imageWidth?: number
 	isDeleted?: boolean
+	keyword?: string
 	updated?: IsoDateString
 }
 

@@ -1,9 +1,9 @@
 /**
  * 获取指定 MIME 类型对应的文件后缀名
  * @param mimeType - 文件的 MIME 类型，例如 'image/jpeg'
- * @returns 返回文件后缀，例如 'jpg'；若未知则返回 'bin'
+ * @returns 返回文件后缀，例如 'jpg'；若未知则返回 null
  */
-export const getExtensionFromMime = (mimeType: string): string => {
+export const getExtensionFromMime = (mimeType: string) => {
   // 常见 MIME 类型与扩展名的映射表
   const mimeToExtMap: Record<string, string> = {
     // 图片类型
@@ -78,7 +78,7 @@ export const getExtensionFromMime = (mimeType: string): string => {
   }
 
   // 3️如果无法提取有效扩展名，则返回默认值
-  return 'bin'
+  return null
 }
 
 /**

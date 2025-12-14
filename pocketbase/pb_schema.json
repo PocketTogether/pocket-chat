@@ -904,7 +904,7 @@
                 "hidden": false,
                 "id": "file3309110367",
                 "maxSelect": 1,
-                "maxSize": 1000000,
+                "maxSize": 10000000,
                 "mimeTypes": [
                     "image/jpeg",
                     "image/png",
@@ -921,6 +921,30 @@
                     "400x400f"
                 ],
                 "type": "file"
+            },
+            {
+                "hidden": false,
+                "id": "number3804557486",
+                "max": null,
+                "min": null,
+                "name": "imageWidth",
+                "onlyInt": false,
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "number"
+            },
+            {
+                "hidden": false,
+                "id": "number1872529420",
+                "max": null,
+                "min": null,
+                "name": "imageHeight",
+                "onlyInt": false,
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "number"
             },
             {
                 "hidden": false,
@@ -942,10 +966,10 @@
             },
             {
                 "hidden": false,
-                "id": "number1872529420",
+                "id": "number755211556",
                 "max": null,
                 "min": null,
-                "name": "imageHeight",
+                "name": "imageSmallWidth",
                 "onlyInt": false,
                 "presentable": false,
                 "required": false,
@@ -954,10 +978,10 @@
             },
             {
                 "hidden": false,
-                "id": "number3804557486",
+                "id": "number1648239967",
                 "max": null,
                 "min": null,
-                "name": "imageWidth",
+                "name": "imageSmallHeight",
                 "onlyInt": false,
                 "presentable": false,
                 "required": false,
@@ -971,6 +995,20 @@
                 "max": 0,
                 "min": 0,
                 "name": "alt",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1519612219",
+                "max": 0,
+                "min": 0,
+                "name": "keyword",
                 "pattern": "",
                 "presentable": false,
                 "primaryKey": false,

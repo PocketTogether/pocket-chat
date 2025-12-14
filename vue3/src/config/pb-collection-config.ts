@@ -15,6 +15,18 @@ export const pbCollectionConfigSchema = {
       name: z.string(),
     })
   ),
+  'upload-image-process-options': z.object({
+    bigConfig: z.object({
+      sumWidthHeightLimit: z.number(),
+      format: z.enum(['image/png', 'image/jpeg', 'image/webp']),
+      quality: z.number().min(0).max(1),
+    }),
+    smallConfig: z.object({
+      sumWidthHeightLimit: z.number(),
+      format: z.enum(['image/png', 'image/jpeg', 'image/webp']),
+      quality: z.number().min(0).max(1),
+    }),
+  }),
 }
 // 类型体操：自动推导出类型结构
 export type PbCollectionConfigType = {
@@ -47,6 +59,19 @@ export const pbCollectionConfigDefaultGetFn = () => {
     'email-verify-rate-limit-second': 30,
     /** 密码修改最短秒数 */
     'password-update-rate-limit-second': 30,
+    /** 图片上传前的处理配置， */
+    'upload-image-process-options': {
+      bigConfig: {
+        sumWidthHeightLimit: 4000,
+        format: 'image/webp',
+        quality: 0.9,
+      },
+      smallConfig: {
+        sumWidthHeightLimit: 1400,
+        format: 'image/webp',
+        quality: 0.8,
+      },
+    },
     /*
       【pbCollectionConfigDefault_public END】
     */

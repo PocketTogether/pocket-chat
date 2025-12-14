@@ -1,33 +1,13 @@
+import type { I18nMessagesSatisfiesType } from './dependencies'
 import {
   // 重命名 uploadImageStoreRecordStatusKeyConfig 为 UISRSKC 以便于使用
   uploadImageStoreRecordStatusKeyConfig as UISRSKC,
 } from '@/config/upload'
-import type { I18nMessagesSatisfiesType } from '.'
+
 /**
- * i18nMessages 上传相关部分
+ * i18nMessages 上传相关部分 UploadStoreRecordStatusText
  */
-export const i18nMessagesUploadPart = {
-  // 预计完成时间
-  uploadProgressInfoEstimatedText: {
-    'en-US': (duration: string) => `${duration} remaining` as const,
-    // 示例: 3 seconds remaining
-    'zh-CN': (duration: string) => `${duration}后完成` as const,
-    'zh-TW': (duration: string) => `${duration}後完成` as const,
-    'ja-JP': (duration: string) => `${duration}後に完了` as const,
-    'ko-KR': (duration: string) => `${duration} 후 완료` as const,
-    'ru-RU': (duration: string) => `Завершение через ${duration}` as const,
-  },
-
-  // 未知文件大小
-  uploadProgressInfoTotalUnknowText: {
-    'en-US': () => 'Unknown' as const,
-    'zh-CN': () => '未知' as const,
-    'zh-TW': () => '未知' as const,
-    'ja-JP': () => '不明' as const,
-    'ko-KR': () => '알 수 없음' as const,
-    'ru-RU': () => 'Неизвестно' as const,
-  },
-
+export const i18nMessagesUploadPartUploadStoreRecordStatusText = {
   // 待上传
   [`uploadStoreRecordStatusText_${UISRSKC.pending}` as const]: {
     'en-US': () => 'Pending' as const,

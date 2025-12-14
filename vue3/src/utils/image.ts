@@ -3,6 +3,7 @@ import type { UploadFile, UploadUserFile } from 'element-plus'
 
 const imageRatioTolerance = 0.01
 
+// 从文件中加载图片
 export function imageLoadImageFromFileService(
   uploadFile: UploadFile | UploadUserFile
 ): Promise<HTMLImageElement> {
@@ -28,6 +29,26 @@ export function imageLoadImageFromFileService(
     // 设置图片的 src
     img.src = fileUrl
   })
+}
+
+// HTMLImageElement 转 HTMLCanvasElement
+export function imageElementToCanvasService(
+  img: HTMLImageElement
+): HTMLCanvasElement {
+  // 创建 canvas
+  const canvas = document.createElement('canvas')
+  // 设置 canvas 尺寸为图片的原始像素大小
+  canvas.width = img.naturalWidth
+  canvas.height = img.naturalHeight
+
+  // 获取绘图上下文
+  const ctx = canvas.getContext('2d')
+  if (ctx) {
+    // 将图片绘制到 canvas 上
+    ctx.drawImage(img, 0, 0)
+  }
+
+  return canvas
 }
 
 // 函数1：按“cover”方式裁剪图片为指定比例
@@ -444,4 +465,35 @@ export const imagePreloadFromUrlsService = (
     })
   })
   return Promise.all(promises)
+}
+
+/**
+ * 将 HTMLCanvasElement 转换为 Blob
+ * @param canvas HTMLCanvasElement
+ * @param type 输出的 MIME 类型: "image/png" | "image/jpeg" | "image/webp"
+ * @param quality 输出质量 (0~1)，仅在 JPEG/WebP 时有效
+ * @returns Promise<Blob>
+ */
+export const imageCanvasToBlobService = (
+  canvas: HTMLCanvasElement,
+  type: 'image/png' | 'image/jpeg' | 'image/webp' = 'image/jpeg',
+  quality?: number
+): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    try {
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error('toBlob 返回 null'))
+            return
+          }
+          resolve(blob)
+        },
+        type,
+        quality
+      )
+    } catch (err) {
+      reject(err)
+    }
+  })
 }

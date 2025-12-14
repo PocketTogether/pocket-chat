@@ -7,6 +7,9 @@ import {
 import throttle from 'lodash-es/throttle'
 import type { AxiosProgressEvent } from 'axios'
 import type { UploadImageStoreDependenciesDataForModule } from './dependencies'
+import { uploadImageProcessUtil } from '@/utils'
+import { useI18nStore } from '@/stores/i18n'
+import axios from 'axios'
 
 /** 封装轮询驱动上传调度 */
 export const useUploadImageSchedulerModule = (
@@ -72,12 +75,21 @@ export const useUploadImageSchedulerModule = (
       estimated: undefined,
     })
 
+    let isImageProcessError = false
+
     // 调用 api 开始上传，捕获错误并处理各种情况
     try {
       // 图片处理
+      const imageProcessData = await uploadImageProcessUtil(
+        file.uploadFile,
+        file.options
+      ).catch((err) => {
+        isImageProcessError = true
+        throw err
+      })
 
       // 上传 api
-      await pbImageUploadWithAxios(file.uploadFile, {
+      await pbImageUploadWithAxios(imageProcessData, {
         controller,
         onImageUploadProgress: (e) => {
           throttledProgressUpdate(next.uuid, e)
@@ -96,8 +108,20 @@ export const useUploadImageSchedulerModule = (
       }
       // 错误的情况
       else {
-        console.log('upload-image error:', err)
+        // 图片处理错误
+        if (isImageProcessError) {
+          next.errorContent = {
+            i18nMessagesKey: 'uploadProgressInfoErrorImageProcessText',
+          }
+        }
+        // 未知错误
+        else {
+          // next.errorContent = {
+          //   i18nMessagesKey: 'uploadProgressInfoErrorUnknowText',
+          // }
+        }
         next.status = UISRSKC.error
+        console.log('upload-image error:', err)
       }
     } finally {
       // 最终无论什么结果，都要移除对应的 uploadProgressInfo 项

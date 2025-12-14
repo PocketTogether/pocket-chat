@@ -218,11 +218,24 @@ const uploadProgressLoadedTotalText = computed(() => {
                     </template>
                     <!-- 已完成、错误、…… -->
                     <template v-else>
-                      {{
-                        i18nStore.t(
-                          `uploadStoreRecordStatusText_${uploadRecordInfo.record.status}`
-                        )()
-                      }}
+                      <!-- 错误原因 -->
+                      <template
+                        v-if="uploadRecordInfo.record.errorContent != null"
+                      >
+                        {{
+                          i18nStore.t(
+                            uploadRecordInfo.record.errorContent.i18nMessagesKey
+                          )(uploadRecordInfo.record.errorContent.i18nTData)
+                        }}
+                      </template>
+                      <!-- 当前状态 -->
+                      <template v-else>
+                        {{
+                          i18nStore.t(
+                            `uploadStoreRecordStatusText_${uploadRecordInfo.record.status}`
+                          )()
+                        }}
+                      </template>
                     </template>
                   </div>
                   <div

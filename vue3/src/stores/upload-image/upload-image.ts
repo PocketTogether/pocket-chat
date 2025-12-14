@@ -1,6 +1,8 @@
 import {
   // 重命名 uploadImageStoreRecordStatusKeyConfig 为 UISRSKC 以便于使用
   uploadImageStoreRecordStatusKeyConfig as UISRSKC,
+  type I18nMessagesKeyType,
+  type PbCollectionConfigType,
   type UploadImageStoreRecordStatus,
 } from '@/config'
 import type { UploadFile } from 'element-plus'
@@ -12,6 +14,7 @@ import {
   useUploadImageSchedulerModule,
   useUploadImageSystemControlModule,
 } from './modules'
+import type { I18nMessagesUploadPartUploadProgressInfoErrorPartKeyType } from '@/config'
 
 export interface UploadImageStoreRecord {
   uuid: string
@@ -21,12 +24,16 @@ export interface UploadImageStoreRecord {
   size: number
   addedAt: string
   status: UploadImageStoreRecordStatus
-  errorContent?: string
+  errorContent?: {
+    i18nMessagesKey: I18nMessagesUploadPartUploadProgressInfoErrorPartKeyType
+    i18nTData?: unknown
+  }
 }
 
 export interface UploadImageStoreFile {
   uuid: string
   uploadFile: UploadFile
+  options: PbCollectionConfigType['upload-image-process-options']
 }
 
 export interface UploadImageStoreProgressInfo {

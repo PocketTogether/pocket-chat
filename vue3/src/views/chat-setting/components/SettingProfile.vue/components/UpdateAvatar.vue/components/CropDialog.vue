@@ -54,11 +54,13 @@ const crop = () => {
               fileUserAvatarConfig.imageResizeNumber,
               fileUserAvatarConfig.imageResizeNumber
             )
-            const imageBlob = await new Promise<Blob>((resolve) => {
+            const imageBlob = await new Promise<Blob>((resolve, reject) => {
+              // const imageResize: HTMLCanvasElement
               imageResize.toBlob(
                 (blob) => {
                   if (!blob) {
-                    throw new Error()
+                    reject(new Error('!blob'))
+                    return
                   }
                   resolve(blob)
                 },

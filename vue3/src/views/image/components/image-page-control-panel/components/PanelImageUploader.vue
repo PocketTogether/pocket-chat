@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { pbImageUploadApi, pbImageUploadWithAxios } from '@/api'
+import { pbCollectionConfigDefaultGetFn } from '@/config'
+import { usePbCollectionConfigQuery } from '@/queries'
 import { useUploadImageStore } from '@/stores'
 import type { UploadFile } from 'element-plus'
 
@@ -8,6 +10,8 @@ const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
 
 // // 最大文件大小（例如 1MB）
 // const MAX_SIZE = 1 * 1024 * 1024
+
+const pbCollectionConfigQuery = usePbCollectionConfigQuery()
 
 const uploadImageStore = useUploadImageStore()
 
@@ -31,7 +35,17 @@ const imageUploadAdd = async (uploadFile: UploadFile) => {
   //   return
   // }
 
-  uploadImageStore.addUpload(uploadFile)
+  // 图片处理配置
+  const options = (() => {
+    const uploadImageProcessOptions =
+      pbCollectionConfigQuery.data.value?.['upload-image-process-options']
+    if (uploadImageProcessOptions != null) {
+      return uploadImageProcessOptions
+    }
+    return pbCollectionConfigDefaultGetFn()['upload-image-process-options']
+  })()
+
+  uploadImageStore.addUpload(uploadFile, options)
 }
 </script>
 
