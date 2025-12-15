@@ -1,4 +1,5 @@
 import type { I18nMessagesSatisfiesType } from './dependencies'
+import { i18nMessagesUploadPartUploadControlPart } from './upload-control'
 import { i18nMessagesUploadPartUploadProgressInfoErrorPart } from './upload-progress-info-error'
 import { i18nMessagesUploadPartUploadStoreRecordStatusText } from './upload-store-record-status-text'
 
@@ -33,6 +34,7 @@ export const i18nMessagesUploadPart = {
 
   ...i18nMessagesUploadPartUploadProgressInfoErrorPart,
   ...i18nMessagesUploadPartUploadStoreRecordStatusText,
+  ...i18nMessagesUploadPartUploadControlPart,
 } as const satisfies I18nMessagesSatisfiesType
 
 export * from './upload-progress-info-error'

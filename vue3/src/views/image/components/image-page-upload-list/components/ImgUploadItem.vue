@@ -21,11 +21,14 @@ import {
   uploadImageStoreRecordStatusKeyConfig as UISRSKC,
   type UploadImageStoreRecordStatus,
 } from '@/config'
+import type { IconDescriptionKeyType } from './dependencies'
 
 // uploadProgressPercentageUtil
 
 const props = defineProps<{
   uploadRecordInfo: UploadRecordWithFileAndProgressInfo
+  setIconDescription: (key: IconDescriptionKeyType) => void
+  clearIconDescription: () => void
 }>()
 
 // 上传信息显示模式
@@ -151,7 +154,11 @@ const uploadProgressLoadedTotalText = computed(() => {
                   v-else-if="
                     uploadRecordInfo.record.status === UISRSKC.uploading
                   "
-                  class="m-[4px] text-el-primary"
+                  class="m-[4px]"
+                  :class="{
+                    'text-el-primary': uploadProgressPercentage != null,
+                    'text-el-warning': uploadProgressPercentage == null,
+                  }"
                 >
                   <UploadProgressIcon
                     :percentage="uploadProgressPercentage"
@@ -256,6 +263,8 @@ const uploadProgressLoadedTotalText = computed(() => {
             v-if="canUploadAbortPending"
             class="flow-root cursor-pointer"
             @click="uploadAbortPending"
+            @mouseenter="setIconDescription('abortPending')"
+            @mouseleave="clearIconDescription"
           >
             <div class="m-[4px] text-color-text">
               <RiStopCircleLine size="20px"></RiStopCircleLine>
@@ -266,6 +275,8 @@ const uploadProgressLoadedTotalText = computed(() => {
             v-if="canUploadAbortUploading"
             class="flow-root cursor-pointer"
             @click="uploadAbortUploading"
+            @mouseenter="setIconDescription('abortUploading')"
+            @mouseleave="clearIconDescription"
           >
             <div class="m-[4px] text-color-text">
               <RiStopCircleLine size="20px"></RiStopCircleLine>
@@ -276,6 +287,8 @@ const uploadProgressLoadedTotalText = computed(() => {
             v-if="canUploadRetry"
             class="flow-root cursor-pointer"
             @click="uploadRetry"
+            @mouseenter="setIconDescription('retryUpload')"
+            @mouseleave="clearIconDescription"
           >
             <div class="m-[4px] text-color-text">
               <RiArrowUpCircleLine size="20px"></RiArrowUpCircleLine>
@@ -286,6 +299,8 @@ const uploadProgressLoadedTotalText = computed(() => {
             v-if="canUploadDelete"
             class="flow-root cursor-pointer"
             @click="uploadDelete"
+            @mouseenter="setIconDescription('deleteUpload')"
+            @mouseleave="clearIconDescription"
           >
             <div class="m-[4px] text-color-text">
               <RiCloseCircleLine size="20px"></RiCloseCircleLine>

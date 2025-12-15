@@ -8,8 +8,6 @@ import throttle from 'lodash-es/throttle'
 import type { AxiosProgressEvent } from 'axios'
 import type { UploadImageStoreDependenciesDataForModule } from './dependencies'
 import { uploadImageProcessUtil } from '@/utils'
-import { useI18nStore } from '@/stores/i18n'
-import axios from 'axios'
 
 /** 封装轮询驱动上传调度 */
 export const useUploadImageSchedulerModule = (
@@ -121,7 +119,7 @@ export const useUploadImageSchedulerModule = (
           // }
         }
         next.status = UISRSKC.error
-        console.log('upload-image error:', err)
+        console.error('upload-image error:', err)
       }
     } finally {
       // 最终无论什么结果，都要移除对应的 uploadProgressInfo 项

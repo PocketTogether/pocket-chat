@@ -29,8 +29,7 @@ onBootstrap((e) => {
     'password-update-rate-limit-second': 60,
     /**
      * 图片的处理配置，
-     * imageConfig主图强烈建议将format配置为image/jpeg，因为pb将使用其来生成缩略图，
-     * 如果format配置为image/webp，pb只支持将webp缩略图为png，大小将过大，影响加载速度
+     * 建议为 image/webp ，这样体积小，还不会丢失透明通道
      */
     'upload-image-process-options': {
       imageConfig: {
