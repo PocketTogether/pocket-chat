@@ -2,9 +2,9 @@ import type { UploadFile } from 'element-plus'
 import {
   imageLoadImageFromFileService,
   imageElementToCanvasService,
-  imageScaleImageService,
-  imageCanvasToBlobService,
   blobToFile,
+  imageScaleImageWithPicaService,
+  imageCanvasToBlobWithPicaService,
 } from '@/utils'
 
 /**
@@ -54,46 +54,53 @@ export const uploadImageProcessUtil = async (
 
   // 1. 加载图片
   const img = await imageLoadImageFromFileService(uploadFile)
-  const originWidth = img.width
-  const originHeight = img.height
+  const originCanvas = imageElementToCanvasService(img)
+  const originWidth = originCanvas.width
+  const originHeight = originCanvas.height
   const originSum = originWidth + originHeight
 
   // 2. 生成大图 canvas
   let bigCanvas: HTMLCanvasElement | undefined
-  // 图片较小，不需要大图 返回null
+  // 图片较小，不需要大图 返回undefined
   if (originSum <= imageConfig.sumWidthHeightLimit) {
     bigCanvas = undefined
   } else if (originSum <= bigConfig.sumWidthHeightLimit) {
-    bigCanvas = imageElementToCanvasService(img)
+    bigCanvas = originCanvas
   } else {
     const scaleFactor = bigConfig.sumWidthHeightLimit / originSum
-    bigCanvas = imageScaleImageService(img, scaleFactor)
+    bigCanvas = await imageScaleImageWithPicaService(originCanvas, scaleFactor)
   }
 
   // 生成 image Canvas
   let imageCanvas: HTMLCanvasElement
   if (originSum <= imageConfig.sumWidthHeightLimit) {
-    imageCanvas = imageElementToCanvasService(img)
+    imageCanvas = originCanvas
   } else {
     const scaleFactor = imageConfig.sumWidthHeightLimit / originSum
-    imageCanvas = imageScaleImageService(img, scaleFactor)
+    imageCanvas = await imageScaleImageWithPicaService(
+      originCanvas,
+      scaleFactor
+    )
   }
 
   // 3. 生成小图 canvas
   let smallCanvas: HTMLCanvasElement
   if (originSum <= smallConfig.sumWidthHeightLimit) {
-    smallCanvas = imageElementToCanvasService(img)
+    smallCanvas = originCanvas
   } else {
     const scaleFactor = smallConfig.sumWidthHeightLimit / originSum
-    smallCanvas = imageScaleImageService(img, scaleFactor)
+    smallCanvas = await imageScaleImageWithPicaService(
+      originCanvas,
+      scaleFactor
+    )
   }
 
   let tinyCanvas: HTMLCanvasElement
   if (originSum <= tinyConfig.sumWidthHeightLimit) {
-    tinyCanvas = imageElementToCanvasService(img)
+    tinyCanvas = originCanvas
   } else {
     const scaleFactor = tinyConfig.sumWidthHeightLimit / originSum
-    tinyCanvas = imageScaleImageService(img, scaleFactor)
+    tinyCanvas = await imageScaleImageWithPicaService(originCanvas, scaleFactor)
   }
 
   // 4. 转换为 Blob → File，带格式回退
@@ -103,10 +110,14 @@ export const uploadImageProcessUtil = async (
     q: number
   ): Promise<File> {
     try {
-      const blob = await imageCanvasToBlobService(canvas, type, q)
+      const blob = await imageCanvasToBlobWithPicaService(canvas, type, q)
       return blobToFile(blob, 'image')
     } catch {
-      const blob = await imageCanvasToBlobService(canvas, 'image/jpeg', q)
+      const blob = await imageCanvasToBlobWithPicaService(
+        canvas,
+        'image/jpeg',
+        q
+      )
       return blobToFile(blob, 'image')
     }
   }

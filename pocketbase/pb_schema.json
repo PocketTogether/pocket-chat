@@ -904,7 +904,7 @@
                 "hidden": false,
                 "id": "file3309110367",
                 "maxSelect": 1,
-                "maxSize": 2000000,
+                "maxSize": 10000000,
                 "mimeTypes": [
                     "image/jpeg",
                     "image/png",
@@ -946,7 +946,7 @@
                 "hidden": false,
                 "id": "file2958181620",
                 "maxSelect": 1,
-                "maxSize": 10000000,
+                "maxSize": 20000000,
                 "mimeTypes": [
                     "image/jpeg",
                     "image/png",
@@ -988,7 +988,7 @@
                 "hidden": false,
                 "id": "file463167378",
                 "maxSelect": 1,
-                "maxSize": 1000000,
+                "maxSize": 2000000,
                 "mimeTypes": [
                     "image/jpeg",
                     "image/png",
