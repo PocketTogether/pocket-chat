@@ -36,14 +36,10 @@ const imageUploadAdd = async (uploadFile: UploadFile) => {
   // }
 
   // 图片处理配置
-  const options = (() => {
-    const uploadImageProcessOptions =
-      pbCollectionConfigQuery.data.value?.['upload-image-process-options']
-    if (uploadImageProcessOptions != null) {
-      return uploadImageProcessOptions
-    }
-    return pbCollectionConfigDefaultGetFn()['upload-image-process-options']
-  })()
+  const options =
+    pbCollectionConfigQuery.dataWithDefault.value[
+      'upload-image-process-options'
+    ]
 
   uploadImageStore.addUpload(uploadFile, options)
 }

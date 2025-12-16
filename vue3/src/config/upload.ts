@@ -1,5 +1,9 @@
 /** 上传图片 最大同时上传数 */
 export const uploadImageMaxSimultaneousNumConfig = 2 as const
+/** 上传图片 调度轮询间隔 单位 ms*/
+export const uploadImageSchedulerPollingIntervalMsConfig = 2000 as const
+/** 上传图片 上传进度更新间隔 单位 ms*/
+export const uploadImageProgressUpdateIntervalMsConfig = 1000 as const
 
 /**
  * 上传记录状态配置对象。

@@ -17,7 +17,7 @@
         <!-- 内容 -->
         <div class="truncate">
           <div
-            class="select-none truncate text-[14px] font-bold italic text-color-text-soft"
+            class="select-none truncate px-1 text-[14px] font-bold italic text-color-text-soft"
           >
             请选择图片
           </div>

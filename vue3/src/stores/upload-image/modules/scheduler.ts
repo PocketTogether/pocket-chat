@@ -3,6 +3,8 @@ import {
   uploadImageMaxSimultaneousNumConfig,
   // 重命名 uploadImageStoreRecordStatusKeyConfig 为 UISRSKC 以便于使用
   uploadImageStoreRecordStatusKeyConfig as UISRSKC,
+  uploadImageProgressUpdateIntervalMsConfig,
+  uploadImageSchedulerPollingIntervalMsConfig,
 } from '@/config'
 import throttle from 'lodash-es/throttle'
 import type { AxiosProgressEvent } from 'axios'
@@ -31,7 +33,7 @@ export const useUploadImageSchedulerModule = (
       p.rate = e.rate
       p.estimated = e.estimated
     },
-    1000,
+    uploadImageProgressUpdateIntervalMsConfig,
     { leading: true, trailing: true }
   )
 
@@ -134,7 +136,9 @@ export const useUploadImageSchedulerModule = (
   // ------------------------------------------------------------------------
   const pollingDriverScheduler = async () => {
     while (true) {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await new Promise((resolve) =>
+        setTimeout(resolve, uploadImageSchedulerPollingIntervalMsConfig)
+      )
       uploadScheduler()
     }
   }
