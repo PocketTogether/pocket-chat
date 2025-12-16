@@ -15,6 +15,7 @@ import { queryKeys } from './query-keys'
 import { queryConfig } from '@/config'
 import { queryRetryPbNetworkError } from './query-retry'
 import { useRealtimeMessagesStore } from '@/stores'
+import { pickInfiniteQueryFields } from '@/utils'
 
 /** 聊天页消息 游标分页无限查询 单向 */
 export const useChatRoomMessagesInfiniteQuery = (data: {
@@ -296,8 +297,10 @@ export const useChatRoomMessagesInfiniteTwowayQuery = (data: {
   })
 
   return {
-    ...infiniteQuery,
     queryKey,
+
+    // ...infiniteQuery,
+    ...pickInfiniteQueryFields(infiniteQuery),
   }
 }
 

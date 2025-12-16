@@ -47,7 +47,5 @@ export const useProfileQuery = () => {
     retry: queryRetryPbNetworkError,
   })
 
-  return {
-    ...query,
-  }
+  return query
 }

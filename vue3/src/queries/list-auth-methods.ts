@@ -38,7 +38,5 @@ export const useListAuthMethodsQuery = () => {
     retry: queryRetryPbNetworkError,
   })
 
-  return {
-    ...query,
-  }
+  return query
 }

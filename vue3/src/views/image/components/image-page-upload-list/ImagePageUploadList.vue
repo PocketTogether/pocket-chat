@@ -41,18 +41,21 @@ const applyIconDescription = (next: IconDescriptionKeyType | null) => {
 }
 
 // 节流包装：时间 内最多执行一次更新
-const throttledUpdate = throttle(applyIconDescription, 400, {
-  leading: true, // 第一次立即执行
-  trailing: true, // 开启尾调用
-})
+const throttledUpdate =
+  // throttle(
+  applyIconDescription
+//   , 200, {
+//   leading: true, // 第一次立即执行
+//   trailing: true, // 开启尾调用
+// })
 
 // 对外暴露：设值和清空都用同一个节流器
 const setIconDescription = (key: IconDescriptionKeyType) => {
-  throttledUpdate(key)
+  // throttledUpdate(key)
 }
 
 const clearIconDescription = () => {
-  throttledUpdate(null)
+  // throttledUpdate(null)
 }
 </script>
 

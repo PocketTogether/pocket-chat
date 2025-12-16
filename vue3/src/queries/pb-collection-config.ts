@@ -7,7 +7,7 @@ import {
 import { Collections, onPbResErrorStatus401AuthClear, pb } from '@/lib'
 import { queryKeys, queryRetryPbNetworkError } from '@/queries'
 import { usePlaceholderDataPbCollectionConfigStore } from '@/stores'
-import { fetchWithTimeoutPreferred } from '@/utils'
+import { fetchWithTimeoutPreferred, pickQueryFields } from '@/utils'
 import { useQuery } from '@tanstack/vue-query'
 
 /**
@@ -94,7 +94,19 @@ export const usePbCollectionConfigQuery = () => {
     retry: queryRetryPbNetworkError,
   })
 
+  // 因为 query 有 placeholderData ，所以几乎不会为 null，此计算属性仅为了类型处理
+  const dataWithDefault = computed(() => {
+    if (query.data.value != null) {
+      return query.data.value
+    }
+    return pbCollectionConfigDefaultGetFn()
+  })
+
   return {
-    ...query,
+    dataWithDefault,
+
+    // query对象剩余解构会让组件订阅整个 query 对象的所有变化，从而导致过度渲染。
+    // ...query,
+    ...pickQueryFields(query),
   }
 }

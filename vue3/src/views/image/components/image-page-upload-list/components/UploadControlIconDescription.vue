@@ -11,7 +11,7 @@ const i18nStore = useI18nStore()
 
 <template>
   <div>
-    <Transition name="fade150ms" mode="out-in">
+    <Transition name="fade" mode="out-in">
       <div
         v-if="iconDescriptionKey === 'clearFinished'"
         class="flex items-center"
