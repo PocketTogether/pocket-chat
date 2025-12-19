@@ -55,6 +55,38 @@ const imageQueryTotalPagesWithCache = computed(() => {
 const { text: pageBarAniStr } = useAniStrIncreasingDecreasingSequentially()
 
 const i18nStore = useI18nStore()
+
+const canGoPreviousPage = computed(() => {
+  if (props.imageQueryTotalPages == null || props.imageQueryTotalPages <= 0) {
+    return false
+  }
+  if (props.imageQueryPage - 1 <= 0) {
+    return false
+  }
+  return true
+})
+const goPreviousPage = () => {
+  if (canGoPreviousPage.value === false) {
+    return
+  }
+  props.imageQueryPageSet(props.imageQueryPage - 1)
+}
+
+const canGoNextPage = computed(() => {
+  if (props.imageQueryTotalPages == null || props.imageQueryTotalPages <= 0) {
+    return false
+  }
+  if (props.imageQueryPage + 1 > props.imageQueryTotalPages) {
+    return false
+  }
+  return true
+})
+const goNextPage = () => {
+  if (canGoNextPage.value === false) {
+    return
+  }
+  props.imageQueryPageSet(props.imageQueryPage + 1)
+}
 </script>
 
 <template>
@@ -63,7 +95,14 @@ const i18nStore = useI18nStore()
     <div class="overflow-hidden rounded-b-[24px] bg-color-background-soft">
       <div class="flex items-stretch">
         <!-- 上一页 -->
-        <div class="flex cursor-pointer items-center">
+        <div
+          class="flex items-center"
+          :class="{
+            'cursor-pointer': canGoPreviousPage,
+            'cursor-not-allowed': !canGoPreviousPage,
+          }"
+          @click="goPreviousPage"
+        >
           <div class="mx-[12px] my-[12px]">
             <RiArrowLeftWideFill></RiArrowLeftWideFill>
           </div>
@@ -125,7 +164,14 @@ const i18nStore = useI18nStore()
         </div>
         <div class="border-l-[3px] border-color-background"></div>
         <!-- 下一页 -->
-        <div class="flex cursor-pointer items-center">
+        <div
+          class="flex items-center"
+          :class="{
+            'cursor-pointer': canGoNextPage,
+            'cursor-not-allowed': !canGoNextPage,
+          }"
+          @click="goNextPage"
+        >
           <div class="mx-[12px] my-[12px]">
             <RiArrowRightWideFill></RiArrowRightWideFill>
           </div>

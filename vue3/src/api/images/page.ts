@@ -1,6 +1,10 @@
 import { Collections, pb, type ImagesResponse, type UsersResponse } from '@/lib'
 import { fetchWithTimeoutPreferred } from '@/utils'
 
+export type ImagesResponseWithExpand = ImagesResponse<{
+  author?: UsersResponse
+}>
+
 /** 图片分页查询，普通分页 */
 export const pbImagePageListApi = async (
   /** 要查询的页面数字 */
@@ -45,17 +49,15 @@ export const pbImagePageListApi = async (
     }
   })()
 
-  const pbRes = await pb.collection(Collections.Images).getList<
-    ImagesResponse<{
-      author?: UsersResponse
-    }>
-  >(page, 30, {
-    // 日期降序，（日期相同时）id升序
-    sort: '-created,id',
-    filter: filter,
-    expand: 'author',
-    // timeout为5000
-    fetch: fetchWithTimeoutPreferred,
-  })
+  const pbRes = await pb
+    .collection(Collections.Images)
+    .getList<ImagesResponseWithExpand>(page, 30, {
+      // 日期降序，（日期相同时）id升序
+      sort: '-created,id',
+      filter: filter,
+      expand: 'author',
+      // timeout为5000
+      fetch: fetchWithTimeoutPreferred,
+    })
   return pbRes
 }

@@ -4,7 +4,7 @@ import type { ImageQueryModeMarkType } from './dependencies'
 import { useAuthStore } from '@/stores'
 import { useElementSize, useWindowSize } from '@vueuse/core'
 import { dataProcessChunkArrayBalancedUtil } from '@/utils'
-import { PaginationBar } from './components'
+import { ImageListItem, PaginationBar } from './components'
 
 const props = defineProps<{
   imageQueryMode: ImageQueryModeMarkType
@@ -138,7 +138,7 @@ const contentBoxHeigh = computed(() => {
   return contentBoxHeightByDefault()
 })
 
-// 内容的数据，图片二维数组，用于渲染
+// 内容的数据，图片二维数组
 const imageQueryDataMatrix = computed(() => {
   if (imagePageListQuery.data.value?.items == null) {
     return null
@@ -173,6 +173,47 @@ const imageQueryDataMatrixOneRowGasket = computed(() => {
   }
   return diff
 })
+
+// sizeContentBox.width.value 宽度
+// imageItemsPerRow.value 行中最大个数
+
+// 为用于渲染的数据 imageQueryDataMatrix 二维数组，计算尺寸，将传入 ImageListItem ，用于决定显示何种大小的图片
+// 宽度 除以 行中最大个数 ，即为 每一项的高度（每一项正常情况下的宽度，正常情况下宽高一致）
+// 宽度 除以 行中实际个数 ，即为 每一项的宽度
+const imageQueryDataMatrixWithSize = computed(() => {
+  const matrix = imageQueryDataMatrix.value
+  const containerWidth = sizeContentBox.width.value
+  const maxPerRow = imageItemsPerRow.value
+
+  if (matrix == null || containerWidth <= 0 || maxPerRow <= 0) {
+    return null
+  }
+  const itemHeight = containerWidth / maxPerRow
+
+  return matrix.map((row) => {
+    const rowCount = row.length
+    if (rowCount <= 0) {
+      return []
+    }
+
+    const itemWidth = (() => {
+      // 特殊情况，单行、垫片，rowCount需要加上垫片的大小
+      if (imageQueryDataMatrixOneRowGasket.value != null) {
+        return (
+          containerWidth / (rowCount + imageQueryDataMatrixOneRowGasket.value)
+        )
+      }
+      // 正常情况
+      return containerWidth / rowCount
+    })()
+    return row.map((item) => ({
+      id: item.id,
+      imageData: item,
+      itemWidth: itemWidth,
+      itemHeight: itemHeight,
+    }))
+  })
+})
 </script>
 
 <template>
@@ -191,61 +232,22 @@ const imageQueryDataMatrixOneRowGasket = computed(() => {
           }"
         >
           <Transition name="fade" mode="out-in">
-            <!-- 特殊情况，只有一行且需垫片 -->
-            <div
-              v-if="
-                imageQueryDataMatrixOneRowGasket != null &&
-                imageQueryDataMatrix != null &&
-                imageQueryDataMatrix.length > 0 &&
-                imageQueryDataMatrix[0].length > 0
-              "
-              class="flex h-full flex-col items-stretch"
-            >
-              <!-- 行 -->
-              <div class="flex flex-1 items-stretch">
-                <template
-                  v-for="(item, index) in imageQueryDataMatrix[0]"
-                  :key="item.id"
-                >
-                  <!-- 分割线 -->
-                  <div
-                    v-if="index !== 0"
-                    class="border-l-[3px] border-transparent"
-                  ></div>
-                  <!-- 列 -->
-                  <div class="flex-1">
-                    <div class="h-full bg-red-950"></div>
-                  </div>
-                </template>
-                <div
-                  :style="{
-                    flex: `${imageQueryDataMatrixOneRowGasket}`,
-                  }"
-                  class="flex items-center justify-center"
-                >
-                  <div class="text-color-background">
-                    <!-- class="h-full max-h-[50%] w-full max-w-[50%] object-contain" -->
-                    <RiMessage3Fill size="100px"></RiMessage3Fill>
-                  </div>
-                </div>
-              </div>
-            </div>
             <!-- 正常情况 -->
             <div
-              v-else-if="
-                imageQueryDataMatrix != null &&
-                imageQueryDataMatrix.length > 0 &&
-                imageQueryDataMatrix[0].length > 0
+              v-if="
+                imageQueryDataMatrixWithSize != null &&
+                imageQueryDataMatrixWithSize.length > 0 &&
+                imageQueryDataMatrixWithSize[0].length > 0
               "
               :key="
-                imageQueryDataMatrix
+                imageQueryDataMatrixWithSize
                   .map((r) => r.map((i) => i.id).toString())
                   .toString()
               "
               class="flex h-full flex-col items-stretch"
             >
               <template
-                v-for="(row, rowIndex) in imageQueryDataMatrix"
+                v-for="(row, rowIndex) in imageQueryDataMatrixWithSize"
                 :key="row.map((i) => i.id).toString()"
               >
                 <!-- 分割线 横向 -->
@@ -263,16 +265,34 @@ const imageQueryDataMatrixOneRowGasket = computed(() => {
                     ></div>
                     <!-- 列 -->
                     <div class="flex-1">
-                      <div class="h-full bg-red-950"></div>
+                      <ImageListItem
+                        :imageData="item.imageData"
+                        :itemWidth="item.itemWidth"
+                        :itemHeight="item.itemHeight"
+                      ></ImageListItem>
                     </div>
                   </template>
+                  <!-- 特殊情况，只有一行且需垫片 -->
+                  <div
+                    v-if="imageQueryDataMatrixOneRowGasket != null"
+                    :style="{
+                      flex: `${imageQueryDataMatrixOneRowGasket}`,
+                    }"
+                    class="flex items-center justify-center"
+                  >
+                    <div class="text-color-background">
+                      <!-- class="h-full max-h-[50%] w-full max-w-[50%] object-contain" -->
+                      <RiMessage3Fill size="100px"></RiMessage3Fill>
+                    </div>
+                  </div>
                 </div>
               </template>
             </div>
             <!-- 空状态 -->
             <div
               v-else-if="
-                imageQueryDataMatrix != null && imageQueryDataMatrix.length <= 0
+                imageQueryDataMatrixWithSize != null &&
+                imageQueryDataMatrixWithSize.length <= 0
               "
               class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
             >
