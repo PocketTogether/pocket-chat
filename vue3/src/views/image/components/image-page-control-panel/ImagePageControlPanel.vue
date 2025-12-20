@@ -1,27 +1,34 @@
 <script setup lang="ts">
-import type { ImageQueryModeMarkType } from './dependencies'
+import type {
+  ImageQueryModeDesuwaType,
+  ImageQueryModeMarkType,
+} from './dependencies'
 import { PanelImageUploader } from './components'
 import { useAuthStore, useI18nStore } from '@/stores'
 import { useImagePageListQuery } from '@/queries'
 import { useAniStrIncreasingDecreasingSequentially } from '@/composables'
 
 const props = defineProps<{
-  imageQueryMode: ImageQueryModeMarkType
-  canImageQueryModeSetToImageAll: boolean
-  imageQueryModeSetToImageAll: () => void
-  canImageQueryModeSetToImageMy: boolean
-  imageQueryModeSetToImageMy: () => void
-  imageQuerySearch: string
-  imageQuerySearchSet: (val: string) => void
+  imageQueryModeDesuwa: ImageQueryModeDesuwaType
 }>()
+
+const {
+  imageQueryMode,
+  canImageQueryModeSetToImageAll,
+  imageQueryModeSetToImageAll,
+  canImageQueryModeSetToImageMy,
+  imageQueryModeSetToImageMy,
+  imageQuerySearch,
+  imageQuerySearchSet,
+} = props.imageQueryModeDesuwa
 
 const i18nStore = useI18nStore()
 
-const searchInputContent = ref(props.imageQuerySearch)
+const searchInputContent = ref(imageQuerySearch.value)
 
 // 是否能 搜索框开始查询
 const canSearchInputContentSetToImageQuerySearch = computed(() => {
-  if (props.imageQuerySearch === searchInputContent.value) {
+  if (imageQuerySearch.value === searchInputContent.value) {
     return false
   }
   return true
@@ -31,7 +38,7 @@ const searchInputContentSetToImageQuerySearch = () => {
   if (canSearchInputContentSetToImageQuerySearch.value === false) {
     return
   }
-  props.imageQuerySearchSet(searchInputContent.value)
+  imageQuerySearchSet(searchInputContent.value)
 }
 
 // 搜索框清空

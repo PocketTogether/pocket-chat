@@ -3,12 +3,29 @@ import type { ImagesResponseWithExpand } from '@/api'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import { pbImageDataChooseByTargetSizeWithUrl } from '@/utils'
+import type { ImageSelectListDesuwaType } from './dependencies'
 
 const props = defineProps<{
   imageData: ImagesResponseWithExpand
   itemWidth: number
   itemHeight: number
+  imageSelectListDesuwa: ImageSelectListDesuwaType
 }>()
+
+const {
+  //
+  imageSelectListFindById,
+  imageSelectListSwitch,
+} = props.imageSelectListDesuwa
+
+// 是否已选中
+const isItemSelectAlready = computed(
+  () => imageSelectListFindById(props.imageData.id) != null
+)
+// 选中当前
+const itemSwitch = () => {
+  imageSelectListSwitch(props.imageData)
+}
 
 // 当前是几倍屏：
 const rawDpr = window.devicePixelRatio
@@ -44,13 +61,17 @@ const imageAuthorAvatarUrl = computed(() => {
 
 <template>
   <div
-    class="h-full cursor-pointer bg-color-background-mute bg-cover bg-center"
+    class="h-full bg-color-background-mute bg-cover bg-center"
     :style="{
       backgroundImage: `url(${imageUrl})`,
     }"
   >
     <div
-      class="image-mask flex h-full items-end justify-between overflow-hidden"
+      class="image-mask flex h-full cursor-pointer items-end justify-between overflow-hidden"
+      :class="{
+        isItemSelectAlready: isItemSelectAlready,
+      }"
+      @click="itemSwitch"
     >
       <!-- 选择标识 -->
       <div>
@@ -107,9 +128,15 @@ const imageAuthorAvatarUrl = computed(() => {
   }
   &:hover {
     background-color: var(--color-background-a20);
-    // .select-flag {
-    //   transform: translateY(0); // 向上平移显示
-    // }
+    .avatar-go {
+      transform: translateY(0); // 向上平移显示
+    }
+  }
+  &.isItemSelectAlready {
+    background-color: var(--color-background-a30);
+    .select-flag {
+      transform: translateY(0); // 向上平移显示
+    }
     .avatar-go {
       transform: translateY(0); // 向上平移显示
     }

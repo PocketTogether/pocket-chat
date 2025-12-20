@@ -101,3 +101,7 @@ export const useImageQueryModeDesuwa = () => {
   imageQuerySearchSet: (val: string) => void
   */
 }
+
+export type ImageQueryModeDesuwaType = ReturnType<
+  typeof useImageQueryModeDesuwa
+>

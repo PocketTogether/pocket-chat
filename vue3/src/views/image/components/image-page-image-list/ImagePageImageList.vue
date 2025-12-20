@@ -1,17 +1,27 @@
 <script setup lang="ts">
 import { useImagePageListQuery } from '@/queries'
-import type { ImageQueryModeMarkType } from './dependencies'
+import type {
+  ImageQueryModeDesuwaType,
+  ImageQueryModeMarkType,
+  ImageSelectListDesuwaType,
+} from './dependencies'
 import { useAuthStore } from '@/stores'
 import { useElementSize, useWindowSize } from '@vueuse/core'
 import { dataProcessChunkArrayBalancedUtil } from '@/utils'
 import { ImageListItem, PaginationBar } from './components'
 
 const props = defineProps<{
-  imageQueryMode: ImageQueryModeMarkType
-  imageQuerySearch: string
-  imageQueryPage: number
-  imageQueryPageSet: (val: number) => void
+  imageQueryModeDesuwa: ImageQueryModeDesuwaType
+  imageSelectListDesuwa: ImageSelectListDesuwaType
 }>()
+
+const {
+  //
+  imageQueryMode,
+  imageQuerySearch,
+  imageQueryPage,
+  imageQueryPageSet,
+} = props.imageQueryModeDesuwa
 
 const authStore = useAuthStore()
 
@@ -20,24 +30,24 @@ const imagePageListQuery = useImagePageListQuery({
     // 未登录且image_my，则应为null，不查询
     if (
       (authStore.isValid === false || authStore.record?.id == null) &&
-      props.imageQueryMode === 'image_my'
+      imageQueryMode.value === 'image_my'
     ) {
       return null
     }
-    return props.imageQueryPage
+    return imageQueryPage.value
   }),
   authorId: computed(() => {
-    if (props.imageQueryMode === 'image_all') {
+    if (imageQueryMode.value === 'image_all') {
       return null
     } else {
-      // props.imageQueryMode === 'image_my'
+      // imageQueryMode.value === 'image_my'
       if (authStore.isValid === false || authStore.record?.id == null) {
         return null
       }
       return authStore.record.id
     }
   }),
-  searchContent: computed(() => props.imageQuerySearch),
+  searchContent: computed(() => imageQuerySearch.value),
 })
 
 // 内容的数据，图片的个数
@@ -81,7 +91,8 @@ const imageItemsPerRowCalcFn = (width: number): number => {
   if (width >= 1000) return 6
   if (width >= 800) return 5
   if (width >= 600) return 4
-  return 3 // 默认最少 3
+  if (width >= 330) return 3
+  return 2 // 默认最少 2
 }
 // 一行中应显示的个数
 const imageItemsPerRow = computed(() => {
@@ -269,6 +280,7 @@ const imageQueryDataMatrixWithSize = computed(() => {
                         :imageData="item.imageData"
                         :itemWidth="item.itemWidth"
                         :itemHeight="item.itemHeight"
+                        :imageSelectListDesuwa="imageSelectListDesuwa"
                       ></ImageListItem>
                     </div>
                   </template>

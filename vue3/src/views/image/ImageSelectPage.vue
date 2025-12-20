@@ -9,7 +9,11 @@ import {
   ImagePageUploadList,
 } from './components'
 import { useAuthStore, useI18nStore, useUploadImageStore } from '@/stores'
-import { useImageQueryModeDesuwa } from './composables'
+import {
+  useImageQueryModeDesuwa,
+  useImageSelectListDesuwa,
+} from './composables'
+import type { ImagesResponseWithExpand } from '@/api'
 
 const i18nStore = useI18nStore()
 
@@ -20,17 +24,11 @@ useSeoMeta({
 // 封装 imageQueryMode 这一块（desuwa）
 // useImageQueryModeDesuwa
 const imageQueryModeDesuwa = useImageQueryModeDesuwa()
-const {
-  imageQueryMode,
-  canImageQueryModeSetToImageAll,
-  imageQueryModeSetToImageAll,
-  canImageQueryModeSetToImageMy,
-  imageQueryModeSetToImageMy,
-  imageQuerySearch,
-  imageQuerySearchSet,
-  imageQueryPage,
-  imageQueryPageSet,
-} = imageQueryModeDesuwa
+
+// 封装 imageSelectList 这一块desuwa
+// image-select-list
+// useImageSelectListDesuwa
+const imageSelectListDesuwa = useImageSelectListDesuwa()
 
 const uploadImageStore = useUploadImageStore()
 </script>
@@ -61,17 +59,7 @@ const uploadImageStore = useUploadImageStore()
                   <!-- 操作面板 -->
                   <div class="mt-4">
                     <ImagePageControlPanel
-                      :imageQueryMode="imageQueryMode"
-                      :canImageQueryModeSetToImageAll="
-                        canImageQueryModeSetToImageAll
-                      "
-                      :imageQueryModeSetToImageAll="imageQueryModeSetToImageAll"
-                      :canImageQueryModeSetToImageMy="
-                        canImageQueryModeSetToImageMy
-                      "
-                      :imageQueryModeSetToImageMy="imageQueryModeSetToImageMy"
-                      :imageQuerySearch="imageQuerySearch"
-                      :imageQuerySearchSet="imageQuerySearchSet"
+                      :imageQueryModeDesuwa="imageQueryModeDesuwa"
                     ></ImagePageControlPanel>
                   </div>
                   <!-- <div class="my-4 h-[1200px] bg-red-950"></div> -->
@@ -107,10 +95,8 @@ const uploadImageStore = useUploadImageStore()
         <template #col1>
           <div class="my-4 ml-2 mr-6">
             <ImagePageImageList
-              :imageQueryMode="imageQueryMode"
-              :imageQuerySearch="imageQuerySearch"
-              :imageQueryPage="imageQueryPage"
-              :imageQueryPageSet="imageQueryPageSet"
+              :imageQueryModeDesuwa="imageQueryModeDesuwa"
+              :imageSelectListDesuwa="imageSelectListDesuwa"
             ></ImagePageImageList>
           </div>
         </template>
