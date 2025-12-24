@@ -1,11 +1,6 @@
 name: Vue3 Frontend CI
 
-on:
-  push:
-    branches: ["*"]
-  pull_request:
-    branches: ["*"]
-  workflow_dispatch:
+on: [push]
 
 jobs:
   vue3-ci:
