@@ -1,0 +1,51 @@
+name: Vue3 Frontend CI
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  vue3-ci:
+    name: Vue3 Type Check & Build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: vue3
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 安装指定版本的 pnpm（与你 release.yml 保持一致）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.8.1
+
+      # Node.js + pnpm 缓存（锁定 vue3 子项目）
+      - name: Setup Node.js (vue3)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: vue3/pnpm-lock.yaml
+
+      # 安装依赖
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # TypeScript 类型检查（核心）
+      - name: Type Check
+        run: pnpm type-check
+
+      # 可选：ESLint（如果你想保持团队规范）
+      - name: Lint
+        run: pnpm lint
+        continue-on-error: true
+
+      # 构建（确保生产构建可用）
+      - name: Build
+        run: pnpm build
