@@ -60,29 +60,29 @@ export const messagesExpand = (() => {
     replyMessage: 'replyMessage',
     images: 'images',
   } as const satisfies Group<
-    // 限制键必须来自 `[CollectionName]Record`，可选（允许只使用部分字段）
-    Partial<Record<keyof MessagesRecord, string>>
+    // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
+    Partial<KeyValueMirror<keyof MessagesRecord>>
   > satisfies Group<
-    // 限制键集合必须与 `RecordExpand` 完全一致，且每个键的值必须与键名相同（KeyValueMirror）
+    // 限制键集合必须与 `[CollectionName]RecordExpand[DeepExpandKey]` 完全一致，且每个键的值必须与键名相同（KeyValueMirror）
     KeyValueMirror<keyof MessagesRecordExpand>
   >
   const recordKeysReplyMessage = {
     author: 'author',
   } as const satisfies Group<
-    // 限制键必须来自 `[CollectionName]Record`，可选（允许只使用部分字段）
-    Partial<Record<keyof MessagesRecord, string>>
+    // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
+    Partial<KeyValueMirror<keyof MessagesRecord>>
   > satisfies Group<
-    // 限制键集合必须与 `RecordExpand` 完全一致，且每个键的值必须与键名相同（KeyValueMirror）
+    // 限制键集合必须与 `[CollectionName]RecordExpand[DeepExpandKey]` 完全一致，且每个键的值必须与键名相同（KeyValueMirror）
     KeyValueMirror<keyof MessagesRecordExpandReplyMessage>
   >
 
   const recordKeysImages = {
     author: 'author',
   } as const satisfies Group<
-    // 限制键必须来自 `[CollectionName]Record`，可选（允许只使用部分字段）
-    Partial<Record<keyof ImagesResponse, string>>
+    // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
+    Partial<KeyValueMirror<keyof ImagesResponse>>
   > satisfies Group<
-    // 限制键集合必须与 `RecordExpand` 完全一致，且每个键的值必须与键名相同（KeyValueMirror）
+    // 限制键集合必须与 `[CollectionName]RecordExpand[DeepExpandKey]` 完全一致，且每个键的值必须与键名相同（KeyValueMirror）
     KeyValueMirror<keyof MessagesRecordExpandImages>
   >
 

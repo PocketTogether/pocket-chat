@@ -1,3 +1,6 @@
+// 图片分页查询，查询个数
+export const imagePageListApiPerPageNumConfig = 30 as const
+
 // 获取 dpr ，几倍屏
 export const imageGetDprFn = () => {
   // 当前是几倍屏：
