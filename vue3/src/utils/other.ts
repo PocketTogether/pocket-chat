@@ -75,7 +75,7 @@ export const arraysEqual = (arr1: number[], arr2: number[]): boolean => {
  * formatFileSize(12345678) // "12MB"
  */
 export const formatFileSize = (bytes: number): string => {
-  if (bytes <= 0) return '0B'
+  if (bytes < 1) return '0B'
 
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB']

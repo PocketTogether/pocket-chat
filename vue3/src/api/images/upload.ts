@@ -133,18 +133,22 @@ export const pbImageUploadWithAxios = async (
     image: imageCreateData.image,
     imageWidth: imageCreateData.imageWidth,
     imageHeight: imageCreateData.imageHeight,
+    imageFileSize: imageCreateData.image.size,
 
     imageBig: imageCreateData.imageBig,
     imageBigWidth: imageCreateData.imageBigWidth,
     imageBigHeight: imageCreateData.imageBigHeight,
+    imageBigFileSize: imageCreateData.imageBig?.size ?? 0,
 
     imageSmall: imageCreateData.imageSmall,
     imageSmallWidth: imageCreateData.imageSmallWidth,
     imageSmallHeight: imageCreateData.imageSmallHeight,
+    imageSmallFileSize: imageCreateData.imageSmall.size,
 
     imageTiny: imageCreateData.imageTiny,
     imageTinyWidth: imageCreateData.imageTinyWidth,
     imageTinyHeight: imageCreateData.imageTinyHeight,
+    imageTinyFileSize: imageCreateData.imageTiny.size,
   }
 
   // 将 data 转换为 FormData
