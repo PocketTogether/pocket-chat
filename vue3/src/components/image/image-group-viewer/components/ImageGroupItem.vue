@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { ImagesResponseWithExpand } from '@/api'
+import type { ImagesResponseWithBaseExpand } from '@/api'
 import { imageGetDprFn } from '@/config'
 import { pbImageDataChooseByTargetSizeWithUrl } from '@/utils'
 import { useElementSize } from '@vueuse/core'
 
 const props = defineProps<{
-  imageItem: ImagesResponseWithExpand
+  imageItem: ImagesResponseWithBaseExpand
   // 用于设置背景色
   bgTwcss?: string
 }>()

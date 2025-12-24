@@ -626,3 +626,323 @@ export const messagesExpand = (() => {
 - 抽象成通用工具函数
 
 你想继续深入哪一部分？
+
+
+当然可以，Haruki。我现在完全明白你的意图了：
+
+你希望我写一份**正式的、可放入团队 Wiki 的命名规范文档**，  
+**以 Images 集合作为示例**，  
+但这份规范将来会成为**所有集合（Messages / Users / Rooms / …）的统一命名标准**。
+
+并且文档要体现你最近做的重命名规范：
+
+- `ImagesResponseWithExpand` → `ImagesResponseWithBaseExpand`
+- `ImagesRecordExpand` → `ImagesRecordBaseExpand`
+- `imagesExpand` → `imagesBaseExpand`
+- `imagesSort` → `imagesPageSort`
+- `buildImagesFilter` → `imagesPageFilterBuildFn`
+
+以及这些命名背后的语义、结构、可维护性逻辑。
+
+我会写得非常系统、严谨、工程化，让它成为你 PocketBase API 体系的“官方命名规范”。
+
+---
+
+# 📘 PocketBase API 命名规范（以 Images 集合为示例）
+
+> **适用于所有集合（Images / Messages / Users / Rooms / …）的统一命名体系**  
+> —— Haruki 的类型安全 API 设计规范
+
+---
+
+# #️⃣ 1. 规范目标
+
+本命名规范旨在为所有 PocketBase 集合提供：
+
+- **统一的命名体系**
+- **明确的语义层级**
+- **可维护性强的结构**
+- **可扩展到所有集合**
+- **与文件结构一致**
+- **与 TypeScript 类型安全体系一致**
+
+文档以 **Images 集合** 为示例，但规范适用于所有集合。
+
+---
+
+# #️⃣ 2. 命名结构总览
+
+所有命名遵循统一格式：
+
+```
+[collection][Scope][Name]
+```
+
+其中：
+
+|部分|示例|说明|
+|---|---|---|
+|collection|images / messages / users|所属集合|
+|Scope|Base / Page / Cursor / Detail / Mutate|所属 API 场景|
+|Name|Expand / Sort / FilterBuildFn / Response / Params|功能名称|
+
+---
+
+# #️⃣ 3. Base 层命名规范（基础可复用）
+
+Base 层表示：
+
+- 与具体 API 无关
+- 多个 API 可复用
+- 通常包含 expand / recordExpand / response 类型
+- 文件位置：`src/api/[collection]/base.ts`
+
+---
+
+## ✔ 3.1 Base Expand 字符串
+
+### 命名规则
+
+```
+[collection]BaseExpand
+```
+
+### Images 示例
+
+```
+imagesBaseExpand
+```
+
+### 用途
+
+- 集合的基础 expand 字符串
+- 多个 API 共用
+- 只包含最常用、最基础的展开字段
+
+### 示例代码
+
+```ts
+export const imagesBaseExpand = `${recordKeys.author}` as const
+```
+
+---
+
+## ✔ 3.2 Base Expand 类型
+
+### 命名规则
+
+```
+[Collection]RecordBaseExpand
+```
+
+### Images 示例
+
+```
+ImagesRecordBaseExpand
+```
+
+### 用途
+
+- 描述 expand 后的响应结构
+- 与 imagesBaseExpand 一一对应
+
+### 示例代码
+
+```ts
+type ImagesRecordBaseExpand = {
+  author?: UsersResponse
+}
+```
+
+---
+
+## ✔ 3.3 Base Response 类型
+
+### 命名规则
+
+```
+[Collection]ResponseWithBaseExpand
+```
+
+### Images 示例
+
+```
+ImagesResponseWithBaseExpand
+```
+
+### 用途
+
+- getList / getOne 的响应类型
+- 包含 BaseExpand 的 expand 类型
+
+### 示例代码
+
+```ts
+export type ImagesResponseWithBaseExpand = ImagesResponse<
+  ImagesRecordBaseExpand | undefined
+>
+```
+
+---
+
+# #️⃣ 4. Page 层命名规范（分页 API 专用）
+
+Page 层表示：
+
+- 专用于分页 API（page-based pagination）
+- 不会被其他 API 复用
+- 文件位置：`src/api/[collection]/page.ts`
+
+---
+
+## ✔ 4.1 Page Sort
+
+### 命名规则
+
+```
+[collection]PageSort
+```
+
+### Images 示例
+
+```
+imagesPageSort
+```
+
+### 用途
+
+- 分页 API 的 sort 字符串
+- 通常是 `-created,id`
+
+### 示例代码
+
+```ts
+export const imagesPageSort = `-${recordKeys.created},${recordKeys.id}` as const
+```
+
+---
+
+## ✔ 4.2 Page Filter 构造函数
+
+### 命名规则
+
+```
+[collection]PageFilterBuildFn
+```
+
+### Images 示例
+
+```
+imagesPageFilterBuildFn
+```
+
+### 用途
+
+- 构造分页 API 的 filter 字符串
+- 遵守 strict-boolean-expressions
+- 字符串拼接 as const
+- 多层级字段需显式 recordKeys
+
+### 示例代码
+
+```ts
+export const imagesPageFilterBuildFn = (data) => { ... }
+```
+
+---
+
+# #️⃣ 5. 命名规范总结表（以 Images 集合为例）
+
+|层级|命名规则|示例|用途|
+|---|---|---|---|
+|Base|`[collection]BaseExpand`|`imagesBaseExpand`|基础 expand 字符串|
+|Base|`[Collection]RecordBaseExpand`|`ImagesRecordBaseExpand`|expand 类型|
+|Base|`[Collection]ResponseWithBaseExpand`|`ImagesResponseWithBaseExpand`|响应类型|
+|Page|`[collection]PageSort`|`imagesPageSort`|分页 sort|
+|Page|`[collection]PageFilterBuildFn`|`imagesPageFilterBuildFn`|分页 filter|
+
+---
+
+# #️⃣ 6. 为什么这种命名体系是最优的？
+
+### ✔ 语义清晰
+
+`imagesPageSort` 一眼就知道：
+
+- 属于 Images 集合
+- 用于 Page API
+- 是 sort 字符串
+
+### ✔ 可维护性强
+
+未来新增：
+
+```
+imagesDetailExpand
+imagesCursorFilterBuildFn
+imagesMutateCreateParams
+```
+
+团队成员也能立刻理解用途。
+
+### ✔ 与文件结构一致
+
+`src/api/images/base.ts` → `imagesBase*`  
+`src/api/images/page.ts` → `imagesPage*`
+
+### ✔ 与 TypeScript 类型体系一致
+
+所有类型都以：
+
+```
+ImagesRecord*
+ImagesResponse*
+```
+
+开头，保持一致性。
+
+---
+
+# #️⃣ 7. 未来扩展（适用于所有集合）
+
+当你为 Messages / Users / Rooms 等集合编写 API 时，只需遵循同样的规则：
+
+例如 Messages：
+
+```
+messagesBaseExpand
+MessagesRecordBaseExpand
+MessagesResponseWithBaseExpand
+
+messagesPageSort
+messagesPageFilterBuildFn
+
+messagesCursorSort
+messagesCursorFilterBuildFn
+```
+
+整个项目的 API 命名将保持一致、可读、可维护。
+
+---
+
+# 📌 总结
+
+你现在的命名体系已经非常成熟，而这份文档将它系统化、标准化，使其成为：
+
+- 可复用
+- 可扩展
+- 可团队协作
+- 可长期维护
+
+的 PocketBase API 命名规范。
+
+---
+
+如果你愿意，我还能继续帮你：
+
+- 生成 Markdown 版（含目录）
+- 生成 README 版
+- 生成“常见错误与最佳实践”章节
+- 生成“如何为新集合编写 Base / Page API”教程
+
+你想继续扩展哪一部分？

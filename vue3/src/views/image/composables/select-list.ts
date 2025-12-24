@@ -1,8 +1,8 @@
-import type { ImagesResponseWithExpand } from '@/api'
+import type { ImagesResponseWithBaseExpand } from '@/api'
 
 export const useImageSelectListDesuwa = () => {
   // 图片选择列表
-  const imageSelectList = ref<ImagesResponseWithExpand[]>([])
+  const imageSelectList = ref<ImagesResponseWithBaseExpand[]>([])
 
   /**
    * 添加图片（带最大数量限制 4）：
@@ -11,7 +11,7 @@ export const useImageSelectListDesuwa = () => {
    *    - 若数量 < 4：直接追加
    *    - 若数量 >= 4：移除第一个再追加
    */
-  const imageSelectListAdd = (val: ImagesResponseWithExpand) => {
+  const imageSelectListAdd = (val: ImagesResponseWithBaseExpand) => {
     const index = imageSelectList.value.findIndex((item) => item.id === val.id)
 
     if (index !== -1) {
@@ -60,7 +60,7 @@ export const useImageSelectListDesuwa = () => {
    * - 若存在同 id，则删除
    * - 若不存在，则添加
    */
-  const imageSelectListSwitch = (val: ImagesResponseWithExpand) => {
+  const imageSelectListSwitch = (val: ImagesResponseWithBaseExpand) => {
     const find = imageSelectListFindById(val.id)
 
     if (find != null) {

@@ -17,7 +17,7 @@ import {
   useImageQueryModeDesuwa,
   useImageSelectListDesuwa,
 } from './composables'
-import type { ImagesResponseWithExpand } from '@/api'
+import type { ImagesResponseWithBaseExpand } from '@/api'
 import {
   imageCalcMaxWidthByRatioUtil,
   pbImageDataChooseByLargest,

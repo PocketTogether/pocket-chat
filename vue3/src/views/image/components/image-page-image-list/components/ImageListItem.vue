@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ImagesResponseWithExpand } from '@/api'
+import type { ImagesResponseWithBaseExpand } from '@/api'
 import {
   appUserDefaultAvatar,
   fileUserAvatarConfig,
@@ -10,7 +10,7 @@ import { pbImageDataChooseByTargetSizeWithUrl } from '@/utils'
 import type { ImageSelectListDesuwaType } from './dependencies'
 
 const props = defineProps<{
-  imageData: ImagesResponseWithExpand
+  imageData: ImagesResponseWithBaseExpand
   itemWidth: number
   itemHeight: number
   imageSelectListDesuwa: ImageSelectListDesuwaType

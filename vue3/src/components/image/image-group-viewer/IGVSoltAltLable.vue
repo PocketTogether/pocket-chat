@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ImagesResponseWithExpand } from '@/api'
+import type { ImagesResponseWithBaseExpand } from '@/api'
 import { useI18nStore } from '@/stores'
 // IGVSoltAltLable.vue
 // 其用法是用于 ImageGroupViewer 的插槽中，加上它就根据其是否有alt来显示alt标签
 const props = defineProps<{
-  imageItem: ImagesResponseWithExpand
+  imageItem: ImagesResponseWithBaseExpand
 }>()
 
 const i18nStore = useI18nStore()

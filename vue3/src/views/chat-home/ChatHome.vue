@@ -41,6 +41,7 @@ const testPbSendMessage = async () => {
         generateRandomIntegerBetween(5, generateRandomIntegerBetween(20, 200))
       ),
       roomId: '',
+      images: [],
     })
   }
 }

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { ImagesResponseWithExpand } from '@/api'
+import type { ImagesResponseWithBaseExpand } from '@/api'
 import { ImageGroupItem } from './components'
 import { imageCalcSingleRatioUtil } from '@/utils'
 import { imageCalcSingleRatioOptionsConfig } from '@/config'
 
 const props = defineProps<{
-  imageList: ImagesResponseWithExpand[]
+  imageList: ImagesResponseWithBaseExpand[]
   // 用于设置背景色
   bgTwcss?: string
 }>()
@@ -58,9 +58,9 @@ const aspectRatio = computed(() => {
  * 计算布局结构
  * 返回：
  * {
- *   single?: ImagesResponseWithExpand
- *   left?: ImagesResponseWithExpand[],
- *   right?: ImagesResponseWithExpand[]
+ *   single?: ImagesResponseWithBaseExpand
+ *   left?: ImagesResponseWithBaseExpand[],
+ *   right?: ImagesResponseWithBaseExpand[]
  * }
  */
 const layout = computed(() => {

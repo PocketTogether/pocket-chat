@@ -1,9 +1,9 @@
-import type { ImagesResponseWithExpand } from '@/api'
+import type { ImagesResponseWithBaseExpand } from '@/api'
 import { pb } from '@/lib'
 
 // 根据目标大小，从图片数据中挑选
 export const pbImageDataChooseByTargetSize = (
-  imageData: ImagesResponseWithExpand,
+  imageData: ImagesResponseWithBaseExpand,
   data: {
     targetWidth: number
     targetHeight: number
@@ -72,7 +72,7 @@ export const pbImageDataChooseByTargetSize = (
 }
 // 根据目标大小，从图片数据中挑选，并得到其URL
 export const pbImageDataChooseByTargetSizeWithUrl = (
-  imageData: ImagesResponseWithExpand,
+  imageData: ImagesResponseWithBaseExpand,
   data: {
     targetWidth: number
     targetHeight: number
@@ -88,7 +88,7 @@ export const pbImageDataChooseByTargetSizeWithUrl = (
 
 // 挑选最大的
 export const pbImageDataChooseByLargest = (
-  imageData: ImagesResponseWithExpand
+  imageData: ImagesResponseWithBaseExpand
 ) => {
   // Big
   if (
@@ -111,7 +111,7 @@ export const pbImageDataChooseByLargest = (
   }
 }
 export const pbImageDataChooseByLargestWithUrl = (
-  imageData: ImagesResponseWithExpand
+  imageData: ImagesResponseWithBaseExpand
 ) => {
   const chooseData = pbImageDataChooseByLargest(imageData)
   return {
@@ -122,7 +122,7 @@ export const pbImageDataChooseByLargestWithUrl = (
 
 // 挑选最小的
 export const pbImageDataChooseBySmallest = (
-  imageData: ImagesResponseWithExpand
+  imageData: ImagesResponseWithBaseExpand
 ) => {
   if (
     imageData.imageTiny !== '' &&
@@ -156,7 +156,7 @@ export const pbImageDataChooseBySmallest = (
   }
 }
 export const pbImageDataChooseBySmallestWithUrl = (
-  imageData: ImagesResponseWithExpand
+  imageData: ImagesResponseWithBaseExpand
 ) => {
   const chooseData = pbImageDataChooseBySmallest(imageData)
   return {

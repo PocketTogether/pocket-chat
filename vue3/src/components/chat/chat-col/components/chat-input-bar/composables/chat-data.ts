@@ -1,5 +1,5 @@
 import {
-  type ImagesResponseWithExpand,
+  type ImagesResponseWithBaseExpand,
   type MessagesResponseWidthExpand,
   type MessagesResponseWidthExpandReplyMessage,
 } from '@/api'
@@ -21,7 +21,7 @@ export const useChatInputBarData = (data: {
   const chatInputContent = ref('')
 
   // 图片选择内容
-  const chatImageSelectList = ref<ImagesResponseWithExpand[]>([])
+  const chatImageSelectList = ref<ImagesResponseWithBaseExpand[]>([])
 
   // 回复的消息，将导出给外部组件使用
   const chatReplyMessage = ref<MessagesResponseWidthExpandReplyMessage | null>(

@@ -1,4 +1,4 @@
-import type { ImagesResponseWithExpand } from '@/api'
+import type { ImagesResponseWithBaseExpand } from '@/api'
 import { defineStore } from 'pinia'
 
 /**
@@ -13,9 +13,9 @@ const STORE_VERSION = 'v1'
 export const useSelectionImageStore = defineStore(
   `pocket-together-selection-image-${STORE_VERSION}`,
   () => {
-    const selected = ref<ImagesResponseWithExpand[] | null>(null)
+    const selected = ref<ImagesResponseWithBaseExpand[] | null>(null)
 
-    const set = (data: ImagesResponseWithExpand[]) => {
+    const set = (data: ImagesResponseWithBaseExpand[]) => {
       selected.value = data
     }
 
