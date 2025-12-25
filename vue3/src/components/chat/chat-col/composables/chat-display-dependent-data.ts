@@ -2,7 +2,10 @@ import type {
   MessagesResponseWidthExpand,
   PMLRCApiParameters0DataPageParamNonNullable,
 } from '@/api'
-import { chatRoomMessagesTwowayPositioningCursorRouterQueryParametersKeyConfig } from '@/config'
+import {
+  chatRoomMessagesInfoDialogQueryKey,
+  chatRoomMessagesTwowayPositioningCursorRouterQueryParametersKeyConfig,
+} from '@/config'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import type {
   ChatRoomMessagesInfiniteTwowayQueryType,
@@ -85,10 +88,12 @@ export const useChatDisplayDependentDataInitializationChoose = () => {
   const route = useRoute()
   const router = useRouter()
 
+  // 聊天页 双向定位游标 路由查询参数 键统一管理，以便在多处使用
+  const { id: keyId, created: keyCreated } =
+    chatRoomMessagesTwowayPositioningCursorRouterQueryParametersKeyConfig
+
   // 获取根据路由定位查询参数初始化数据
   const routeQueryPositioningCursorData = (() => {
-    const { id: keyId, created: keyCreated } =
-      chatRoomMessagesTwowayPositioningCursorRouterQueryParametersKeyConfig
     const id = route.query[keyId]
     const created = route.query[keyCreated]
     if (
@@ -104,22 +109,11 @@ export const useChatDisplayDependentDataInitializationChoose = () => {
       created,
     }
   })()
-  // 无卵使用哪种初始化，都清除路由中的查询参数
-  router.replace(route.path)
 
   // 获取根据页面恢复数据初始化数据
   const routerHistoryStore = useRouterHistoryStore()
   const chatColPageRecoverData =
     routerHistoryStore.currentGetPageRecoverDataForChatColItem()
-
-  // console.log('routerHistoryStore.currentUuid', routerHistoryStore.currentUuid)
-  ;(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-    // console.log(
-    //   'routerHistoryStore.currentUuid',
-    //   routerHistoryStore.currentUuid
-    // )
-  })()
 
   // 决定使用哪种初始化
   const chooseInitialization = (() => {
@@ -132,6 +126,27 @@ export const useChatDisplayDependentDataInitializationChoose = () => {
     }
     return 'none' as const
   })()
+
+  // 无论使用哪种初始化，都清除路由中的查询参数
+  // router.replace({
+  //   path: route.path,
+  //   query: {
+  //     ...route.query,
+  //     [keyId]: undefined,
+  //     [keyCreated]: undefined,
+  //   },
+  // })
+  const newQuery = { ...route.query }
+  delete newQuery[keyId]
+  delete newQuery[keyCreated]
+  // 对于 MessageInfoDialog 如果是 chatColPageRecoverData 则保留，否则也清除
+  if (chooseInitialization !== 'chatColPageRecoverData') {
+    delete newQuery[chatRoomMessagesInfoDialogQueryKey]
+  }
+  router.replace({
+    path: route.path,
+    query: newQuery,
+  })
 
   return {
     chooseInitialization,

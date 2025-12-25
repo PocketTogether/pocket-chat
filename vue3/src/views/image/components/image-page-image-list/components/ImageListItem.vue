@@ -9,6 +9,7 @@ import {
 import { pb } from '@/lib'
 import { pbImageDataChooseByTargetSizeWithUrl } from '@/utils'
 import type { ImageSelectListDesuwaType } from './dependencies'
+import { useRouterHistoryTool } from '@/composables'
 
 const props = defineProps<{
   imageData: ImagesResponseWithBaseExpand
@@ -66,6 +67,18 @@ const imageAuthorAvatarUrl = computed(() => {
     { thumb: fileUserAvatarConfig.thumb100x100f }
   )
 })
+
+const {
+  // 跳转至图片详情页的方法
+  routerGoImageInfoPage,
+} = useRouterHistoryTool()
+
+const goImageInfoPage = () => {
+  routerGoImageInfoPage({
+    imageId: props.imageData.id,
+    presetImageGetOneData: props.imageData,
+  })
+}
 </script>
 
 <template>
@@ -98,6 +111,7 @@ const imageAuthorAvatarUrl = computed(() => {
       <div class="flex-1">
         <div
           class="avatar-go flow-root cursor-pointer rounded-tl-[14px] bg-el-primary opacity-95"
+          @click.stop="goImageInfoPage"
         >
           <div class="flex items-center">
             <!-- 头像 -->

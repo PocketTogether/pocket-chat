@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import type { PMLRCApiParameters0DataPageParamNonNullable } from '@/api'
+import type {
+  ImagesResponseWithBaseExpand,
+  PMLRCApiParameters0DataPageParamNonNullable,
+} from '@/api'
 import {
   ContainerDialog,
   IGVSoltHoverSlideInfoGo,
   ImageGroupViewer,
   TextWithLink,
 } from '@/components'
-import { useRouteControlDialog } from '@/composables'
+import { useRouteControlDialog, useRouterHistoryTool } from '@/composables'
 import { useDateFormatYYYYMMDDHHmmss } from '@/utils'
 import type {
   ChatDisplayDependentDataInitializationChooseType,
@@ -16,6 +19,7 @@ import type { ChatInputBar } from './dependencies'
 import { useMessageControl, useMessageDispaly } from './composables'
 import { MessageDeleteDialog } from './components'
 import { useAuthStore, useI18nStore } from '@/stores'
+import { chatRoomMessagesInfoDialogQueryKey } from '@/config'
 
 const props = defineProps<{
   /** 聊天输入栏，将使用其中的数据 */
@@ -32,7 +36,7 @@ const props = defineProps<{
 export type MessageInfoDialogPropsType = typeof props
 
 const { dialogVisible, dialogOpen, dialogClose } = useRouteControlDialog({
-  dialogQueryKey: 'MessageInfoDialog',
+  dialogQueryKey: chatRoomMessagesInfoDialogQueryKey,
 })
 
 // 封装 消息显示相关数据逻辑
@@ -79,6 +83,21 @@ defineExpose({
 
 const i18nStore = useI18nStore()
 const authStore = useAuthStore()
+
+const {
+  // 跳转至图片详情页的方法
+  routerGoImageInfoPage,
+} = useRouterHistoryTool()
+
+const goImageInfoPage = (data: {
+  imageId: string
+  presetImageGetOneData: ImagesResponseWithBaseExpand
+}) => {
+  // dialogClose()
+  // await new Promise((resolve) => setTimeout(resolve, 200))
+  // await nextTick()
+  routerGoImageInfoPage(data)
+}
 </script>
 
 <template>
@@ -251,6 +270,14 @@ const authStore = useAuthStore()
                       >
                         <IGVSoltHoverSlideInfoGo
                           :imageItem="imageItem"
+                          :onSlideClick="
+                            () => {
+                              goImageInfoPage({
+                                imageId: imageItem.id,
+                                presetImageGetOneData: imageItem,
+                              })
+                            }
+                          "
                         ></IGVSoltHoverSlideInfoGo>
                       </ImageGroupViewer>
                     </div>

@@ -40,6 +40,12 @@ export const chatRoomMessagesTwowayPositioningCursorScrollTopOffsetConfig =
 export const chatRoomMessagesDispalyTogetherMaxSecondsConfig = 600 as const
 
 /**
+ * 聊天页 dialogQueryKey: 'MessageInfoDialog',
+ * 控制dialog是否显示的query键, 不同的对话框应使用不同的，且要避免与其他query参数冲突
+ */
+export const chatRoomMessagesInfoDialogQueryKey = 'MessageInfoDialog' as const
+
+/**
  * 聊天页 双向定位游标 路由查询参数 键统一管理，以便在多处使用
  */
 export const chatRoomMessagesTwowayPositioningCursorRouterQueryParametersKeyConfig =

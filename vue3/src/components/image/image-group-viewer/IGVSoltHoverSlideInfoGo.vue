@@ -10,11 +10,11 @@ const bgTwcssDefault = 'bg-color-background'
 const props = withDefaults(
   defineProps<{
     imageItem: ImagesResponseWithBaseExpand
-    onClick?: () => unknown
+    onSlideClick?: () => unknown
     bgTwcss?: string
   }>(),
   {
-    onClick: () => {},
+    onSlideClick: () => {},
     bgTwcss: bgTwcssDefault,
   }
 )
@@ -48,7 +48,7 @@ const imageAuthorAvatarUrl = computed(() => {
         <div
           class="avatar-go flow-root cursor-pointer rounded-t-[14px] opacity-95"
           :class="bgTwcss"
-          @click="onClick"
+          @click.stop="onSlideClick"
         >
           <div class="flex items-center">
             <!-- 头像 -->

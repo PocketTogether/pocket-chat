@@ -236,128 +236,139 @@ const imageQueryDataMatrixWithSize = computed(() => {
   <div>
     <!-- 图片显示 -->
     <div>
+      <!-- 内容盒子，将获取其宽度，控制其高度 -->
       <div
-        class="overflow-hidden rounded-t-[24px] border-[3px] border-transparent bg-color-background-soft"
+        ref="refContentBox"
+        class="transition-[height] duration-300"
+        :style="{
+          height: `${contentBoxHeigh}px`,
+        }"
       >
-        <!-- 内容盒子，将获取其宽度，控制其高度 -->
-        <div
-          ref="refContentBox"
-          class="relative transition-[height] duration-300"
-          :style="{
-            height: `${contentBoxHeigh}px`,
-          }"
-        >
-          <Transition name="fade" mode="out-in">
-            <!-- 正常情况 -->
-            <div
-              v-if="
-                imageQueryDataMatrixWithSize != null &&
-                imageQueryDataMatrixWithSize.length > 0 &&
-                imageQueryDataMatrixWithSize[0].length > 0 &&
-                imagePageListQuery.isFetching.value === false
-              "
-              :key="
-                imageQueryDataMatrixWithSize
-                  .map((r) => r.map((i) => i.id).toString())
-                  .toString()
-              "
-              class="flex h-full flex-col items-stretch"
-            >
-              <template
-                v-for="(row, rowIndex) in imageQueryDataMatrixWithSize"
-                :key="row.map((i) => i.id).toString()"
-              >
-                <!-- 分割线 横向 -->
+        <Transition name="fade500ms" mode="out-in">
+          <div
+            v-if="refContentBox != null && sizeContentBox.width.value >= 0"
+            class="h-full overflow-hidden rounded-t-[24px] border-[3px] border-transparent bg-color-background-soft"
+          >
+            <div class="relative h-full">
+              <Transition name="fade" mode="out-in">
+                <!-- 正常情况 -->
                 <div
-                  v-if="rowIndex !== 0"
-                  class="border-t-[3px] border-transparent"
-                ></div>
-                <!-- 行 -->
-                <div class="flex flex-1 items-stretch">
-                  <template v-for="(item, index) in row" :key="item.id">
-                    <!-- 分割线 -->
+                  v-if="
+                    imageQueryDataMatrixWithSize != null &&
+                    imageQueryDataMatrixWithSize.length > 0 &&
+                    imageQueryDataMatrixWithSize[0].length > 0 &&
+                    imagePageListQuery.isFetching.value === false
+                  "
+                  :key="
+                    imageQueryDataMatrixWithSize
+                      .map((r) => r.map((i) => i.id).toString())
+                      .toString()
+                  "
+                  class="flex h-full flex-col items-stretch"
+                >
+                  <template
+                    v-for="(row, rowIndex) in imageQueryDataMatrixWithSize"
+                    :key="row.map((i) => i.id).toString()"
+                  >
+                    <!-- 分割线 横向 -->
                     <div
-                      v-if="index !== 0"
-                      class="border-l-[3px] border-transparent"
+                      v-if="rowIndex !== 0"
+                      class="border-t-[3px] border-transparent"
                     ></div>
-                    <!-- 列 -->
-                    <div class="flex-1">
-                      <ImageListItem
-                        :imageData="item.imageData"
-                        :itemWidth="item.itemWidth"
-                        :itemHeight="item.itemHeight"
-                        :imageSelectListDesuwa="imageSelectListDesuwa"
-                      ></ImageListItem>
+                    <!-- 行 -->
+                    <div class="flex flex-1 items-stretch">
+                      <template v-for="(item, index) in row" :key="item.id">
+                        <!-- 分割线 -->
+                        <div
+                          v-if="index !== 0"
+                          class="border-l-[3px] border-transparent"
+                        ></div>
+                        <!-- 列 -->
+                        <div class="flex-1">
+                          <ImageListItem
+                            :imageData="item.imageData"
+                            :itemWidth="item.itemWidth"
+                            :itemHeight="item.itemHeight"
+                            :imageSelectListDesuwa="imageSelectListDesuwa"
+                          ></ImageListItem>
+                        </div>
+                      </template>
+                      <!-- 特殊情况，只有一行且需垫片 -->
+                      <div
+                        v-if="imageQueryDataMatrixOneRowGasket != null"
+                        :style="{
+                          flex: `${imageQueryDataMatrixOneRowGasket}`,
+                        }"
+                        class="flex items-center justify-center"
+                      >
+                        <div class="text-color-background">
+                          <!-- class="h-full max-h-[50%] w-full max-w-[50%] object-contain" -->
+                          <RiMessage3Fill size="100px"></RiMessage3Fill>
+                        </div>
+                      </div>
                     </div>
                   </template>
-                  <!-- 特殊情况，只有一行且需垫片 -->
+                </div>
+                <!-- 空白状态 由大小未加载引起 -->
+                <div
+                  v-else-if="
+                    imageQueryDataMatrixWithSize == null &&
+                    imagePageListQuery.isFetching.value === false
+                  "
+                  class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
+                ></div>
+                <!-- 无内容状态 由无内容引起 -->
+                <div
+                  v-else-if="
+                    imageQueryDataMatrixWithSize != null &&
+                    imageQueryDataMatrixWithSize.length <= 0 &&
+                    imagePageListQuery.isFetching.value === false
+                  "
+                  class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
+                >
                   <div
-                    v-if="imageQueryDataMatrixOneRowGasket != null"
-                    :style="{
-                      flex: `${imageQueryDataMatrixOneRowGasket}`,
-                    }"
-                    class="flex items-center justify-center"
+                    class="h-[100px] w-[100px] overflow-hidden text-color-background"
                   >
-                    <div class="text-color-background">
-                      <!-- class="h-full max-h-[50%] w-full max-w-[50%] object-contain" -->
-                      <RiMessage3Fill size="100px"></RiMessage3Fill>
-                    </div>
+                    <!-- class="h-full max-h-[50%] w-full max-w-[50%] object-contain" -->
+                    <RiMessage3Fill size="100px"></RiMessage3Fill>
                   </div>
                 </div>
-              </template>
+                <!-- 加载状态 -->
+                <div
+                  v-else
+                  class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
+                >
+                  <div
+                    class="h-[50px] w-[50px] overflow-hidden text-color-text-soft"
+                  >
+                    <RiLoader3Line
+                      class="loading-spinner-800ms"
+                      size="50px"
+                    ></RiLoader3Line>
+                  </div>
+                </div>
+              </Transition>
             </div>
-            <!-- 空白状态 由大小未加载引起 -->
-            <div
-              v-else-if="
-                imageQueryDataMatrixWithSize == null &&
-                imagePageListQuery.isFetching.value === false
-              "
-              class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
-            ></div>
-            <!-- 无内容状态 由无内容引起 -->
-            <div
-              v-else-if="
-                imageQueryDataMatrixWithSize != null &&
-                imageQueryDataMatrixWithSize.length <= 0 &&
-                imagePageListQuery.isFetching.value === false
-              "
-              class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
-            >
-              <div
-                class="h-[100px] w-[100px] overflow-hidden text-color-background"
-              >
-                <!-- class="h-full max-h-[50%] w-full max-w-[50%] object-contain" -->
-                <RiMessage3Fill size="100px"></RiMessage3Fill>
-              </div>
-            </div>
-            <!-- 加载状态 -->
-            <div
-              v-else
-              class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
-            >
-              <div
-                class="h-[50px] w-[50px] overflow-hidden text-color-text-soft"
-              >
-                <RiLoader3Line
-                  class="loading-spinner-800ms"
-                  size="50px"
-                ></RiLoader3Line>
-              </div>
-            </div>
-          </Transition>
-        </div>
+          </div>
+        </Transition>
       </div>
     </div>
-    <!-- 分割线 横向 -->
-    <div class="border-t-[3px] border-transparent"></div>
-    <!-- 分页栏 -->
-    <PaginationBar
-      :imageQueryMode="imageQueryMode"
-      :imageQuerySearch="imageQuerySearch"
-      :imageQueryPage="imageQueryPage"
-      :imageQueryPageSet="imageQueryPageSet"
-      :imageQueryTotalPages="imagePageListQuery.data.value?.totalPages ?? null"
-    ></PaginationBar>
+    <Transition name="fade500ms" mode="out-in">
+      <div v-if="refContentBox != null && sizeContentBox.width.value >= 0">
+        <!-- 分割线 横向 -->
+        <div class="border-t-[3px] border-transparent"></div>
+        <!-- 分页栏 -->
+        <PaginationBar
+          :imageQueryMode="imageQueryMode"
+          :imageQuerySearch="imageQuerySearch"
+          :imageQueryPage="imageQueryPage"
+          :imageQueryPageSet="imageQueryPageSet"
+          :imageQueryTotalPages="
+            imagePageListQuery.data.value?.totalPages ?? null
+          "
+        ></PaginationBar>
+      </div>
+    </Transition>
   </div>
 </template>
 
