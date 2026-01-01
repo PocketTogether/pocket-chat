@@ -142,7 +142,7 @@ const goNextPage = () => {
                       @click="imageQueryPageSet(item)"
                     >
                       <div
-                        class="mx-[12px] my-[12px] w-[24px] select-none text-center text-[16px] font-bold text-color-text"
+                        class="mx-[12px] my-[12px] min-w-[24px] select-none text-center text-[16px] font-bold text-color-text"
                       >
                         {{ item }}
                       </div>

@@ -55,6 +55,7 @@ declare module 'vue' {
     RiLoginBoxLine: typeof import('@remixicon/vue')['RiLoginBoxLine']
     RiMailLine: typeof import('@remixicon/vue')['RiMailLine']
     RiMessage3Fill: typeof import('@remixicon/vue')['RiMessage3Fill']
+    RiMessage3Line: typeof import('@remixicon/vue')['RiMessage3Line']
     RiMoonLine: typeof import('@remixicon/vue')['RiMoonLine']
     RiMore2Fill: typeof import('@remixicon/vue')['RiMore2Fill']
     RiMoreFill: typeof import('@remixicon/vue')['RiMoreFill']

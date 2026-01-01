@@ -6,6 +6,8 @@ import { useI18nStore, useSelectionImageStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { useRouterHistoryTool } from '@/composables'
 import { routerDict } from '@/config'
+import { useQueryClient } from '@tanstack/vue-query'
+import { queryKeys } from '@/queries'
 
 const props = defineProps<{
   imageSelectListDesuwa: ImageSelectListDesuwaType
@@ -28,11 +30,19 @@ const canImageSelectSubmit = computed(() => {
   return true
 })
 
+const queryClient = useQueryClient()
+
 const imageSelectSubmit = () => {
   if (!canImageSelectSubmit.value) {
     return
   }
   selectionImageStore.set(imageSelectList.value)
+  // 图片选择后，设置imageInfoMessageListQuery失效
+  imageSelectList.value.forEach((i) => {
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.imageInfoMessageList(i.id),
+    })
+  })
   routerBackSafe({
     fallbackTo: routerDict.ChatHome.path,
   })

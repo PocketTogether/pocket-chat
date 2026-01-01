@@ -16,6 +16,7 @@ const props = defineProps<{
 const {
   //
   imagesGetOneQuery,
+  isAuthorCurrent,
 } = props.imageInfoQueryDesuwa
 
 /**
@@ -160,7 +161,12 @@ const i18nStore = useI18nStore()
         <!-- 未编辑状态 -->
         <template v-if="!isEditingAlt">
           <div>
-            <ElButton circle type="info" @click="startEditAlt">
+            <ElButton
+              circle
+              type="info"
+              :disabled="!isAuthorCurrent"
+              @click="startEditAlt"
+            >
               <template #icon>
                 <RiEditLine />
               </template>

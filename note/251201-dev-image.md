@@ -62,10 +62,9 @@ src\components\chat\chat-col\components\chat-input-bar\ChatInputBar.vue
 ```
 图片选择页
 图片选择至发送实现
-图片详情页
 图片选择页数据恢复实现
+图片详情页
 图片预览
-聊天页图片便捷上传
 ```
 
 图片选择页
@@ -77,12 +76,6 @@ src\components\chat\chat-col\components\chat-input-bar\ChatInputBar.vue
 
 TODO
 ```
-图片分页查询个数配置封装至config
-图片分页查询 API 类型安全地构造 expand filter sort 字符串
-pb图片集合添加图片大小字段
-图片选择页响应式
-
-图片详情页
-图片选择页数据恢复实现
+注意要改改消息通知为图片时的情况
 ```
 

@@ -8,3 +8,4 @@ export {
 }
 
 export * from './image-info-control-panel'
+export * from './image-info-messages-list'

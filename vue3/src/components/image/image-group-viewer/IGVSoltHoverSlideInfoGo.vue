@@ -3,7 +3,8 @@ import type { ImagesResponseWithBaseExpand } from '@/api'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 
-const bgTwcssDefault = 'bg-color-background'
+// const bgTwcssDefault = 'bg-color-background'
+const bgTwcssDefault = 'bg-color-background-width-linear-gradient'
 
 // IGVSoltHoverSlideInfoGo.vue
 // 其用法是用于 ImageGroupViewer 的插槽中，加上它就能实现悬停时，下方将平移出现一个块，点击这个块就能转到图片详情页面
@@ -46,7 +47,7 @@ const imageAuthorAvatarUrl = computed(() => {
     >
       <div class="w-[50%] min-w-[80px] max-w-[200px]">
         <div
-          class="avatar-go flow-root cursor-pointer rounded-t-[14px] opacity-95"
+          class="avatar-go flow-root cursor-pointer rounded-t-[14px]"
           :class="bgTwcss"
           @click.stop="onSlideClick"
         >
@@ -88,5 +89,13 @@ const imageAuthorAvatarUrl = computed(() => {
       transform: translateY(0); // 向上平移显示
     }
   }
+}
+
+.bg-color-background-width-linear-gradient {
+  background: linear-gradient(
+    to top,
+    var(--color-background),
+    var(--color-background-a90)
+  );
 }
 </style>

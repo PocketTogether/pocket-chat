@@ -188,4 +188,14 @@ export const i18nMessagesImagePart = {
     'ko-KR': () => '수정 실패' as const,
     'ru-RU': () => 'Не удалось обновить' as const,
   },
+
+  // 图片详情页中所使用此图片的消息列表的标题
+  imageInfoPageMessageListTitle: {
+    'en-US': () => 'Messages' as const,
+    'zh-CN': () => '消息' as const,
+    'zh-TW': () => '訊息' as const,
+    'ja-JP': () => 'メッセージ' as const,
+    'ko-KR': () => '메시지' as const,
+    'ru-RU': () => 'Сообщения' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType

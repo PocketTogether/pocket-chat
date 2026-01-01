@@ -6,7 +6,7 @@ import { pbImageUpdateKeywordApi } from '@/api'
 import { queryKeys, queryRetryPbNetworkError } from '@/queries'
 import { compareDatesSafe, potoMessage } from '@/utils'
 import type { ElInput } from 'element-plus'
-import { useI18nStore } from '@/stores'
+import { useAuthStore, useI18nStore } from '@/stores'
 
 const props = defineProps<{
   imageInfoQueryDesuwa: ImageInfoQueryDesuwaType
@@ -15,6 +15,7 @@ const props = defineProps<{
 const {
   //
   imagesGetOneQuery,
+  isAuthorCurrent,
 } = props.imageInfoQueryDesuwa
 
 /**
@@ -162,7 +163,12 @@ const i18nStore = useI18nStore()
         <!-- 未编辑状态 -->
         <template v-if="!isEditingKeyword">
           <div>
-            <ElButton circle type="info" @click="startEditKeyword">
+            <ElButton
+              circle
+              type="info"
+              :disabled="!isAuthorCurrent"
+              @click="startEditKeyword"
+            >
               <template #icon>
                 <RiEditLine />
               </template>

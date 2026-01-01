@@ -47,6 +47,15 @@ export const queryKeys = {
     ] as const
   },
 
+  /** useImageInfoMessageListQuery */
+  imageInfoMessageList: (imageId?: string | null, pageNum?: number | null) => {
+    return [
+      'imageInfoMessageList',
+      ...definedOrEmpty(imageId),
+      ...definedOrEmpty(pageNum),
+    ] as const
+  },
+
   /**  */
   rooms: (...args: string[]) => ['rooms', ...args] as const,
   /** useRoomsGetOneQuery */

@@ -5,18 +5,23 @@ import { routerDict } from '@/config'
 import { onClickOutside } from '@vueuse/core'
 import { useWatchSourceToHoldTimeAndStep } from '@/utils'
 import { useI18nStore } from '@/stores'
+import type { ImageInfoQueryDesuwaType } from './dependencies'
 
 const props = defineProps<{
   pageTitle: string
+  imageInfoQueryDesuwa: ImageInfoQueryDesuwaType
 }>()
 
-// // 让加载动画至少显示1秒（转一圈），且转的圈数为整数
-// const { sourceHaveHold: isImageQueryRefreshRunningForAni } =
-//   useWatchSourceToHoldTimeAndStep({
-//     source: computed(() => isImageQueryRefreshRunning.value),
-//     holdMs: 1000,
-//     stepMs: 1000,
-//   })
+const { imageQueryRefresh, isImageQueryRefreshRunning } =
+  props.imageInfoQueryDesuwa
+
+// 让加载动画至少显示1秒（转一圈），且转的圈数为整数
+const { sourceHaveHold: isImageQueryRefreshRunningForAni } =
+  useWatchSourceToHoldTimeAndStep({
+    source: computed(() => isImageQueryRefreshRunning.value),
+    holdMs: 1000,
+    stepMs: 1000,
+  })
 
 const isShowMoreMenu = ref(false)
 const openMoreMenu = () => {
@@ -76,15 +81,15 @@ const i18nStore = useI18nStore()
         <slot name="chatTopBarMoreMenu"></slot>
         <!-- 菜单项 刷新 -->
         <ChatTopBarMoreMenuItem
-          :isRunning="false"
+          :isRunning="isImageQueryRefreshRunningForAni"
           :isRunnable="true"
-          @click="() => []"
+          @click="imageQueryRefresh"
         >
           <template #icon>
             <RiRestartLine
               size="18px"
               :class="{
-                'loading-spinner-1s': false,
+                'loading-spinner-1s': isImageQueryRefreshRunningForAni,
               }"
             ></RiRestartLine>
           </template>

@@ -10,6 +10,7 @@ import type {
   MessageInfoDialogPropsType,
 } from './dependencies'
 import type { MessageDeleteDialog } from '../components'
+import { useMessageLinkProcess } from '@/composables'
 
 export const useMessageControl = (data: {
   //
@@ -55,66 +56,14 @@ export const useMessageControl = (data: {
     dialogOpen()
   }
 
-  const router = useRouter()
-  const route = useRoute()
-
-  const clipboard = useClipboard()
-  const i18nStore = useI18nStore()
+  const messageLinkProcess = useMessageLinkProcess({
+    messageData: computed(() => chatRoomMessagesGetOneQuery.data.value),
+  })
 
   // 操作按钮 actionButton
   /** 复制消息链接 */
-  const actionButtonCopyMessageLink = async () => {
-    // 无数据，是不正常的，返回
-    if (chatRoomMessagesGetOneQuery.data.value == null) {
-      console.error('chatRoomMessagesGetOneQuery.data.value == null')
-      return
-    }
-    const { id: keyId, created: keyCreated } =
-      chatRoomMessagesTwowayPositioningCursorRouterQueryParametersKeyConfig
-    // 生成链接但不跳转
-    const resolved = router.resolve({
-      path: route.path,
-      query: {
-        [keyId]: chatRoomMessagesGetOneQuery.data.value.id,
-        [keyCreated]: chatRoomMessagesGetOneQuery.data.value.created,
-      },
-    })
-    // 拼接网址链接
-    const link = urlJoinWithOriginUtil(window.location.origin, resolved.href)
-    // console.log(link)
+  const actionButtonCopyMessageLink = messageLinkProcess.copyMessageLink
 
-    // 浏览支持复制
-    if (clipboard.isSupported.value) {
-      try {
-        await clipboard.copy(link)
-        potoNotification({
-          type: 'success',
-          title: i18nStore.t(
-            'chatMessageInfoDialogCopyMessageLinkSuccessTitle'
-          )(),
-          message: link,
-        })
-      } catch (error) {
-        potoNotification({
-          type: 'warning',
-          title: i18nStore.t(
-            'chatMessageInfoDialogCopyMessageLinkNotSupportedTitle'
-          )(),
-          message: link,
-        })
-      }
-    }
-    // 浏览器不支持复制
-    else {
-      potoNotification({
-        type: 'warning',
-        title: i18nStore.t(
-          'chatMessageInfoDialogCopyMessageLinkNotSupportedTitle'
-        )(),
-        message: link,
-      })
-    }
-  }
   /** 让聊天输入栏回复此消息 */
   const actionButtonchatReplyMessageSet = () => {
     // 无数据，是不正常的，返回

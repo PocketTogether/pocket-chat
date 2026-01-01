@@ -187,6 +187,7 @@ export const useMessageDisplay = (data: {
     {
       // i18n
       messages: i18nStore.t('useTimeAgoMessages')(),
+      max: 'day',
     }
   )
 

@@ -15,6 +15,8 @@ const {
   //
   imagesGetOneQuery,
   imageInfoQueryStatus,
+  imageInfoMessageListQuery,
+  isAuthorCurrent,
 } = props.imageInfoQueryDesuwa
 </script>
 
@@ -44,9 +46,14 @@ const {
         ></UpdateImageKeyword>
         <!-- 分割线 -->
         <div class="border-t-[3px] border-color-background"></div>
-        <!-- 删除图片 -->
+        <!-- 删除图片 无消息使用此图片时才显示，且需为发送者 -->
         <!-- UpdateImageIsDeleted -->
         <UpdateImageIsDeleted
+          v-if="
+            imageInfoMessageListQuery.data.value != null &&
+            imageInfoMessageListQuery.data.value.totalItems <= 0 &&
+            isAuthorCurrent
+          "
           :imageInfoQueryDesuwa="imageInfoQueryDesuwa"
         ></UpdateImageIsDeleted>
       </div>
