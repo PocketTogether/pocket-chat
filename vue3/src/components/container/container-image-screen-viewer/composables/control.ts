@@ -1,5 +1,9 @@
 import { imageGetDprFn } from '@/config'
-import type { ViewerDisplayDesuwaType, ViewerPropsType } from './dependencise'
+import type {
+  RefViewerImageType,
+  ViewerDisplayDesuwaType,
+  ViewerPropsType,
+} from './dependencise'
 import { useWindowSize } from '@vueuse/core'
 import {
   pbImageDataChooseByLargest,
@@ -11,11 +15,13 @@ export const useViewerControlDesuwa = (data: {
   //
   props: ViewerPropsType
   viewerDisplayDesuwa: ViewerDisplayDesuwaType
+  refViewerImage: RefViewerImageType
 }) => {
   const {
     //
     props,
     viewerDisplayDesuwa,
+    refViewerImage,
   } = data
 
   const {
@@ -66,6 +72,9 @@ export const useViewerControlDesuwa = (data: {
   // 切换显示图片
   const viewerImageSwitch = (imageId: string) => {
     controlReset()
+    if (viewerImageCurrentId.value === imageId) {
+      refViewerImage.value?.reset()
+    }
     viewerImageCurrentId.value = imageId
   }
 

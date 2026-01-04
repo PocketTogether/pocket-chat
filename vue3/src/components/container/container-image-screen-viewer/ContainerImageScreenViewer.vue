@@ -51,13 +51,16 @@ const {
   viewerAllSize,
 } = viewerDisplayDesuwa
 
+const refViewerImage = ref<InstanceType<typeof ViewerImage> | null>(null)
+export type RefViewerImageType = typeof refViewerImage
+
 const viewerControlDesuwa = useViewerControlDesuwa({
   //
   props,
   viewerDisplayDesuwa,
+  refViewerImage
 })
 
-const refViewerImage = ref<InstanceType<typeof ViewerImage> | null>(null)
 const isImageLoading = computed(() => {
   if (refViewerImage.value == null) {
     return false

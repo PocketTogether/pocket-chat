@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useImage } from '@vueuse/core'
+import { useEventListener, useImage } from '@vueuse/core'
 import { useViewerImageTransformDesuwa } from './composables'
 
 const props = defineProps<{
@@ -30,12 +30,18 @@ const {
   onMouseUp,
   onTouchStart,
   onTouchMove,
-
+  onTouchEnd,
   reset,
 } = useViewerImageTransformDesuwa({ allSize })
 
+// 鼠标离开窗口时也触发onMouseUp
+useEventListener(document, 'mouseleave', () => {
+  onMouseUp()
+})
+
 defineExpose({
   isImageLoading,
+  reset,
 })
 </script>
 
@@ -52,6 +58,7 @@ defineExpose({
       @mouseup="onMouseUp"
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"
+      @touchend="onTouchEnd"
     >
       <img
         ref="refImgEl"
