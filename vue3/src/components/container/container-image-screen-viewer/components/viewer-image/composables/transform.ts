@@ -54,27 +54,47 @@ export const useViewerImageTransformDesuwa = (data: {
     const screenCenterX = windowWidth / 2
     const screenCenterY = windowHeight / 2
 
-    // 用传入的新位移计算图片中心
-    const imgCenterX = screenCenterX + newX
-    const imgCenterY = screenCenterY + newY
+    // ---------------------------
+    // 1. 先判断是不是“小图”
+    //    小图定义：加上左右/上下留白后仍然小于窗口
+    // ---------------------------
+    const isSmallX = w + minLeft + minRight <= windowWidth
+    const isSmallY = h + minTop + minBottom <= windowHeight
+
+    let finalX = newX
+    let finalY = newY
+
+    if (isSmallX) {
+      // 完全锁死居中（最干脆，不会抖）
+      finalX = 0
+    }
+
+    if (isSmallY) {
+      finalY = 0
+    }
+
+    // 如果两边都是小图，直接更新然后 return，就不会走下面的“边界贴边”逻辑
+    if (isSmallX && isSmallY) {
+      translateX.value = finalX
+      translateY.value = finalY
+      return
+    }
+
+    // ---------------------------
+    // 2. 大图才进入边界计算
+    // ---------------------------
+
+    const imgCenterX = screenCenterX + finalX
+    const imgCenterY = screenCenterY + finalY
 
     const left = imgCenterX - halfW
     const right = windowWidth - (imgCenterX + halfW)
     const top = imgCenterY - halfH
     const bottom = windowHeight - (imgCenterY + halfH)
 
-    let finalX = newX
-    let finalY = newY
-
-    // 容差
-    const toleranceX = 10
-    const toleranceY = 14
-
-    // ---------------------------
     // X 方向
-    // ---------------------------
-    const leftTooBig = left >= minLeft + toleranceX
-    const rightTooBig = right >= minRight + toleranceX
+    const leftTooBig = left >= minLeft
+    const rightTooBig = right >= minRight
 
     if (leftTooBig && rightTooBig) {
       finalX = 0
@@ -86,11 +106,9 @@ export const useViewerImageTransformDesuwa = (data: {
       finalX = targetCenterX - screenCenterX
     }
 
-    // ---------------------------
     // Y 方向
-    // ---------------------------
-    const topTooBig = top >= minTop + toleranceY
-    const bottomTooBig = bottom >= minBottom + toleranceY
+    const topTooBig = top >= minTop
+    const bottomTooBig = bottom >= minBottom
 
     if (topTooBig && bottomTooBig) {
       finalY = 0
@@ -102,10 +120,8 @@ export const useViewerImageTransformDesuwa = (data: {
       finalY = targetCenterY - screenCenterY
     }
 
-    // 直接设置位移
     translateX.value = finalX
     translateY.value = finalY
-    // return { x: finalX, y: finalY }
   }
 
   // ---------------------------
@@ -113,6 +129,10 @@ export const useViewerImageTransformDesuwa = (data: {
   // ---------------------------
   const canScaleDown = computed(() => {
     const b = boundaries.value
+    if (scale.value > 1) {
+      return true
+    }
+
     return !(b.left >= 50 && b.right >= 50 && b.top >= 100 && b.bottom >= 100)
   })
 
@@ -148,9 +168,17 @@ export const useViewerImageTransformDesuwa = (data: {
     scale.value = newScale
 
     clampTranslate(newX, newY)
-    // const clamped = clampTranslate(newX, newY)
-    // translateX.value = clamped.x
-    // translateY.value = clamped.y
+  }
+
+  // 滚轮缩放值获取函数
+  const wheelScaleValFn = () => {
+    if (scale.value < 1) {
+      return 0.05
+    }
+    if (scale.value < 1.5) {
+      return 0.08
+    }
+    return 0.1
   }
 
   // ---------------------------
@@ -158,7 +186,9 @@ export const useViewerImageTransformDesuwa = (data: {
   // ---------------------------
   const onWheel = (e: WheelEvent) => {
     e.preventDefault()
-    const delta = e.deltaY > 0 ? -0.1 : 0.1
+    const dVal = wheelScaleValFn()
+    // const delta = e.deltaY > 0 ? -0.1 : 0.1
+    const delta = e.deltaY > 0 ? -dVal : dVal
     const newScale = scale.value + delta
     applyScale(newScale, e.clientX, e.clientY)
   }
@@ -189,9 +219,6 @@ export const useViewerImageTransformDesuwa = (data: {
     const newY = translateY.value + dy
 
     clampTranslate(newX, newY)
-    // const clamped = clampTranslate(newX, newY)
-    // translateX.value = clamped.x
-    // translateY.value = clamped.y
   }
 
   const onMouseUp = () => {
@@ -226,6 +253,17 @@ export const useViewerImageTransformDesuwa = (data: {
     }
   }
 
+  // 触摸缩放系数
+  const touchScaleRatioCoefficientFn = () => {
+    if (scale.value < 1) {
+      return 0.8
+    }
+    if (scale.value < 1.5) {
+      return 0.9
+    }
+    return 1
+  }
+
   const onTouchMove = (e: TouchEvent) => {
     if (e.touches.length !== 2) return
 
@@ -233,17 +271,18 @@ export const useViewerImageTransformDesuwa = (data: {
     const center = getTouchCenter(e.touches)
 
     // 缩放
-    const ratio = newDist / touchStartDist
-    const newScale = touchStartScale * ratio
+    // const ratio = newDist / touchStartDist
+    const ratio =
+      ((newDist - touchStartDist) * touchScaleRatioCoefficientFn() +
+        touchStartDist) /
+      touchStartDist
+    const newScale = touchStartScale * ratio * touchScaleRatioCoefficientFn()
     applyScale(newScale, center.x, center.y)
 
     const newX = touchStartTranslate.x + (center.x - touchStartCenter.x)
     const newY = touchStartTranslate.y + (center.y - touchStartCenter.y)
 
     clampTranslate(newX, newY)
-    // const clamped = clampTranslate(newX, newY)
-    // translateX.value = clamped.x
-    // translateY.value = clamped.y
   }
 
   // ---------------------------

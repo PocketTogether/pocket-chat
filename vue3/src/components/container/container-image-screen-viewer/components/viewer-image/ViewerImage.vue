@@ -42,7 +42,7 @@ defineExpose({
 <template>
   <div class="h-full w-full">
     <div
-      class="h-full w-full"
+      class="img-box h-full w-full cursor-grab active:cursor-grabbing"
       :style="{ transform }"
       @mousedown.stop="stopOverlayJudge"
       @mouseup.stop="stopOverlayJudge"
