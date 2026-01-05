@@ -344,7 +344,7 @@ based on element dimensions and screen resolution.)
 
 Delete any field in the config collection and restart PocketChat – that field will revert to its default value.
 
-### Config Validatio
+#### Config Validatio
 
 After modifying the `config` collection, reopen the frontend webpage (note: this refers to the user-facing site at the root path, **not** the PocketBase admin panel). Then open the browser’s developer tools and check the console.  
 If no error messages appear, the configuration is valid.
