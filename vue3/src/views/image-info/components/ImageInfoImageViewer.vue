@@ -71,7 +71,7 @@ const imageViewerMaxWidth = computed(() => {
               @click="
                 () => {
                   imageScreenViewerOpen()
-                  console.log('imageItem', imageItem)
+                  // console.log('imageItem', imageItem)
                 }
               "
             >

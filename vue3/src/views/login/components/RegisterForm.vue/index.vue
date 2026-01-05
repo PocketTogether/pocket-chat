@@ -50,6 +50,7 @@ const { isSubmitting, submit } = useRegisterFormSubmit({
         v-model="formModel.username"
         :placeholder="i18nStore.t('registerPlaceholderUsername')()"
         class="poto-el-input-line"
+        autocomplete="off"
       >
         <template #prefix>
           <RiUser4Line size="16px"></RiUser4Line>
@@ -61,6 +62,7 @@ const { isSubmitting, submit } = useRegisterFormSubmit({
         v-model="formModel.email"
         :placeholder="i18nStore.t('registerPlaceholderEmail')()"
         class="poto-el-input-line"
+        autocomplete="off"
       >
         <template #prefix>
           <RiMailLine size="16px"></RiMailLine>
@@ -73,6 +75,7 @@ const { isSubmitting, submit } = useRegisterFormSubmit({
         showPassword
         :placeholder="i18nStore.t('registerPlaceholderPassword')()"
         class="poto-el-input-line"
+        autocomplete="off"
       >
         <template #prefix>
           <RiLockUnlockLine size="16px"></RiLockUnlockLine>
@@ -85,6 +88,7 @@ const { isSubmitting, submit } = useRegisterFormSubmit({
         showPassword
         :placeholder="i18nStore.t('registerPlaceholderPasswordConfirm')()"
         class="poto-el-input-line"
+        autocomplete="off"
       >
         <template #prefix>
           <RiLockLine size="16px"></RiLockLine>

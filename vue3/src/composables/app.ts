@@ -126,7 +126,7 @@ export const useInitWebNotif = () => {
   const pbCollectionConfigQuery = usePbCollectionConfigQuery()
   ;(async () => {
     const testPermissions = await useWebNotification().ensurePermissions()
-    console.log('testPermissions', testPermissions)
+    // console.log('testPermissions', testPermissions)
 
     await watchUntilQueryReady(pbCollectionConfigQuery)
 
