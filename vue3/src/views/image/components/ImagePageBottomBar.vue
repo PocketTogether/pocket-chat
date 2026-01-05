@@ -2,7 +2,7 @@
 import { pb } from '@/lib'
 import type { ImageSelectListDesuwaType } from './dependencies'
 import { pbImageDataChooseBySmallestWithUrl } from '@/utils'
-import { useI18nStore, useSelectionImageStore } from '@/stores'
+import { useAuthStore, useI18nStore, useSelectionImageStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { useRouterHistoryTool } from '@/composables'
 import { routerDict } from '@/config'
@@ -23,7 +23,14 @@ const selectionImageStore = useSelectionImageStore()
 
 const { routerBackSafe } = useRouterHistoryTool()
 
+const authStore = useAuthStore()
+
 const canImageSelectSubmit = computed(() => {
+  // 未登录时不能确认
+  if (authStore.isValid === false || authStore.record?.id == null) {
+    return false
+  }
+  // 未选择图片时不能确认
   if (imageSelectList.value.length <= 0) {
     return false
   }
