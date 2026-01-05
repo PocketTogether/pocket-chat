@@ -14,13 +14,30 @@ export const useViewerImageTransformDesuwa = (data: {
   const translateX = ref(0)
   const translateY = ref(0)
 
-  const minLeft = 40
-  const minRight = 40
-  const minTop = 66
-  const minBottom = 70
+  // const minLeft = 40
+  const minLeft = computed(() => {
+    if (allSize.value.windowWidth > 768) {
+      return 70
+    }
+    return 30
+  })
+  // const minRight = 40
+  const minRight = computed(() => {
+    if (allSize.value.windowWidth > 768) {
+      return 70
+    }
+    return 30
+  })
 
-  const minScale = 0.5
-  const maxScale = 4
+  // const minTop = 70
+  const minTop = computed(() => 70)
+  // const minBottom = 70
+  const minBottom = computed(() => 70)
+
+  // const minScale = 0.5
+  const minScale = computed(() => 0.5)
+  // const maxScale = 4
+  const maxScale = computed(() => 4)
 
   // ---------------------------
   // 计算当前图片边界（缩放 + 位移后）
@@ -61,8 +78,8 @@ export const useViewerImageTransformDesuwa = (data: {
     // 1. 先判断是不是“小图”
     //    小图定义：加上左右/上下留白后仍然小于窗口
     // ---------------------------
-    const isSmallX = w + minLeft + minRight <= windowWidth
-    const isSmallY = h + minTop + minBottom <= windowHeight
+    const isSmallX = w + minLeft.value + minRight.value <= windowWidth
+    const isSmallY = h + minTop.value + minBottom.value <= windowHeight
 
     let finalX = newX
     let finalY = newY
@@ -96,30 +113,30 @@ export const useViewerImageTransformDesuwa = (data: {
     const bottom = windowHeight - (imgCenterY + halfH)
 
     // X 方向
-    const leftTooBig = left >= minLeft
-    const rightTooBig = right >= minRight
+    const leftTooBig = left >= minLeft.value
+    const rightTooBig = right >= minRight.value
 
     if (leftTooBig && rightTooBig) {
       finalX = 0
     } else if (leftTooBig) {
-      const targetCenterX = minLeft + halfW
+      const targetCenterX = minLeft.value + halfW
       finalX = targetCenterX - screenCenterX
     } else if (rightTooBig) {
-      const targetCenterX = windowWidth - minRight - halfW
+      const targetCenterX = windowWidth - minRight.value - halfW
       finalX = targetCenterX - screenCenterX
     }
 
     // Y 方向
-    const topTooBig = top >= minTop
-    const bottomTooBig = bottom >= minBottom
+    const topTooBig = top >= minTop.value
+    const bottomTooBig = bottom >= minBottom.value
 
     if (topTooBig && bottomTooBig) {
       finalY = 0
     } else if (topTooBig) {
-      const targetCenterY = minTop + halfH
+      const targetCenterY = minTop.value + halfH
       finalY = targetCenterY - screenCenterY
     } else if (bottomTooBig) {
-      const targetCenterY = windowHeight - minBottom - halfH
+      const targetCenterY = windowHeight - minBottom.value - halfH
       finalY = targetCenterY - screenCenterY
     }
 
@@ -137,10 +154,10 @@ export const useViewerImageTransformDesuwa = (data: {
     }
 
     return !(
-      b.left >= minLeft &&
-      b.right >= minRight &&
-      b.top >= minTop &&
-      b.bottom >= minBottom
+      b.left >= minLeft.value &&
+      b.right >= minRight.value &&
+      b.top >= minTop.value &&
+      b.bottom >= minBottom.value
     )
   })
 
@@ -154,8 +171,8 @@ export const useViewerImageTransformDesuwa = (data: {
     if (newScale < oldScale && !canScaleDown.value) return
 
     // 限制最大最小
-    if (newScale > maxScale) newScale = maxScale
-    if (newScale < minScale) newScale = minScale
+    if (newScale > maxScale.value) newScale = maxScale.value
+    if (newScale < minScale.value) newScale = minScale.value
 
     const { windowWidth, windowHeight } = allSize.value
 
