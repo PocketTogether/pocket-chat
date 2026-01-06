@@ -59,9 +59,10 @@
 <details>
 <summary>💡 <b>Development Plan</b></summary>
 
-- Image and file sending functionality
+- File sending functionality
 - User list and online status display
 - User @ mention functionality
+- Voice sending functionality
 
 </details>
 
@@ -228,6 +229,114 @@ docker run -d \
 
 docker logs PocketChat
 ```
+
+
+### PocketChat Update Guide (For Deployed Instances)
+
+#### Manual Update Guide
+
+The following steps apply to **PocketChat deployed via binary (non‑Docker)**. All operations can be performed through **1Panel**.
+
+##### 1. Stop the currently running service
+```sh
+systemctl stop pocketchat
+```
+
+##### 2. Navigate to the PocketChat installation directory
+This is usually the directory where you originally extracted the files, for example:
+```sh
+cd /root/pocketchat
+```
+
+##### 3. Back up the existing version (optional but recommended)
+To prevent data loss in case the update fails, you can zip the current directory as a backup.
+
+##### 4. Remove old version files (keep `pb_data`)
+Delete all files and folders **except** `pb_data`.
+
+> `pb_data` is the PocketBase database directory and **must be preserved**.
+
+##### 5. Download and extract the new PocketChat release
+Download the latest PocketChat release from GitHub Releases and extract it, for example:
+`pocket_chat_0.2.1_linux_amd64.zip`
+```
+pocket_chat_<VERSION>_linux_amd64.zip
+```
+
+##### 6. Important notes
+- **If you changed the port**
+  Update the port in `start.sh`:
+  ```sh
+  ./pocketbase serve --http 127.0.0.1:58090
+  ```
+
+- **If you modified frontend files**  
+  (e.g., `pb_public/index.html`)  
+  Reapply your custom changes after updating.
+
+- **Ensure the `pocketbase` binary has executable permissions**
+
+##### 7. Start the service and check its status
+Start the service:
+```sh
+systemctl start pocketchat
+```
+
+Check the service status:
+```sh
+systemctl status pocketchat
+```
+
+If the status is normal, the update is complete.
+
+#### Docker Deployment Update Guide
+
+If you deployed PocketChat using Docker, the update process is simpler.
+
+##### 1. Check the latest available image versions
+Visit:  
+https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+
+Choose the version you want to update to, for example:
+`ghcr.io/haruki1953/pocket-chat:0.2.1`
+```
+ghcr.io/haruki1953/pocket-chat:<VERSION>
+```
+
+(Optional) Pull the image in advance:
+```sh
+docker pull ghcr.io/haruki1953/pocket-chat:<VERSION>
+```
+
+Benefits of pulling beforehand:
+- You can clearly see the download progress.
+- Avoids container creation failure if the pull fails during `docker run`.
+- Cleaner separation of pull/run steps in CI/CD workflows.
+
+##### 2. Stop and remove the old container (data will not be deleted)
+```sh
+docker stop PocketChat
+docker rm PocketChat
+```
+
+> Your data is stored in the mounted directory `${HOME}/PocketChat/pb_data` and will not be lost.
+
+##### 3. Start a new container using the latest image
+```sh
+docker run -d \
+  --name PocketChat \
+  -v ${HOME}/PocketChat/pb_data:/app/pb_data \
+  -p 58090:58090 \
+  --restart unless-stopped \
+  ghcr.io/haruki1953/pocket-chat:<VERSION>
+```
+
+##### 4. Check logs to confirm everything is running correctly
+```sh
+docker logs PocketChat
+```
+
+Update complete.
 
 ## Required Post-Deployment Steps
 
