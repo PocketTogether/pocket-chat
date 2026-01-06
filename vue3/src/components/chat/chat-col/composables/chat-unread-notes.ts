@@ -1,4 +1,4 @@
-import { useScroll } from '@vueuse/core'
+import { useEventListener, useScroll } from '@vueuse/core'
 import type {
   ChatColPageRecoverDataCheckType,
   ChatDisplayDependentDataInitializationChooseType,
@@ -90,6 +90,24 @@ export const useChatRoomMessagesRealtimeUnReadNotes = (data: {
       }
     }
   )
+  // 解决当聊天高度不够屏幕时，导致新消失提示无法消除的问题
+  // mouseenter mousedown 时判断高度不够时即可立即已读
+  const whenCantScrollMarkAsReadFn = () => {
+    if (props.refScrollWarp == null) {
+      return
+    }
+    const canScroll =
+      props.refScrollWarp.scrollHeight > props.refScrollWarp.clientHeight
+    // console.log('canScroll', canScroll)
+    if (canScroll) {
+      return
+    }
+    chatRoomMessagesRealtimeReadNumberUpdateFn()
+  }
+  useEventListener(document.body, 'mouseenter', whenCantScrollMarkAsReadFn)
+  // useEventListener(document.body, 'mousedown', whenCantScrollMarkAsReadFn)
+  // useEventListener(document.body, 'pointerenter', whenCantScrollMarkAsReadFn)
+  useEventListener(document.body, 'pointerdown', whenCantScrollMarkAsReadFn)
 
   return {
     chatRoomMessagesRealtimeUnReadNumber,

@@ -2,7 +2,7 @@
 import { pb } from '@/lib'
 import type { ImageSelectListDesuwaType } from './dependencies'
 import { pbImageDataChooseBySmallestWithUrl } from '@/utils'
-import { useI18nStore, useSelectionImageStore } from '@/stores'
+import { useAuthStore, useI18nStore, useSelectionImageStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { useRouterHistoryTool } from '@/composables'
 import { routerDict } from '@/config'
@@ -23,7 +23,14 @@ const selectionImageStore = useSelectionImageStore()
 
 const { routerBackSafe } = useRouterHistoryTool()
 
+const authStore = useAuthStore()
+
 const canImageSelectSubmit = computed(() => {
+  // 未登录时不能确认
+  if (authStore.isValid === false || authStore.record?.id == null) {
+    return false
+  }
+  // 未选择图片时不能确认
   if (imageSelectList.value.length <= 0) {
     return false
   }
@@ -55,7 +62,7 @@ const i18nStore = useI18nStore()
   <div class="image-page-bottom-bar relative flow-root">
     <!-- bar-box 补丁，为解决firefox中盒子边缘与外阴影的缝隙问题 -->
     <div
-      class="pointer-events-none absolute bottom-[-0.5px] left-[-0.5px] right-[-0.5px] top-[-0.5px] z-[4] rounded-t-[24px] border-2 border-color-background-soft"
+      class="pointer-events-none absolute bottom-0 left-[-0.5px] right-[-0.5px] top-[-0.5px] z-[4] rounded-t-[24px] border-2 border-color-background-soft"
     ></div>
     <div
       class="image-page-bottom-box bar-box relative z-[3] flow-root bg-color-background-soft pb-1"

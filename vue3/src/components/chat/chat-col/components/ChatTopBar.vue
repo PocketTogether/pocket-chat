@@ -150,7 +150,7 @@ const roomTitle = computed(() => {
     </Transition>
     <!-- bar-box 补丁，为解决firefox中盒子边缘与外阴影的缝隙问题 -->
     <div
-      class="pointer-events-none absolute bottom-[-0.5px] left-[-0.5px] right-[-0.5px] top-[-0.5px] z-[4] rounded-b-[24px] border-2 border-color-background-soft"
+      class="pointer-events-none absolute bottom-[-0.5px] left-[-0.5px] right-[-0.5px] top-0 z-[4] rounded-b-[24px] border-2 border-color-background-soft"
     ></div>
     <div class="top-bar-box relative z-[3] flow-root bg-color-background-soft">
       <div class="">

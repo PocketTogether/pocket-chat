@@ -24,6 +24,7 @@ const allSize = computed(() => props.viewerAllSize)
 
 const {
   transform,
+  transition,
   onWheel,
   onMouseDown,
   onMouseMove,
@@ -34,11 +35,7 @@ const {
   reset,
 } = useViewerImageTransformDesuwa({ allSize })
 
-// 鼠标离开窗口时也触发onMouseUp
-useEventListener(document, 'mouseleave', onMouseUp)
-useEventListener(document, 'visibilitychange', onMouseUp)
-useEventListener(window, 'blur', onMouseUp)
-useEventListener(window, 'mouseup', onMouseUp)
+// 鼠标离开窗口时抬起时也触发onMouseUp
 useEventListener(window, 'pointerup', onMouseUp)
 
 defineExpose({
@@ -51,7 +48,10 @@ defineExpose({
   <div class="h-full w-full">
     <div
       class="img-box h-full w-full cursor-grab active:cursor-grabbing"
-      :style="{ transform }"
+      :style="{
+        transform,
+        transition,
+      }"
       @mousedown.stop="stopOverlayJudge"
       @mouseup.stop="stopOverlayJudge"
       @wheel="onWheel"

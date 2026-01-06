@@ -221,18 +221,19 @@ export const useViewerImageTransformDesuwa = (data: {
   // ---------------------------
   // 鼠标拖动
   // ---------------------------
-  let dragging = false
+  // let isDragging = false
+  const isDragging = ref(false)
   let lastX = 0
   let lastY = 0
 
   const onMouseDown = (e: MouseEvent) => {
-    dragging = true
+    isDragging.value = true
     lastX = e.clientX
     lastY = e.clientY
   }
 
   const onMouseMove = (e: MouseEvent) => {
-    if (!dragging) return
+    if (!isDragging.value) return
 
     const dx = e.clientX - lastX
     const dy = e.clientY - lastY
@@ -247,7 +248,7 @@ export const useViewerImageTransformDesuwa = (data: {
   }
 
   const onMouseUp = () => {
-    dragging = false
+    isDragging.value = false
   }
 
   // ---------------------------
@@ -258,8 +259,10 @@ export const useViewerImageTransformDesuwa = (data: {
   let touchStartScale = 1
   let touchStartTranslate = { x: 0, y: 0 }
 
-  let isSingleFinger = false
-  let isPinching = false
+  // let isSingleFinger = false
+  const isSingleFinger = ref(false)
+  // let isPinching = false
+  const isPinching = ref(false)
   let singleStart = { x: 0, y: 0 }
 
   const getTouchDist = (t: TouchList) => {
@@ -276,8 +279,8 @@ export const useViewerImageTransformDesuwa = (data: {
   const onTouchStart = (e: TouchEvent) => {
     if (e.touches.length === 1) {
       // 单指模式
-      isSingleFinger = true
-      isPinching = false
+      isSingleFinger.value = true
+      isPinching.value = false
 
       singleStart = {
         x: e.touches[0].clientX,
@@ -288,8 +291,8 @@ export const useViewerImageTransformDesuwa = (data: {
 
     if (e.touches.length === 2) {
       // 双指模式
-      isPinching = true
-      isSingleFinger = false
+      isPinching.value = true
+      isSingleFinger.value = false
 
       touchStartDist = getTouchDist(e.touches)
       touchStartCenter = getTouchCenter(e.touches)
@@ -312,12 +315,13 @@ export const useViewerImageTransformDesuwa = (data: {
 
   const onTouchMove = (e: TouchEvent) => {
     // -------------------------
-    // 双指 pinch 缩放 + 平移
+    // 双指 pinch 缩放 + 平移（连续差分）
     // -------------------------
-    if (isPinching && e.touches.length === 2) {
+    if (isPinching.value && e.touches.length === 2) {
       const newDist = getTouchDist(e.touches)
       const center = getTouchCenter(e.touches)
 
+      // 缩放
       const ratio =
         ((newDist - touchStartDist) * touchScaleRatioCoefficientFn() +
           touchStartDist) /
@@ -326,23 +330,41 @@ export const useViewerImageTransformDesuwa = (data: {
       const newScale = touchStartScale * ratio
       applyScale(newScale, center.x, center.y)
 
-      const newX = touchStartTranslate.x + (center.x - touchStartCenter.x)
-      const newY = touchStartTranslate.y + (center.y - touchStartCenter.y)
+      // 平移（连续差分）
+      const dx = center.x - touchStartCenter.x
+      const dy = center.y - touchStartCenter.y
+
+      const newX = touchStartTranslate.x + dx
+      const newY = touchStartTranslate.y + dy
       clampTranslate(newX, newY)
+
+      // ⭐关键：更新“上一帧”的参考点
+      touchStartCenter = center
+      touchStartTranslate = { x: translateX.value, y: translateY.value }
+      touchStartDist = newDist
+      touchStartScale = scale.value
 
       return
     }
 
     // -------------------------
-    // 单指拖拽
+    // 单指拖拽（连续差分）
     // -------------------------
-    if (isSingleFinger && e.touches.length === 1) {
-      const dx = e.touches[0].clientX - singleStart.x
-      const dy = e.touches[0].clientY - singleStart.y
+    if (isSingleFinger.value && e.touches.length === 1) {
+      const x = e.touches[0].clientX
+      const y = e.touches[0].clientY
+
+      const dx = x - singleStart.x
+      const dy = y - singleStart.y
 
       const newX = touchStartTranslate.x + dx
       const newY = touchStartTranslate.y + dy
       clampTranslate(newX, newY)
+
+      // ⭐关键：更新“上一帧”的参考点
+      singleStart.x = x
+      singleStart.y = y
+      touchStartTranslate = { x: translateX.value, y: translateY.value }
 
       return
     }
@@ -350,18 +372,18 @@ export const useViewerImageTransformDesuwa = (data: {
 
   const onTouchEnd = (e: TouchEvent) => {
     if (e.touches.length === 0) {
-      isSingleFinger = false
-      isPinching = false
+      isSingleFinger.value = false
+      isPinching.value = false
     }
 
     // if (e.touches.length === 1) {
     //   // 从双指变成单指，不自动进入单指拖拽
-    //   isPinching = false
+    //   isPinching.value = false
     // }
     if (e.touches.length === 1) {
       // 自动进入单指拖拽
-      isPinching = false
-      isSingleFinger = true
+      isPinching.value = false
+      isSingleFinger.value = true
       // 关键：把当前触点当成新的单指起点
       singleStart = {
         x: e.touches[0].clientX,
@@ -384,9 +406,19 @@ export const useViewerImageTransformDesuwa = (data: {
     scale,
     translateX,
     translateY,
+    isPinching,
+    isDragging,
 
     transform: computed(() => {
       return `translate(${translateX.value}px, ${translateY.value}px) scale(${scale.value})`
+    }),
+    transition: computed(() => {
+      if (isDragging.value || isPinching.value || isSingleFinger.value) {
+        // 连续操作：平滑补偿
+        return 'transform 50ms linear'
+      }
+      // 非交互：自然回弹/对齐
+      return 'transform 200ms ease'
     }),
 
     onWheel,
