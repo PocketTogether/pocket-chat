@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-01-07
+
+<details>
+<summary>📝 查看中文版本 (Chinese Version)</summary>
+
+### 修改
+- Improve some issues by @haruki1953 in https://github.com/haruki1953/pocket-chat/pull/16
+- 图片查看器中，让加载遮罩也阻止点击关闭
+- 用户头像大小限制与格式限制放宽一些，1MB
+
+### 修复
+
+- 解决手机浏览器可能看不到底栏的问题
+
+</details>
+
+### Changed
+
+- Improve some issues by @haruki1953 in https://github.com/haruki1953/pocket-chat/pull/16
+- In the image viewer, make the loading overlay also block click-to-close actions.  
+- Relax the size and format restrictions for user avatars, allowing up to 1 MB.  
+
+### Fixed
+
+- Fix the issue where the bottom bar may not be visible in mobile browsers.
+
 ## [0.2.1] - 2026-01-06
 
 <details>
@@ -89,6 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pocket-chat: 一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3. 
 
-[unreleased]: https://github.com/haruki1953/pocket-chat/compare/v0.2.1...HEAD
-[0.2.0]: https://github.com/haruki1953/pocket-chat/compare/v0.2.0...v0.2.1
+[unreleased]: https://github.com/haruki1953/pocket-chat/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/haruki1953/pocket-chat/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/haruki1953/pocket-chat/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/haruki1953/pocket-chat/compare/v0.1.0...v0.2.0
