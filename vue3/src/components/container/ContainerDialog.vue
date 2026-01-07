@@ -86,7 +86,7 @@ const { onOverlayDown, onOverlayUp, stopOverlayJudge } = useElementOverlayClick(
           @mousedown="onOverlayDown"
           @mouseup="onOverlayUp"
         >
-          <ElScrollbar height="100vh">
+          <ElScrollbar height="100dvh">
             <!-- 内容左右距屏幕最小16px -->
             <div class="mx-[16px]">
               <!-- 内容最大宽度500px，居中 -->
@@ -98,7 +98,7 @@ const { onOverlayDown, onOverlayUp, stopOverlayJudge } = useElementOverlayClick(
                 }"
               >
                 <!-- 高度最小为屏幕高度，以实现如果内容高度较小就垂直居中 -->
-                <!-- <div class="flex min-h-screen items-center">
+                <!-- <div class="flex min-h-dvh items-center">
                   <div class="flex-1 overflow-hidden">
                   </div>
                 </div> -->

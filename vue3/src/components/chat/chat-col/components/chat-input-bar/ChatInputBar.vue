@@ -580,7 +580,7 @@ const autosizeElInput = computed(() => {
   box-shadow: 0 0 6px 6px var(--color-background);
   right: 24px;
   max-width: calc(100% - (2 * 24px));
-  max-height: calc(100vh - 100px);
+  max-height: calc(100dvh - 100px);
   overflow-y: auto;
   overflow-x: hidden;
 }

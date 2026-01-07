@@ -287,7 +287,7 @@ const chatRoomMessagesForShowWithOnMounted = computed(() => {
         "
         class="pointer-events-none absolute top-0 z-10 h-full w-full"
       >
-        <div class="sticky top-0 flex h-screen items-center justify-center">
+        <div class="sticky top-0 flex h-dvh items-center justify-center">
           <div class="h-[50px] w-[50px] overflow-hidden text-color-text-soft">
             <RiLoader3Line
               class="loading-spinner-800ms"
@@ -304,7 +304,7 @@ const chatRoomMessagesForShowWithOnMounted = computed(() => {
         "
         class="pointer-events-none absolute top-0 z-10 h-full w-full"
       >
-        <div class="sticky top-0 flex h-screen items-center justify-center">
+        <div class="sticky top-0 flex h-dvh items-center justify-center">
           <div
             class="h-[100px] w-[100px] overflow-hidden text-color-background-soft"
           >

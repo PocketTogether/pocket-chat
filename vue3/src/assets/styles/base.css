@@ -23,7 +23,7 @@ html {
 }
 
 body {
-  height: 100vh;
+  height: 100dvh;
   color: var(--color-text);
   background: var(--color-background);
   transition:

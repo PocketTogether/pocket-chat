@@ -60,10 +60,7 @@ const allowUsersToRegister = computed(() => {
   <div>
     <!-- isMounted实现出现时过渡动画 -->
     <Transition name="fade">
-      <div
-        v-if="isMounted"
-        class="flex min-h-screen items-center justify-center"
-      >
+      <div v-if="isMounted" class="flex min-h-dvh items-center justify-center">
         <div class="w-full max-w-[1000px]">
           <div
             :class="{

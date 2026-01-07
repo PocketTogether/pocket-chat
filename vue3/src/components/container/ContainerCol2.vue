@@ -66,8 +66,8 @@ defineExpose({
         </div>
       </div>
       <div :class="col2Twcss" :style="col2StyleValue">
-        <div class="slot-col2-with-el-scrollbar sticky top-0 h-screen">
-          <ElScrollbar ref="refElScrollbar" height="100vh">
+        <div class="slot-col2-with-el-scrollbar sticky top-0 h-dvh">
+          <ElScrollbar ref="refElScrollbar" height="100dvh">
             <div class="slot-col2">
               <slot name="col2"></slot>
             </div>
