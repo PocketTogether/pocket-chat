@@ -32,6 +32,7 @@ const {
   onTouchStart,
   onTouchMove,
   onTouchEnd,
+  onPointerDown,
   reset,
 } = useViewerImageTransformDesuwa({ allSize })
 
@@ -61,6 +62,7 @@ defineExpose({
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"
       @touchend="onTouchEnd"
+      @pointerdown="onPointerDown"
     >
       <img
         ref="refImgEl"
