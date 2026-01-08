@@ -266,7 +266,6 @@ const goImageInfoPage = (data: {
                         :imageList="
                           chatRoomMessagesGetOneQuery.data.value.expand.images
                         "
-                        bgTwcss="bg-color-background-mute"
                       >
                         <IGVSoltHoverSlideInfoGo
                           :imageItem="imageItem"

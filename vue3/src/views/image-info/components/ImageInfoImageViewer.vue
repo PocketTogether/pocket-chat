@@ -64,7 +64,6 @@ const imageViewerMaxWidth = computed(() => {
           <ImageGroupViewer
             v-slot="{ imageItem }"
             :imageList="[imageInfoDataWithRealtime]"
-            bgTwcss="bg-color-background-mute"
           >
             <div
               class="h-full cursor-pointer"
