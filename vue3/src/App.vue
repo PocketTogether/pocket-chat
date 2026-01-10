@@ -31,12 +31,12 @@ const i18nStore = useI18nStore()
 const pbCollectionConfigQuery = usePbCollectionConfigQuery()
 // 个人信息
 const profileQuery = useProfileQuery()
-// 聊天页消息 游标分页无限查询
-const chatRoomMessagesInfiniteTwowayQuery =
-  useChatRoomMessagesInfiniteTwowayQuery({
-    roomId: computed(() => ''),
-    twowayPositioningCursorData: computed(() => null),
-  })
+// // 聊天页消息 游标分页无限查询
+// const chatRoomMessagesInfiniteTwowayQuery =
+//   useChatRoomMessagesInfiniteTwowayQuery({
+//     roomId: computed(() => ''),
+//     twowayPositioningCursorData: computed(() => null),
+//   })
 
 const websiteName = computed(
   () => pbCollectionConfigQuery.data.value?.['website-name']
@@ -67,7 +67,7 @@ useFirstDataLoadingAndAnimationMaskClose({
     // 遮罩的关闭会等待主要的query
     await watchUntilQueryReady(pbCollectionConfigQuery)
     await watchUntilQueryReady(profileQuery)
-    await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery)
+    // await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery)
   },
 })
 
