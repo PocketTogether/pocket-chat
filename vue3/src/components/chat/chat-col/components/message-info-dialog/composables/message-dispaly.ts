@@ -67,7 +67,7 @@ export const useMessageDispaly = (data: {
     return pb.files.getURL(
       currentMessageUserData.value,
       currentMessageUserData.value.avatar,
-      { thumb: fileUserAvatarConfig.thumb200x200f }
+      { thumb: fileUserAvatarConfig.thumb200x200 }
     )
   })
 
@@ -122,7 +122,7 @@ export const useMessageDispaly = (data: {
     return pb.files.getURL(
       replyMessageUserData.value,
       replyMessageUserData.value.avatar,
-      { thumb: fileUserAvatarConfig.thumb200x200f }
+      { thumb: fileUserAvatarConfig.thumb200x200 }
     )
   })
 

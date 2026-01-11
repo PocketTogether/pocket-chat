@@ -19,9 +19,9 @@
   <!-- License -->
   <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"></a>
   <!-- GitHub Release -->
-  <a href="https://github.com/haruki1953/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/PocketTogether/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
   <!-- GitHub Activity -->
-  <a href="https://github.com/haruki1953/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/PocketTogether/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
   </br>
   <!-- Discord -->
   <a href="https://discord.gg/aZq6u3Asak"><img alt="Discord" src="https://img.shields.io/discord/1192346949635026944?logo=discord&logoColor=white&label=Discord&color=4285F4&style=for-the-badge"></a>
@@ -39,7 +39,7 @@
 - Supports message reply, edit, delete, and jumping to a message via its link.
 - Supports in-site new message notifications and desktop new message notifications.
 - Supports image sending, image viewing, and image metadata editing
-- Project address: https://github.com/haruki1953/pocket-chat
+- Project address: https://github.com/PocketTogether/pocket-chat
 - Live demo: https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
@@ -74,7 +74,7 @@ Since version v0.1.0, [Docker deployment](#deploy-with-docker) has been supporte
 
 ### Quick Start on Windows
 
-All PocketChat releases are published on GitHub. Download the latest zip package from https://github.com/haruki1953/pocket-chat/releases, for example `pocket_chat_0.0.1_windows_amd64.zip`.
+All PocketChat releases are published on GitHub. Download the latest zip package from https://github.com/PocketTogether/pocket-chat/releases, for example `pocket_chat_0.0.1_windows_amd64.zip`.
 
 ![](./assets/image.png)
 
@@ -90,7 +90,8 @@ Creating a superuser is a [**required step after deployment**](#required-post-de
 
 `http://127.0.0.1:58090/_/` → PocketChat admin panel (accessible after creating the superuser)
 
-- `users` collection: view all registered users
+- `users` collection: can view all users and modify user permissions.  
+  See [users collection – user permission control](#users-collection--user-permission-control) (supported since `v0.3.0`)
 - `config` collection: project-specific settings (see [Config collection settings](#config-collection-settings))
 - `messages` collection: view all sent messages
 - `images` collection: view all uploaded images (supported since version `v0.2.0`).
@@ -214,7 +215,7 @@ systemctl disable pocketchat
 
 ### Deploy with Docker
 
-You can find the latest image at: https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+You can find the latest image at: https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 ```sh
 mkdir -p ${HOME}/PocketChat/pb_data
@@ -225,7 +226,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/haruki1953/pocket-chat:latest
+  ghcr.io/PocketTogether/pocket-chat:latest
 
 docker logs PocketChat
 ```
@@ -295,17 +296,17 @@ If you deployed PocketChat using Docker, the update process is simpler.
 
 ##### 1. Check the latest available image versions
 Visit:  
-https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 Choose the version you want to update to, for example:
-`ghcr.io/haruki1953/pocket-chat:0.2.1`
+`ghcr.io/PocketTogether/pocket-chat:0.2.1`
 ```
-ghcr.io/haruki1953/pocket-chat:<VERSION>
+ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 (Optional) Pull the image in advance:
 ```sh
-docker pull ghcr.io/haruki1953/pocket-chat:<VERSION>
+docker pull ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 Benefits of pulling beforehand:
@@ -328,7 +329,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/haruki1953/pocket-chat:<VERSION>
+  ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 ##### 4. Check logs to confirm everything is running correctly
@@ -351,16 +352,44 @@ Fill in email and password. The email does not need to be real (e.g. `admin@admi
 ### Config collection settings
 
 <!-- ![](./assets/Snipaste_2025-11-17_15-30-28.png) -->
-![](./assets/Snipaste_2026-01-05_10-56-53.png)
+<!-- ![](./assets/Snipaste_2026-01-05_10-56-53.png) -->
+![](./assets/Snipaste_2026-01-11_18-35-25.png)
 
 - `website-name` – Site name displayed on login page and top-left of chat
+
 - [`external-links-to-social-media-icons-etc`](#social-media-and-other-icon-external-links-external-links-to-social-media-icons-etc) – Social media icon links shown at the bottom of the login page
+
+- [`admin-contact-info-for-permission`](#admin-contact-info-for-permission) : Administrator contact information, mainly used to display to users when they lack permissions (supported since `v0.3.0`)
+
 - [`upload-image-process-options`](#image-processing-configuration-upload-image-process-options) – Image processing configuration `v0.2.0`
+
 - `password-update-rate-limit-second` – Seconds to wait before another password change request is allowed
+
 - `email-verify-rate-limit-second` – Seconds to wait before another email verification request is allowed
+
 - `email-update-rate-limit-second` – Seconds to wait before another email update request is allowed
+
 - `allow-anonymous-view` – `true` = guests can view chat; `false` = only logged-in users
+
 - `allow-users-to-register` – `true` = registration enabled; `false` = registration disabled and form hidden
+
+- `user-register-oauth2-only` : Whether to allow OAuth2-only registration. Default value: `false` (supported since `v0.3.0`)
+  - When `true`, only OAuth2 registration is allowed. Email-password registration is disabled, and the registration form will not appear on the login page.
+  - When `false`, both OAuth2 registration and email-password registration are allowed.
+  - Note: When `allow-users-to-register` is `false`, registration is completely disabled, and `user-register-oauth2-only` does not take effect.
+
+- `user-can-send-message-default` : Whether sending messages is allowed by default. Default value: `true` (supported since `v0.3.0`)
+  - Controls the system’s default message-sending permission when the `canSendMessage` field in the users collection is not set.  
+    This configuration only applies when the user record does not explicitly specify `"YES"` or `"NO"`.  
+    See [users collection – user permission control](#users-collection--user-permission-control)
+  - `true`: When `canSendMessage` is not set, the user is allowed to send messages by default.
+  - `false`: When `canSendMessage` is not set, the user is not allowed to send messages by default.
+
+- `user-can-upload-image-default` : Whether uploading images is allowed by default. Default value: `true` (supported since `v0.3.0`)
+  - Same behavior as `user-can-send-message-default`.
+  - `true`: When `canUploadImage` is not set, the user is allowed to upload images by default.
+  - `false`: When `canUploadImage` is not set, the user is not allowed to upload images by default.
+
 
 #### Social media and other icon external links (external-links-to-social-media-icons-etc)
 
@@ -372,7 +401,7 @@ Default value:
 [
   {
     "icon": "ri-github-line",
-    "link": "https://github.com/haruki1953/pocket-chat",
+    "link": "https://github.com/PocketTogether/pocket-chat",
     "name": "github"
   },
   {
@@ -393,6 +422,21 @@ Set to `[]` to disable.
 Icons come from https://remixicon.com/ (use the class name).
 
 ![](./assets/Snipaste_2025-11-17_15-50-13.png)
+
+### admin-contact-info-for-permission
+
+Default value: empty string `""`
+
+Recommended text (use `\n` for line breaks):
+
+```
+"Discord - discord.gg/aZq6u3Asak\nTelegram - t.me/PocketTogether"
+```
+
+Displayed in the frontend as:
+
+![](./assets/Snipaste_2026-01-11_19-19-53.jpg)
+
 
 #### Image processing configuration (upload-image-process-options)
 
@@ -478,6 +522,35 @@ key: upload-image-process-options
 
 ![](./assets/Snipaste_2026-01-05_13-30-55.png)
 
+### users collection – user permission control
+
+![](./assets/Snipaste_2026-01-11_19-27-16.png)
+
+#### canSendMessage
+Used to control whether the user has permission to send messages.  
+- Field type: **select**, options:
+- `"YES"`: Explicitly allow the user to send messages  
+- `"NO"`: Explicitly forbid the user from sending messages  
+- `N/A` (default): Not set. The system will use  
+  **user-can-send-message-default** from the config collection.
+
+#### canUploadImage
+Used to control whether the user has permission to upload images.  
+- Field type: **select**, options:
+- `"YES"`: Explicitly allow the user to upload images  
+- `"NO"`: Explicitly forbid the user from uploading images  
+- `N/A` (default): Not set. The system will use  
+  **user-can-upload-image-default** from the config collection.
+
+#### isBanned
+Used to mark whether a user is banned.  
+- Field type: **boolean**  
+- **false** (default): User is normal and can log in and use all features  
+- **true**: User is banned and cannot access any content
+
+Ban effect:  
+![](./assets/Snipaste_2026-01-11_19-37-25.png)
+
 ### Application settings
 
 ![](./assets/Snipaste_2025-11-17_16-30-18.png)
@@ -544,7 +617,7 @@ After creation you get Client ID and Client Secret.
 
 ![](./assets/Snipaste_2025-11-17_19-38-39.png)
 
-You can also set an app logo, e.g. https://github.com/haruki1953/pocket-chat/blob/master/resources/icon1.png
+You can also set an app logo, e.g. https://github.com/PocketTogether/pocket-chat/blob/master/resources/icon1.png
 
 ## Development Guide
 
@@ -553,6 +626,7 @@ You can also set an app logo, e.g. https://github.com/haruki1953/pocket-chat/blo
 - `pocketbase/` — Folder containing PocketBase  
 - `vue3/` — Vue3 frontend folder  
 - `project-tools-node/` — Project packaging tool scripts folder  
+- `pocketbase-typegen/` is the PocketBase type-generation tool.
 - `resources/` — Image resources used in the project  
 - `note/` — Development notes (few in this project, more in [PocketTogether](#about-pockettogether))  
 - `assets/` — Images used in README.md  
@@ -598,13 +672,34 @@ pnpm lint
 #### Generate Backend Database TS Types
 
 This project uses [pocketbase-typegen](https://www.npmjs.com/package/pocketbase-typegen) to generate PocketBase backend data types for the frontend:
+`"pocketbase-typegen": "^1.3.1",`
 
+【260111】I modified **pocketbase-typegen** and localized it into the `pocketbase-typegen/` directory.  
+You should install its dependencies inside that directory before using it from the frontend:
 ```sh
+# pwd
+# /e/Project/pocket-chat/pocketbase-typegen
+pnpm i
+```
+
+Using it from the frontend:
+```sh
+# pwd
+# /e/Project/pocket-chat/vue3
+
 pnpm pb-typegen-json
 
-# "pb-typegen-json": "pocketbase-typegen --json ../pocketbase/pb_schema.json --out ./src/lib/pocketbase/pocketbase-types.ts"
+# package.json - scripts
+# "pb-typegen-json": "node scripts/pocketbase-typegen.cjs"
+```
+
+For more details about `pocketbase-typegen/`, refer to:
+```
+vue3/scripts/pocketbase-typegen.cjs
+pocketbase-typegen/README.md
+pocketbase-typegen/README-pocketbase-typegen.md
 ```
 
 ### About PocketTogether
 
-[PocketTogether](https://github.com/haruki1953/pocket-together) is a real-time group chat and synchronized watching platform built on PocketBase and Vue3 (currently in development). PocketChat is essentially a partial product of PocketTogether.
+[PocketTogether](https://github.com/PocketTogether/pocket-together) is a real-time group chat and synchronized watching platform built on PocketBase and Vue3 (currently in development). PocketChat is essentially a partial product of PocketTogether.

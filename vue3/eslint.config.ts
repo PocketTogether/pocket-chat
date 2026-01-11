@@ -33,6 +33,8 @@ export default defineConfigWithVueTs(
     // 自动生成的 pocketbase-types 就不用eslint了
     // 'pocketbase-types.ts',
     './src/lib/pocketbase/pocketbase-types.ts',
+    // 工具脚本不用
+    './scripts/**',
   ]),
 
   pluginVue.configs['flat/essential'],

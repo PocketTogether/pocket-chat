@@ -394,6 +394,80 @@ export const useViewerImageTransformDesuwa = (data: {
   }
 
   // ---------------------------
+  // 双击检测状态
+  // ---------------------------
+  let lastTapTime = 0
+  let lastTapX = 0
+  let lastTapY = 0
+
+  // 点击间隔需小于250且大于50 ms
+  const MIN_DOUBLE_TAP_INTERVAL = 50
+  const MAX_DOUBLE_TAP_INTERVAL = 300
+  // 两次点击位置需很近 px
+  const DOUBLE_TAP_DISTANCE = 50
+
+  // ---------------------------
+  // 双击放大与还原
+  // ---------------------------
+  const onPointerDown = (e: PointerEvent) => {
+    // 将绑定的是pointerdown时间
+    // 点击间隔需小于一定时间
+    // 两次点击位置需很近
+    // 未缩放时进行放大
+    // 已缩放时则重置
+
+    const now = performance.now()
+    const x = e.clientX
+    const y = e.clientY
+
+    const timeDiff = now - lastTapTime
+    const dist = Math.hypot(x - lastTapX, y - lastTapY)
+
+    const isDoubleTap =
+      timeDiff > MIN_DOUBLE_TAP_INTERVAL &&
+      timeDiff < MAX_DOUBLE_TAP_INTERVAL &&
+      dist < DOUBLE_TAP_DISTANCE
+
+    if (isDoubleTap) {
+      // ---------------------------
+      // 双击触发
+      // ---------------------------
+      if (isNoTransformFn()) {
+        // 未缩放 → 放大（以点击点为中心）
+        // 缩放值，可自定义，例如 1.8 或 2.5
+        const targetScale = 2
+        applyScale(targetScale, x, y)
+      } else {
+        // 已缩放 → 重置
+        reset()
+      }
+
+      // 重置状态，避免三连击触发
+      lastTapTime = 0
+      return
+    }
+
+    // 记录本次点击
+    lastTapTime = now
+    lastTapX = x
+    lastTapY = y
+  }
+
+  // 是否为初始值（未缩放）
+  const isNoTransformFn = () => {
+    // 缩放容差是 0.05
+    const scaleTolerance = 0.05
+    // 位移容差是 20px
+    const translateTolerance = 20
+
+    const scaleOk = Math.abs(scale.value - 1) <= scaleTolerance
+    const xOk = Math.abs(translateX.value) <= translateTolerance
+    const yOk = Math.abs(translateY.value) <= translateTolerance
+
+    return scaleOk && xOk && yOk
+  }
+
+  // ---------------------------
   // 重置
   // ---------------------------
   const reset = () => {
@@ -428,6 +502,7 @@ export const useViewerImageTransformDesuwa = (data: {
     onTouchStart,
     onTouchMove,
     onTouchEnd,
+    onPointerDown,
 
     reset,
   }

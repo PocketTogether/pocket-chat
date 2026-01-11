@@ -9,7 +9,11 @@ import {
   ImageGroupViewer,
   TextWithLink,
 } from '@/components'
-import { useRouteControlDialog, useRouterHistoryTool } from '@/composables'
+import {
+  useRouteControlDialog,
+  useRouterHistoryTool,
+  useUserPermissionsDesuwa,
+} from '@/composables'
 import { useDateFormatYYYYMMDDHHmmss } from '@/utils'
 import type {
   ChatDisplayDependentDataInitializationChooseType,
@@ -98,6 +102,8 @@ const goImageInfoPage = (data: {
   // await nextTick()
   routerGoImageInfoPage(data)
 }
+
+const { permissionSendMessage } = useUserPermissionsDesuwa()
 </script>
 
 <template>
@@ -266,7 +272,6 @@ const goImageInfoPage = (data: {
                         :imageList="
                           chatRoomMessagesGetOneQuery.data.value.expand.images
                         "
-                        bgTwcss="bg-color-background-mute"
                       >
                         <IGVSoltHoverSlideInfoGo
                           :imageItem="imageItem"
@@ -344,8 +349,8 @@ const goImageInfoPage = (data: {
                   <RiLink size="24px"></RiLink>
                 </div>
               </div>
-              <!-- 用户已登录才显示的操作按钮 -->
-              <template v-if="authStore.isValid">
+              <!-- 用户已登录，且有权限才显示的操作按钮 -->
+              <template v-if="authStore.isValid && permissionSendMessage">
                 <!-- 收藏 -->
                 <!-- <div
                   class="flow-root cursor-pointer transition-colors hover:text-el-warning"

@@ -73,6 +73,7 @@ const {
   toggleShowMoreMenu,
   targetMoreMenu,
   targetMoreMenuToggleShowButtonEl,
+  openPermissionAdminContactNotif,
 } = chatInputBarDispaly
 
 // 封装 聊天输入栏的操作逻辑
@@ -200,6 +201,18 @@ const autosizeElInput = computed(() => {
                 class="select-none truncate text-[14px] font-bold text-color-text"
               >
                 {{ i18nStore.t('chatInputBarLoginText')() }}
+              </div>
+            </div>
+          </template>
+          <!-- 无发送消息权限 -->
+          <template
+            v-else-if="chatInputBarFunctionChoose === 'noPermissionSendMessage'"
+          >
+            <div class="mr-[4px] flex h-full items-center justify-end">
+              <div
+                class="select-none truncate text-[14px] font-bold text-color-text"
+              >
+                {{ i18nStore.t('permissionNoPermissionSendMessageText')() }}
               </div>
             </div>
           </template>
@@ -404,6 +417,20 @@ const autosizeElInput = computed(() => {
             >
               <template #icon>
                 <RiLoginBoxLine></RiLoginBoxLine>
+              </template>
+            </ElButton>
+          </template>
+          <!-- 无发送消息权限 -->
+          <template
+            v-else-if="chatInputBarFunctionChoose === 'noPermissionSendMessage'"
+          >
+            <ElButton
+              circle
+              type="info"
+              @click="openPermissionAdminContactNotif"
+            >
+              <template #icon>
+                <RiInformationLine></RiInformationLine>
               </template>
             </ElButton>
           </template>

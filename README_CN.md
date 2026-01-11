@@ -19,9 +19,9 @@
   <!-- License -->
   <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"></a>
   <!-- GitHub Release -->
-  <a href="https://github.com/haruki1953/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/PocketTogether/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
   <!-- GitHub Activity -->
-  <a href="https://github.com/haruki1953/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/PocketTogether/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
   </br>
   <!-- Discord -->
   <a href="https://discord.gg/aZq6u3Asak"><img alt="Discord" src="https://img.shields.io/discord/1192346949635026944?logo=discord&logoColor=white&label=Discord&color=4285F4&style=for-the-badge"></a>
@@ -39,7 +39,7 @@
 - 支持消息回复、编辑、删除等操作，支持通过消息链接定位访问消息。
 - 支持网站内新消息通知，支持桌面新消息通知。
 - 支持图片发送、图片查看、图片信息编辑
-- 项目地址 https://github.com/haruki1953/pocket-chat
+- 项目地址 https://github.com/PocketTogether/pocket-chat
 - 预览 https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
@@ -74,7 +74,7 @@ v0.1.0 版本后已支持 [使用 docker 部署](#使用-docker-部署)。
 
 ### 在 windows 上快速尝试
 
-PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 https://github.com/haruki1953/pocket-chat/releases 下载如 `pocket_chat_0.0.1_windows_amd64.zip` 这样的压缩包。
+PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 https://github.com/PocketTogether/pocket-chat/releases 下载如 `pocket_chat_0.0.1_windows_amd64.zip` 这样的压缩包。
 
 ![](./assets/image.png)
 
@@ -91,7 +91,7 @@ PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 htt
 
 `http://127.0.0.1:58090/_/` 为 PocketChat 的后台管理页面，创建超级用户后即可访问
 
-- users 选项（专业的来说是 集合），可查看所有用户
+- users 集合，可查看所有用户，可修改用户权限，详见 [users 集合 用户权限控制](#users-集合-用户权限控制) （ `v0.3.0` 版本后支持）
 - config 集合，可查看或修改关于本项目的一些配置，详见 [config 集合配置](#config-集合配置)
 - messages 集合，可查看所有用户发送的所有消息
 - images 集合，可查看全部图片（ `v0.2.0` 版本后支持）
@@ -226,7 +226,7 @@ systemctl disable pocketchat
 
 ### 使用 docker 部署
 
-可在此查看最新镜像： https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+可在此查看最新镜像： https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 ```sh
 mkdir -p ${HOME}/PocketChat/pb_data
@@ -237,7 +237,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/haruki1953/pocket-chat:latest
+  ghcr.io/PocketTogether/pocket-chat:latest
 
 docker logs PocketChat
 ```
@@ -299,17 +299,17 @@ systemctl status pocketchat
 如果你使用 Docker 部署 PocketChat，更新流程会更简单。
 
 ##### 1. 查看可用镜像最新版本
-访问： https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+访问： https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 选择你要更新到的版本，例如：
-`ghcr.io/haruki1953/pocket-chat:0.2.1`
+`ghcr.io/PocketTogether/pocket-chat:0.2.1`
 ```
-ghcr.io/haruki1953/pocket-chat:<VERSION>
+ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 提前拉取指定版本镜像（可选）
 ```sh
-docker pull ghcr.io/haruki1953/pocket-chat:<VERSION>
+docker pull ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 - 提前拉取可以更明确地看到下载进度
 - 提前拉取可以避免 run 时拉取失败导致容器没创建成功
@@ -330,7 +330,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/haruki1953/pocket-chat:<VERSION>
+  ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 ##### 4. 查看日志确认运行正常
@@ -354,16 +354,41 @@ docker logs PocketChat
 ### config 集合配置
 
 <!-- ![](./assets/Snipaste_2025-11-17_15-30-28.png) -->
-![](./assets/Snipaste_2026-01-05_10-56-53.png)
+<!-- ![](./assets/Snipaste_2026-01-05_10-56-53.png) -->
+![](./assets/Snipaste_2026-01-11_18-35-25.png)
 
 - `website-name` : 网站名称，显示在 登录页 和 聊天主页左上角
+
 - [`external-links-to-social-media-icons-etc`](#社交媒体等图标外链-external-links-to-social-media-icons-etc) : 社交媒体等图标外链（显示在登录页底部的图标链接） 
+
+- [`admin-contact-info-for-permission`](#管理员联系方式-admin-contact-info-for-permission) : 管理员联系方式，主要用于用户权限不足时，提示给用户的联系方式 （ `v0.3.0` 版本后支持）
+
 - [`upload-image-process-options`](#图片处理配置-upload-image-process-options) : 图片处理配置 `v0.2.0`
+
 - `password-update-rate-limit-second` : 发送密码修改请求后，需要等待一段时间，才能再次进行这一操作。此值控制需等待的时间，单位为秒。
+
 - `email-verify-rate-limit-second` : 发送邮箱验证请求后，需要等待一段时间，才能再次进行这一操作。此值控制需等待的时间，单位为秒。
+
 - `email-update-rate-limit-second` : 发送邮箱修改请求后，需要等待一段时间，才能再次进行这一操作。此值控制需等待的时间，单位为秒。
+
 - `allow-anonymous-view` : 是否允许游客浏览，为 `true` 则允许游客浏览，为 `false` 则只允许已登录的用户浏览
+
 - `allow-users-to-register` : 是否开启用户注册，为 `true` 则允许用户注册，为 `false` 则不允许 且登录页将不显示注册表单
+
+- `user-register-oauth2-only` : 是否只允许oauth2注册，默认值为 `false` （ `v0.3.0` 版本后支持）
+  - 为 `true` 则只允许通过 oauth2 注册，将禁止邮箱密码注册，且登录页将不显示注册表单
+  - 为 `false` 则 oauth2 注册、邮箱密码注册 都会被允许
+  - 注意： `allow-users-to-register` 为 `false` 时，注册功能整体关闭，此时 user-register-oauth2-only 不生效。
+
+- `user-can-send-message-default` : 是否默认允许发送消息，默认值为 `true` （ `v0.3.0` 版本后支持）
+  - 用于控制当 users 集合中用户记录中的 canSendMessage 字段未设置时，系统对该用户的默认消息发送权限。该配置仅在用户记录未设置 canSendMessage 时生效，若用户记录中显式设置为 "YES" 或 "NO"，则以用户记录为准。详见 [users 集合 用户权限控制](#users-集合-用户权限控制)
+  - `true` ，当用户的 canSendMessage 字段未设置时，系统默认允许该用户发送消息
+  - `false` ，当用户的 canSendMessage 字段未设置时，系统默认不允许该用户发送消息
+
+- `user-can-upload-image-default` : 是否默认允许上传图片，默认值为 `true` （ `v0.3.0` 版本后支持）
+  - 和 `user-can-send-message-default` 类似
+  - `true` ，当用户的 canUploadImage 字段未设置时，系统默认允许该用户上传图片
+  - `false` ，当用户的 canUploadImage 字段未设置时，系统默认不允许该用户上传图片
 
 #### 社交媒体等图标外链 external-links-to-social-media-icons-etc
 
@@ -375,7 +400,7 @@ docker logs PocketChat
 [
   {
     "icon": "ri-github-line",
-    "link": "https://github.com/haruki1953/pocket-chat",
+    "link": "https://github.com/PocketTogether/pocket-chat",
     "name": "github"
   },
   {
@@ -396,6 +421,19 @@ docker logs PocketChat
 `icon` 使用的图标为 https://remixicon.com/ ，使用其图标的 `class` 值
 
 ![](./assets/Snipaste_2025-11-17_15-50-13.png)
+
+### 管理员联系方式 admin-contact-info-for-permission
+
+默认值为 空字符串 `""`
+
+建议设置为像这样的文本（`\n` 表示换行）
+```
+"Discord - discord.gg/aZq6u3Asak\nTelegram - t.me/PocketTogether"
+```
+
+在前端中显示的效果为
+
+![](./assets/Snipaste_2026-01-11_19-19-53.jpg)
 
 #### 图片处理配置 upload-image-process-options
 
@@ -472,6 +510,35 @@ key: upload-image-process-options
 
 ![](./assets/Snipaste_2026-01-05_13-30-55.png)
 
+### users 集合 用户权限控制
+
+![](./assets/Snipaste_2026-01-11_19-27-16.png)
+
+#### canSendMessage
+用于控制用户是否具备发送消息的权限。  
+- 字段类型：**select**，可选值：
+- `"YES"`：显式允许该用户发送消息  
+- `"NO"`：显式禁止该用户发送消息  
+- `N/A`（默认）：未设置，此时系统将根据 config 集合中的  
+  **user-can-send-message-default** 配置决定是否允许发送消息
+
+#### canUploadImage
+用于控制用户是否具备上传图片的权限。  
+- 字段类型：**select**，可选值：
+- `"YES"`：显式允许该用户上传图片  
+- `"NO"`：显式禁止该用户上传图片  
+- `N/A`（默认）：未设置，此时系统将根据 config 集合中的  
+  **user-can-upload-image-default** 配置决定是否允许上传图片
+
+#### isBanned
+用于标记用户是否被封禁。  
+- 字段类型：**boolean**
+- **false**（默认）：用户正常，可登录、可使用功能  
+- **true**：用户已被封禁，该用户将无法访问全部内容
+
+封禁效果
+![](./assets/Snipaste_2026-01-11_19-37-25.png)
+
 ### Application 信息配置
 
 ![](./assets/Snipaste_2025-11-17_16-30-18.png)
@@ -536,7 +603,7 @@ https://yourdomain.com/api/oauth2-redirect
 
 ![](./assets/Snipaste_2025-11-17_19-38-39.png)
 
-除此之外，还能设置 Application logo ，可使用此图标 https://github.com/haruki1953/pocket-chat/blob/master/resources/icon1.png
+除此之外，还能设置 Application logo ，可使用此图标 https://github.com/PocketTogether/pocket-chat/blob/master/resources/icon1.png
 
 ## 开发指南
 
@@ -545,6 +612,7 @@ pocket-chat 项目目录结构
 - `pocketbase/` 为 PocketBase 所在的文件夹
 - `vue3/` 为 Vue3 前端文件夹
 - `project-tools-node/` 为项目打包工具脚本文件夹
+- `pocketbase-typegen/` 为pocketbase类型生成工具
 - `resources/` 为项目中所用到的一些图片资源
 - `note/` 为项目开发过程中的一些笔记（在本项目中很少，更多的在 [PocketTogether](#关于-pockettogether) 中）
 - `assets/` README.md 中使用的一些图片
@@ -584,13 +652,33 @@ pnpm lint
 #### 生成后端数据库的 TS 类型
 
 本项目使用 [pocketbase-typegen](https://www.npmjs.com/package/pocketbase-typegen) 来在前端生成 pocketbase 后端的数据类型：
+`"pocketbase-typegen": "^1.3.1",`
 
+【260111】自己对 pocketbase-typegen 改了改，将其本地化在了 `pocketbase-typegen/` 目录，应在此目录安装依赖后，再在前端中使用
 ```sh
+# pwd
+# /e/Project/pocket-chat/pocketbase-typegen
+pnpm i
+```
+
+前端使用
+```sh
+# pwd
+# /e/Project/pocket-chat/vue3
+
 pnpm pb-typegen-json
 
-# "pb-typegen-json": "pocketbase-typegen --json ../pocketbase/pb_schema.json --out ./src/lib/pocketbase/pocketbase-types.ts"
+# package.json - scripts
+# "pb-typegen-json": "node scripts/pocketbase-typegen.cjs"
+```
+
+关于 `pocketbase-typegen/` 其详情可参考
+```
+vue3\scripts\pocketbase-typegen.cjs
+pocketbase-typegen\README.md
+pocketbase-typegen\README-pocketbase-typegen.md
 ```
 
 ### 关于 PocketTogether
 
-[PocketTogether](https://github.com/haruki1953/pocket-together) 是一个基于 PocketBase 与 Vue3 的实时群聊与同步观看平台（开发中），PocketChat 其实是 PocketTogether 的半成品。
+[PocketTogether](https://github.com/PocketTogether/pocket-together) 是一个基于 PocketBase 与 Vue3 的实时群聊与同步观看平台（开发中），PocketChat 其实是 PocketTogether 的半成品。

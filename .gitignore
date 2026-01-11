@@ -5,3 +5,4 @@ out
 pocketbase-release-file
 .DS_Store
 /note/.obsidian/workspace.json
+node_modules

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useUserPermissionsDesuwa } from '@/composables'
 import {
   UpdateImageAlt,
   UpdateImageIsDeleted,
@@ -18,6 +19,8 @@ const {
   imageInfoMessageListQuery,
   isAuthorCurrent,
 } = props.imageInfoQueryDesuwa
+
+const { permissionUploadImage } = useUserPermissionsDesuwa()
 </script>
 
 <template>
@@ -49,7 +52,8 @@ const {
             v-if="
               imageInfoMessageListQuery.data.value != null &&
               imageInfoMessageListQuery.data.value.totalItems <= 0 &&
-              isAuthorCurrent
+              isAuthorCurrent &&
+              permissionUploadImage
             "
           >
             <!-- 分割线 -->

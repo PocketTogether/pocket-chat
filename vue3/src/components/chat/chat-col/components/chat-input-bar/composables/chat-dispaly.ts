@@ -5,6 +5,7 @@ import type { ElButton } from 'element-plus'
 import {
   useAutoCyclicValue,
   useCurrentMessageUserDataOptimization,
+  useUserPermissionsDesuwa,
 } from '@/composables'
 import type { ChatInputBarDataType } from './chat-data'
 import type { ChatInputBarPropsType } from './dependencies'
@@ -56,11 +57,14 @@ export const useChatInputBarDispaly = (
     return pb.files.getURL(
       charReplyMessageUserData.value,
       charReplyMessageUserData.value.avatar,
-      { thumb: fileUserAvatarConfig.thumb200x200f }
+      { thumb: fileUserAvatarConfig.thumb200x200 }
     )
   })
 
   const authStore = useAuthStore()
+
+  const { permissionSendMessage, openPermissionAdminContactNotif } =
+    useUserPermissionsDesuwa()
 
   // 输入栏不同功能判断
   // error 消息query失败或消息实时等待超时时，网路问题，请重试
@@ -84,6 +88,16 @@ export const useChatInputBarDispaly = (
         return 'backBottom' as const
       } else {
         return 'login' as const
+      }
+    }
+
+    // noPermissionSendMessage 无发送消息权限
+    // 显示权限提示按钮，backTop还会根据情况显示
+    if (permissionSendMessage.value === false) {
+      if (props.chatBackBottomDisplayable === true) {
+        return 'backBottom' as const
+      } else {
+        return 'noPermissionSendMessage' as const
       }
     }
 
@@ -176,6 +190,7 @@ export const useChatInputBarDispaly = (
     toggleShowMoreMenu,
     targetMoreMenu,
     targetMoreMenuToggleShowButtonEl,
+    openPermissionAdminContactNotif,
   }
 }
 export type ChatInputBarDispalyType = ReturnType<typeof useChatInputBarDispaly>

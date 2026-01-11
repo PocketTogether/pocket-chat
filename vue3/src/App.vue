@@ -25,18 +25,19 @@ import {
   useProfileQuery,
 } from './queries'
 import { watchUntilQueryReady } from './utils'
+import { PocketBannedMask } from './components'
 
 const i18nStore = useI18nStore()
 // 配置信息
 const pbCollectionConfigQuery = usePbCollectionConfigQuery()
 // 个人信息
 const profileQuery = useProfileQuery()
-// 聊天页消息 游标分页无限查询
-const chatRoomMessagesInfiniteTwowayQuery =
-  useChatRoomMessagesInfiniteTwowayQuery({
-    roomId: computed(() => ''),
-    twowayPositioningCursorData: computed(() => null),
-  })
+// // 聊天页消息 游标分页无限查询
+// const chatRoomMessagesInfiniteTwowayQuery =
+//   useChatRoomMessagesInfiniteTwowayQuery({
+//     roomId: computed(() => ''),
+//     twowayPositioningCursorData: computed(() => null),
+//   })
 
 const websiteName = computed(
   () => pbCollectionConfigQuery.data.value?.['website-name']
@@ -67,7 +68,7 @@ useFirstDataLoadingAndAnimationMaskClose({
     // 遮罩的关闭会等待主要的query
     await watchUntilQueryReady(pbCollectionConfigQuery)
     await watchUntilQueryReady(profileQuery)
-    await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery)
+    // await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery)
   },
 })
 
@@ -96,23 +97,38 @@ provideAppMainElScrollbar(appMainElScrollbar)
 </script>
 
 <template>
-  <!-- NConfigProvider 主题控制 国际化控制 -->
-  <NConfigProvider
-    :theme="isDark ? darkTheme : lightTheme"
-    :locale="i18nLocaleInfo[i18nStore.locale].nuLocale"
-    :dateLocale="i18nLocaleInfo[i18nStore.locale].nuDateLocale"
-  >
-    <!-- ElConfigProvider 国际化控制 -->
-    <ElConfigProvider :locale="i18nLocaleInfo[i18nStore.locale].elLocale">
-      <ElScrollbar
-        ref="appMainElScrollbar"
-        height="100dvh"
-        class="appMainElScrollbar"
+  <div>
+    <!-- 用户已封禁 -->
+    <template
+      v-if="
+        profileQuery.data.value != null &&
+        profileQuery.data.value.isBanned === true
+      "
+    >
+      <PocketBannedMask></PocketBannedMask>
+    </template>
+    <!-- 正常 -->
+    <template v-else>
+      <!-- NConfigProvider 主题控制 国际化控制 -->
+      <NConfigProvider
+        :theme="isDark ? darkTheme : lightTheme"
+        :locale="i18nLocaleInfo[i18nStore.locale].nuLocale"
+        :dateLocale="i18nLocaleInfo[i18nStore.locale].nuDateLocale"
       >
-        <RouterView></RouterView>
-      </ElScrollbar>
-    </ElConfigProvider>
-  </NConfigProvider>
+        <!-- ElConfigProvider 国际化控制 -->
+        <ElConfigProvider :locale="i18nLocaleInfo[i18nStore.locale].elLocale">
+          <!-- 主滚动条 -->
+          <ElScrollbar
+            ref="appMainElScrollbar"
+            height="100dvh"
+            class="appMainElScrollbar"
+          >
+            <RouterView></RouterView>
+          </ElScrollbar>
+        </ElConfigProvider>
+      </NConfigProvider>
+    </template>
+  </div>
 </template>
 
 <style scoped lang="scss"></style>

@@ -2,14 +2,16 @@
  * 用户头像文件相关配置
  */
 export const fileUserAvatarConfig = {
-  /** 缩略图字符串 200x200f */
-  thumb200x200f: '200x200f',
-  /** 缩略图字符串 100x100f */
-  thumb100x100f: '100x100f',
+  /** 缩略图字符串 400x400 */
+  thumb400x400: '400x400',
+  /** 缩略图字符串 200x200 */
+  thumb200x200: '200x200',
+  /** 缩略图字符串 100x100 */
+  thumb100x100: '100x100',
   /**
    * 图片处理 图片大小
    */
-  imageResizeNumber: 400,
+  imageResizeNumber: 800,
   /**
    * 图片处理 图片类型
    */
@@ -17,11 +19,11 @@ export const fileUserAvatarConfig = {
   /**
    * 图片处理 图片质量
    */
-  toBlobQuality: 0.9,
+  toBlobQuality: 0.8,
   /**
-   * 图片处理 大小检查 不应大于或等等与 100KB
+   * 图片处理 大小检查 不应大于或等等与 1MB
    */
-  imageBlobSizeNotGte: 100000,
+  imageBlobSizeNotGte: 1000000,
 } as const
 
 export const fileRoomImageConfig = {

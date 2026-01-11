@@ -389,7 +389,6 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
                         <ImageGroupViewerWithQueryAndRealtime
                           v-slot="{ imageItem, imageList }"
                           :imageList="messageShowModeWithData.data.images"
-                          bgTwcss="bg-color-background-mute"
                           lazy
                         >
                           <div

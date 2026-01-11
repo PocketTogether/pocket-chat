@@ -130,6 +130,28 @@ export async function imageScaleImageWithPicaService(
   return canvas
 }
 
+/**
+ * 将图片缩放为指定宽度（保持原比例）
+ */
+export async function imageScaleImageToWidthWithPicaService(
+  element: HTMLCanvasElement,
+  targetWidth: number
+): Promise<HTMLCanvasElement> {
+  const scaleFactor = targetWidth / element.width
+  return imageScaleImageWithPicaService(element, scaleFactor)
+}
+
+/**
+ * 将图片缩放为指定高度（保持原比例）
+ */
+export async function imageScaleImageToHeightWithPicaService(
+  element: HTMLCanvasElement,
+  targetHeight: number
+): Promise<HTMLCanvasElement> {
+  const scaleFactor = targetHeight / element.height
+  return imageScaleImageWithPicaService(element, scaleFactor)
+}
+
 // 函数3：将图片缩放至指定大小（宽或高）
 export function imageResizeImageService(
   element: HTMLImageElement | HTMLCanvasElement,

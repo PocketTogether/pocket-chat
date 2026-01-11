@@ -54,7 +54,7 @@ const authorAvatarUrl = computed(() => {
 
   // 有头像，返回 PB 文件 URL
   return pb.files.getURL(imageAuthor.value, imageAuthor.value.avatar, {
-    thumb: fileUserAvatarConfig.thumb200x200f,
+    thumb: fileUserAvatarConfig.thumb200x200,
   })
 })
 
@@ -62,7 +62,10 @@ const authorAvatarUrl = computed(() => {
  * 作者名称
  */
 const authorName = computed(() => {
-  return imageAuthor.value?.name ?? authorUsername.value
+  if (imageAuthor.value?.name == null || imageAuthor.value?.name === '') {
+    return authorUsername.value
+  }
+  return imageAuthor.value.name
 })
 
 /**

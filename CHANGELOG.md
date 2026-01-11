@@ -7,13 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-01-11
+
+<details>
+<summary>📝 查看中文版本 (Chinese Version)</summary>
+
+### 新增
+- Implement user access control and improve the front-end. by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/18
+- 实现用户权限控制，发送消息权限、发送图片权限
+- 实现用户封禁功能
+- 实现控制是否只允许oauth2注册
+- 图片查看器，实现双击缩放或还原
+- 图片查看器，实现图片加载失败时重试
+
+### 变更
+- 从 devDependencies 中移除了 `pocketbase-typegen`，改为使用位于 `/pocketbase-typegen` 的本地实现
+
+### 修复
+- 解决手机输入状态时滚动可能导致底栏被overflow-hidden的问题
+- 完善图片查看器底栏中图片边框的显示
+
+</details>
+
+### Added
+- Implement user access control and improve the front-end. by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/18
+- Implemented user permission controls, including message‑sending and image‑sending permissions.  
+- Added user banning functionality.  
+- Added an option to restrict registration to OAuth2 only.  
+- Image viewer: added double‑tap to zoom/restore.  
+- Image viewer: added automatic retry when image loading fails.
+
+### Changed
+- Removed `pocketbase-typegen` from devDependencies and switched to a local implementation located at `/pocketbase-typegen`.
+
+### Fixed
+- Fixed an issue where scrolling during text input on mobile could cause the bottom bar to be hidden by `overflow-hidden`.  
+- Improved the display of image borders in the image viewer’s bottom bar.
+
 ## [0.2.2] - 2026-01-07
 
 <details>
 <summary>📝 查看中文版本 (Chinese Version)</summary>
 
 ### 修改
-- Improve some issues by @haruki1953 in https://github.com/haruki1953/pocket-chat/pull/16
+- Improve some issues by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/16
 - 图片查看器中，让加载遮罩也阻止点击关闭
 - 用户头像大小限制与格式限制放宽一些，1MB
 
@@ -25,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Improve some issues by @haruki1953 in https://github.com/haruki1953/pocket-chat/pull/16
+- Improve some issues by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/16
 - In the image viewer, make the loading overlay also block click-to-close actions.  
 - Relax the size and format restrictions for user avatars, allowing up to 1 MB.  
 
@@ -40,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 修复
 
-- Solve some problems by @haruki1953 in https://github.com/haruki1953/pocket-chat/pull/13
+- Solve some problems by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/13
 - 解决当聊天高度不够屏幕时，导致新消失提示无法消除的问题
 - 优化图片查看器transform过渡，完善触摸缩放位移控制
 - 解决图片选择页左列较空时仍有滚动的问题
@@ -50,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Solve some problems by @haruki1953 in https://github.com/haruki1953/pocket-chat/pull/13
+- Solve some problems by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/13
 - Fix the issue where the “new message dismissed” indicator cannot be cleared when the chat height is shorter than the screen.
 - Optimize the image viewer’s transform transitions and improve touch-based zoom and pan controls.
 - Fix the issue where the left column in the image selection page still scrolls even when it has little content.
@@ -63,13 +100,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 新增
 
-- 实现图片功能 by @haruki1953 in https://github.com/haruki1953/pocket-chat/pull/8
+- 实现图片功能 by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/8
 
 </details>
 
 ### Added
 
-- Implement image functionality by @haruki1953 in https://github.com/haruki1953/pocket-chat/pull/8
+- Implement image functionality by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/8
 
 ## [0.1.0] - 2025-11-27
 
@@ -78,11 +115,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 新增
 
-- 添加 Claude Code GitHub 工作流程 by @niracler in [#1](https://github.com/haruki1953/pocket-chat/pull/1)
-- 支持使用 Docker 构建 by @Ecss11 in [#4](https://github.com/haruki1953/pocket-chat/pull/4)
-- 实现新消息提示 by @haruki1953 in [#5](https://github.com/haruki1953/pocket-chat/pull/5)
-- 实现桌面消息通知，实现pb实时订阅断线重连时消息补偿 by @haruki1953 in [#6](https://github.com/haruki1953/pocket-chat/pull/6)
-- 通过github actions实现 项目打包并上传至release、docker打包与推送 by @haruki1953 in [#7](https://github.com/haruki1953/pocket-chat/pull/7)
+- 添加 Claude Code GitHub 工作流程 by @niracler in [#1](https://github.com/PocketTogether/pocket-chat/pull/1)
+- 支持使用 Docker 构建 by @Ecss11 in [#4](https://github.com/PocketTogether/pocket-chat/pull/4)
+- 实现新消息提示 by @haruki1953 in [#5](https://github.com/PocketTogether/pocket-chat/pull/5)
+- 实现桌面消息通知，实现pb实时订阅断线重连时消息补偿 by @haruki1953 in [#6](https://github.com/PocketTogether/pocket-chat/pull/6)
+- 通过github actions实现 项目打包并上传至release、docker打包与推送 by @haruki1953 in [#7](https://github.com/PocketTogether/pocket-chat/pull/7)
 
 ### 修改
 
@@ -92,11 +129,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add Claude Code GitHub Workflow by @niracler in [#1](https://github.com/haruki1953/pocket-chat/pull/1)
-- Support build with docker by @Ecss11 in [#4](https://github.com/haruki1953/pocket-chat/pull/4)
-- Implemented new message alerts by @haruki1953 in [#5](https://github.com/haruki1953/pocket-chat/pull/5)  
-- Implemented desktop message notifications, with pb real-time subscription reconnection and message compensation by @haruki1953 in [#6](https://github.com/haruki1953/pocket-chat/pull/6)  
-- Implemented project packaging via GitHub Actions, uploading to release, and Docker build & push by @haruki1953 in [#7](https://github.com/haruki1953/pocket-chat/pull/7)  
+- Add Claude Code GitHub Workflow by @niracler in [#1](https://github.com/PocketTogether/pocket-chat/pull/1)
+- Support build with docker by @Ecss11 in [#4](https://github.com/PocketTogether/pocket-chat/pull/4)
+- Implemented new message alerts by @haruki1953 in [#5](https://github.com/PocketTogether/pocket-chat/pull/5)  
+- Implemented desktop message notifications, with pb real-time subscription reconnection and message compensation by @haruki1953 in [#6](https://github.com/PocketTogether/pocket-chat/pull/6)  
+- Implemented project packaging via GitHub Actions, uploading to release, and Docker build & push by @haruki1953 in [#7](https://github.com/PocketTogether/pocket-chat/pull/7)  
 
 ### Changed
 
@@ -115,7 +152,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pocket-chat: 一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3. 
 
-[unreleased]: https://github.com/haruki1953/pocket-chat/compare/v0.2.2...HEAD
-[0.2.2]: https://github.com/haruki1953/pocket-chat/compare/v0.2.1...v0.2.2
-[0.2.1]: https://github.com/haruki1953/pocket-chat/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/haruki1953/pocket-chat/compare/v0.1.0...v0.2.0
+[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.2...v0.3.0
+[0.2.2]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.1.0...v0.2.0

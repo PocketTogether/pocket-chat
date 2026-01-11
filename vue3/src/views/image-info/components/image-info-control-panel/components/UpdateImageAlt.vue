@@ -8,6 +8,7 @@ import { compareDatesSafe, potoMessage } from '@/utils'
 import { pb } from '@/lib'
 import type { ElInput } from 'element-plus'
 import { useI18nStore } from '@/stores'
+import { useUserPermissionsDesuwa } from '@/composables'
 
 const props = defineProps<{
   imageInfoQueryDesuwa: ImageInfoQueryDesuwaType
@@ -119,6 +120,8 @@ const canSubmitEditAlt = computed(() => {
 })
 
 const i18nStore = useI18nStore()
+
+const { permissionUploadImage } = useUserPermissionsDesuwa()
 </script>
 
 <template>
@@ -157,7 +160,7 @@ const i18nStore = useI18nStore()
             <ElButton
               circle
               type="info"
-              :disabled="!isAuthorCurrent"
+              :disabled="!isAuthorCurrent || !permissionUploadImage"
               @click="startEditAlt"
             >
               <template #icon>

@@ -67,6 +67,12 @@ const isImageLoading = computed(() => {
   }
   return refViewerImage.value.isImageLoading
 })
+const isImageError = computed(() => {
+  if (refViewerImage.value == null) {
+    return false
+  }
+  return refViewerImage.value.isImageError
+})
 </script>
 
 <template>
@@ -155,8 +161,8 @@ const isImageLoading = computed(() => {
                 </div>
               </div>
             </div>
-            <!-- 加载状态 -->
-            <Transition name="fade">
+            <!-- 加载状态 错误状态 -->
+            <Transition name="fade" mode="out-in">
               <div
                 v-if="isImageLoading"
                 class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
@@ -170,16 +176,32 @@ const isImageLoading = computed(() => {
                   ></RiLoader3Line>
                 </div>
               </div>
+              <div
+                v-else-if="isImageError"
+                class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center"
+              >
+                <div
+                  class="h-[50px] w-[50px] overflow-hidden text-color-text-soft"
+                >
+                  <RiErrorWarningLine size="50px"></RiErrorWarningLine>
+                </div>
+              </div>
             </Transition>
             <!-- 加载状态时，有一个和图片一样大小的盒子在其之上，主要为了让加载遮罩也阻止点击退出 -->
             <Transition name="fade">
               <div
-                v-if="isImageLoading && viewerContentData != null"
+                v-if="
+                  (isImageLoading || isImageError) && viewerContentData != null
+                "
                 class="absolute bottom-0 left-0 right-0 top-0"
               >
                 <div class="relative h-full w-full">
                   <div
-                    class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-wait"
+                    class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                    :class="{
+                      'cursor-wait': isImageLoading,
+                      'cursor-not-allowed': isImageError,
+                    }"
                     :style="{
                       width: `${viewerContentData.width}px`,
                       height: `${viewerContentData.height}px`,
