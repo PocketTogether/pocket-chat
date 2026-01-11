@@ -19,9 +19,9 @@
   <!-- License -->
   <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"></a>
   <!-- GitHub Release -->
-  <a href="https://github.com/PocketTogether/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/PocketTogether/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
   <!-- GitHub Activity -->
-  <a href="https://github.com/PocketTogether/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/PocketTogether/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
   </br>
   <!-- Discord -->
   <a href="https://discord.gg/aZq6u3Asak"><img alt="Discord" src="https://img.shields.io/discord/1192346949635026944?logo=discord&logoColor=white&label=Discord&color=4285F4&style=for-the-badge"></a>
@@ -237,7 +237,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/haruki1953/pocket-chat:latest
+  ghcr.io/PocketTogether/pocket-chat:latest
 
 docker logs PocketChat
 ```
@@ -302,14 +302,14 @@ systemctl status pocketchat
 访问： https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 选择你要更新到的版本，例如：
-`ghcr.io/haruki1953/pocket-chat:0.2.1`
+`ghcr.io/PocketTogether/pocket-chat:0.2.1`
 ```
-ghcr.io/haruki1953/pocket-chat:<VERSION>
+ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 提前拉取指定版本镜像（可选）
 ```sh
-docker pull ghcr.io/haruki1953/pocket-chat:<VERSION>
+docker pull ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 - 提前拉取可以更明确地看到下载进度
 - 提前拉取可以避免 run 时拉取失败导致容器没创建成功
@@ -330,7 +330,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/haruki1953/pocket-chat:<VERSION>
+  ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 ##### 4. 查看日志确认运行正常

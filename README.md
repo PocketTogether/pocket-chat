@@ -19,9 +19,9 @@
   <!-- License -->
   <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"></a>
   <!-- GitHub Release -->
-  <a href="https://github.com/PocketTogether/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/PocketTogether/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
   <!-- GitHub Activity -->
-  <a href="https://github.com/PocketTogether/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/PocketTogether/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
   </br>
   <!-- Discord -->
   <a href="https://discord.gg/aZq6u3Asak"><img alt="Discord" src="https://img.shields.io/discord/1192346949635026944?logo=discord&logoColor=white&label=Discord&color=4285F4&style=for-the-badge"></a>
@@ -226,7 +226,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/haruki1953/pocket-chat:latest
+  ghcr.io/PocketTogether/pocket-chat:latest
 
 docker logs PocketChat
 ```
@@ -299,14 +299,14 @@ Visit:
 https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 Choose the version you want to update to, for example:
-`ghcr.io/haruki1953/pocket-chat:0.2.1`
+`ghcr.io/PocketTogether/pocket-chat:0.2.1`
 ```
-ghcr.io/haruki1953/pocket-chat:<VERSION>
+ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 (Optional) Pull the image in advance:
 ```sh
-docker pull ghcr.io/haruki1953/pocket-chat:<VERSION>
+docker pull ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 Benefits of pulling beforehand:
@@ -329,7 +329,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/haruki1953/pocket-chat:<VERSION>
+  ghcr.io/PocketTogether/pocket-chat:<VERSION>
 ```
 
 ##### 4. Check logs to confirm everything is running correctly
