@@ -19,9 +19,9 @@
   <!-- License -->
   <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"></a>
   <!-- GitHub Release -->
-  <a href="https://github.com/haruki1953/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
   <!-- GitHub Activity -->
-  <a href="https://github.com/haruki1953/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
   </br>
   <!-- Discord -->
   <a href="https://discord.gg/aZq6u3Asak"><img alt="Discord" src="https://img.shields.io/discord/1192346949635026944?logo=discord&logoColor=white&label=Discord&color=4285F4&style=for-the-badge"></a>
@@ -39,7 +39,7 @@
 - 支持消息回复、编辑、删除等操作，支持通过消息链接定位访问消息。
 - 支持网站内新消息通知，支持桌面新消息通知。
 - 支持图片发送、图片查看、图片信息编辑
-- 项目地址 https://github.com/haruki1953/pocket-chat
+- 项目地址 https://github.com/PocketTogether/pocket-chat
 - 预览 https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
@@ -74,7 +74,7 @@ v0.1.0 版本后已支持 [使用 docker 部署](#使用-docker-部署)。
 
 ### 在 windows 上快速尝试
 
-PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 https://github.com/haruki1953/pocket-chat/releases 下载如 `pocket_chat_0.0.1_windows_amd64.zip` 这样的压缩包。
+PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 https://github.com/PocketTogether/pocket-chat/releases 下载如 `pocket_chat_0.0.1_windows_amd64.zip` 这样的压缩包。
 
 ![](./assets/image.png)
 
@@ -226,7 +226,7 @@ systemctl disable pocketchat
 
 ### 使用 docker 部署
 
-可在此查看最新镜像： https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+可在此查看最新镜像： https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 ```sh
 mkdir -p ${HOME}/PocketChat/pb_data
@@ -299,7 +299,7 @@ systemctl status pocketchat
 如果你使用 Docker 部署 PocketChat，更新流程会更简单。
 
 ##### 1. 查看可用镜像最新版本
-访问： https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+访问： https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 选择你要更新到的版本，例如：
 `ghcr.io/haruki1953/pocket-chat:0.2.1`
@@ -400,7 +400,7 @@ docker logs PocketChat
 [
   {
     "icon": "ri-github-line",
-    "link": "https://github.com/haruki1953/pocket-chat",
+    "link": "https://github.com/PocketTogether/pocket-chat",
     "name": "github"
   },
   {
@@ -603,7 +603,7 @@ https://yourdomain.com/api/oauth2-redirect
 
 ![](./assets/Snipaste_2025-11-17_19-38-39.png)
 
-除此之外，还能设置 Application logo ，可使用此图标 https://github.com/haruki1953/pocket-chat/blob/master/resources/icon1.png
+除此之外，还能设置 Application logo ，可使用此图标 https://github.com/PocketTogether/pocket-chat/blob/master/resources/icon1.png
 
 ## 开发指南
 
@@ -681,4 +681,4 @@ pocketbase-typegen\README-pocketbase-typegen.md
 
 ### 关于 PocketTogether
 
-[PocketTogether](https://github.com/haruki1953/pocket-together) 是一个基于 PocketBase 与 Vue3 的实时群聊与同步观看平台（开发中），PocketChat 其实是 PocketTogether 的半成品。
+[PocketTogether](https://github.com/PocketTogether/pocket-together) 是一个基于 PocketBase 与 Vue3 的实时群聊与同步观看平台（开发中），PocketChat 其实是 PocketTogether 的半成品。

@@ -19,9 +19,9 @@
   <!-- License -->
   <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"></a>
   <!-- GitHub Release -->
-  <a href="https://github.com/haruki1953/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/releases" target="_blank"><img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></a>
   <!-- GitHub Activity -->
-  <a href="https://github.com/haruki1953/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
+  <a href="https://github.com/PocketTogether/pocket-chat/commits" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></a>
   </br>
   <!-- Discord -->
   <a href="https://discord.gg/aZq6u3Asak"><img alt="Discord" src="https://img.shields.io/discord/1192346949635026944?logo=discord&logoColor=white&label=Discord&color=4285F4&style=for-the-badge"></a>
@@ -39,7 +39,7 @@
 - Supports message reply, edit, delete, and jumping to a message via its link.
 - Supports in-site new message notifications and desktop new message notifications.
 - Supports image sending, image viewing, and image metadata editing
-- Project address: https://github.com/haruki1953/pocket-chat
+- Project address: https://github.com/PocketTogether/pocket-chat
 - Live demo: https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
@@ -74,7 +74,7 @@ Since version v0.1.0, [Docker deployment](#deploy-with-docker) has been supporte
 
 ### Quick Start on Windows
 
-All PocketChat releases are published on GitHub. Download the latest zip package from https://github.com/haruki1953/pocket-chat/releases, for example `pocket_chat_0.0.1_windows_amd64.zip`.
+All PocketChat releases are published on GitHub. Download the latest zip package from https://github.com/PocketTogether/pocket-chat/releases, for example `pocket_chat_0.0.1_windows_amd64.zip`.
 
 ![](./assets/image.png)
 
@@ -215,7 +215,7 @@ systemctl disable pocketchat
 
 ### Deploy with Docker
 
-You can find the latest image at: https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+You can find the latest image at: https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 ```sh
 mkdir -p ${HOME}/PocketChat/pb_data
@@ -296,7 +296,7 @@ If you deployed PocketChat using Docker, the update process is simpler.
 
 ##### 1. Check the latest available image versions
 Visit:  
-https://github.com/haruki1953/pocket-chat/pkgs/container/pocket-chat
+https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 Choose the version you want to update to, for example:
 `ghcr.io/haruki1953/pocket-chat:0.2.1`
@@ -401,7 +401,7 @@ Default value:
 [
   {
     "icon": "ri-github-line",
-    "link": "https://github.com/haruki1953/pocket-chat",
+    "link": "https://github.com/PocketTogether/pocket-chat",
     "name": "github"
   },
   {
@@ -617,7 +617,7 @@ After creation you get Client ID and Client Secret.
 
 ![](./assets/Snipaste_2025-11-17_19-38-39.png)
 
-You can also set an app logo, e.g. https://github.com/haruki1953/pocket-chat/blob/master/resources/icon1.png
+You can also set an app logo, e.g. https://github.com/PocketTogether/pocket-chat/blob/master/resources/icon1.png
 
 ## Development Guide
 
@@ -702,4 +702,4 @@ pocketbase-typegen/README-pocketbase-typegen.md
 
 ### About PocketTogether
 
-[PocketTogether](https://github.com/haruki1953/pocket-together) is a real-time group chat and synchronized watching platform built on PocketBase and Vue3 (currently in development). PocketChat is essentially a partial product of PocketTogether.
+[PocketTogether](https://github.com/PocketTogether/pocket-together) is a real-time group chat and synchronized watching platform built on PocketBase and Vue3 (currently in development). PocketChat is essentially a partial product of PocketTogether.

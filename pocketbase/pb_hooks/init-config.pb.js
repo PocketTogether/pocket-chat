@@ -76,7 +76,7 @@ onBootstrap((e) => {
     'external-links-to-social-media-icons-etc': [
       {
         icon: 'ri-github-line',
-        link: 'https://github.com/haruki1953/pocket-chat',
+        link: 'https://github.com/PocketTogether/pocket-chat',
         name: 'github',
       },
       {
