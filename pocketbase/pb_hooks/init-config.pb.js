@@ -17,6 +17,12 @@ onBootstrap((e) => {
       - vue3\src\config\pb-collection-config.ts
       - pocketbase\pb_hooks\init-config.pb.js
     */
+    /** 是否默认允许上传图片 */
+    'user-can-upload-image-default': true,
+    /** 是否默认允许发送消息 */
+    'user-can-send-message-default': true,
+    /** 是否只允许oauth2注册 */
+    'user-register-oauth2-only': false,
     /** 是否允许用户注册 */
     'allow-users-to-register': true,
     /** 是否允许任何人查看，不登录也能查看（游客访问） */
@@ -58,6 +64,11 @@ onBootstrap((e) => {
     */
 
 
+    // 有关自部署自定义内容（名称、联系方式）相关信息的，前后端会略有区别
+    /**
+     * 管理员联系方式，主要用于用户权限不足时，提示给用户的联系方式，前后端默认值都为空字符串
+     */
+    'admin-contact-info-for-permission': '',
     /**
      * 社交媒体等图标外链（显示在登录页底部的图标链接） https://remixicon.com/
      * 此值特殊，在前端为空数组，在后端为默认图标数组
@@ -65,7 +76,7 @@ onBootstrap((e) => {
     'external-links-to-social-media-icons-etc': [
       {
         icon: 'ri-github-line',
-        link: 'https://github.com/haruki1953/pocket-chat',
+        link: 'https://github.com/PocketTogether/pocket-chat',
         name: 'github',
       },
       {
@@ -81,7 +92,7 @@ onBootstrap((e) => {
     ],
     /** 
      * 网站名称 
-     * 此值特殊，在前端为空字符串，在后端为'PocketTogether' 
+     * 此值特殊，在前端为空字符串，在后端为'PocketChat' 
      */
     'website-name': 'PocketChat',
   }

@@ -54,6 +54,16 @@ const allowUsersToRegister = computed(() => {
   }
   return val
 })
+
+// 是否为只允许oauth2注册
+const userRegisterOauth2Only = computed(() => {
+  const val = pbCollectionConfigQuery.data.value?.['user-register-oauth2-only']
+  // val == null 只为了类型确定，理论上此值不会为空，默认为false
+  if (val == null) {
+    return false
+  }
+  return val
+})
 </script>
 
 <template>
@@ -79,7 +89,7 @@ const allowUsersToRegister = computed(() => {
               {{ websiteName }}
             </div>
             <!-- 允许注册 -->
-            <template v-if="allowUsersToRegister">
+            <template v-if="allowUsersToRegister && !userRegisterOauth2Only">
               <!-- 大屏两列，登录与注册 -->
               <div
                 v-if="showCol2TrueCol1False"

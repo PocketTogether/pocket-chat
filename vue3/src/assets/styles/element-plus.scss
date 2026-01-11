@@ -119,6 +119,10 @@ $dark-steps: 1, 2, 3, 4, 5, 6, 7, 8, 9;
   border: none;
   background-color: var(--color-background-soft);
   box-shadow: 0 0 6px 6px var(--color-background);
+  .el-notification__content {
+    overflow-wrap: anywhere;     /* 尽可能在任意点断行，避免水平滚动，但仍优先保持词完整 */
+    white-space: pre-wrap;       /* 保留空格和换行，同时允许自动换行 */
+  }
 }
 
 .el-notification.right {

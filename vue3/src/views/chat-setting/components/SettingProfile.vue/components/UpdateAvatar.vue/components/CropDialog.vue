@@ -5,8 +5,10 @@ import { fileUserAvatarConfig } from '@/config'
 import { useI18nStore } from '@/stores'
 import {
   generateRandomClassName,
+  imageElementToCanvasService,
   imageLoadImageFromBlobService,
   imageResizeImageService,
+  imageScaleImageToWidthWithPicaService,
 } from '@/utils'
 import { useWindowSize } from '@vueuse/core'
 // 图片裁剪依赖
@@ -48,12 +50,28 @@ const crop = () => {
           const imageBlob = await (async () => {
             // 使用函数11将裁剪的 Blob 加载成 url 存到 imageEl
             const imageEl = await imageLoadImageFromBlobService(blob)
-            // 将图像尺寸统一调整为预设值q
-            const imageResize = imageResizeImageService(
-              imageEl,
-              fileUserAvatarConfig.imageResizeNumber,
-              fileUserAvatarConfig.imageResizeNumber
-            )
+            // // 将图像尺寸统一调整为预设值q
+            // const imageResize = imageResizeImageService(
+            //   imageEl,
+            //   fileUserAvatarConfig.imageResizeNumber,
+            //   fileUserAvatarConfig.imageResizeNumber
+            // )
+
+            const imageCanvasEl = imageElementToCanvasService(imageEl)
+            // 将图片缩小为指定宽度
+            const imageResize = await (async () => {
+              // 如果图片已小于，则不必处理
+              if (
+                imageCanvasEl.width <= fileUserAvatarConfig.imageResizeNumber
+              ) {
+                return imageCanvasEl
+              }
+              return imageScaleImageToWidthWithPicaService(
+                imageCanvasEl,
+                fileUserAvatarConfig.imageResizeNumber
+              )
+            })()
+
             const imageBlob = await new Promise<Blob>((resolve, reject) => {
               // const imageResize: HTMLCanvasElement
               imageResize.toBlob(

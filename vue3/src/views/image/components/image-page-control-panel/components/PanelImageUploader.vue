@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { pbImageUploadApi, pbImageUploadWithAxios } from '@/api'
+import { useUserPermissionsDesuwa } from '@/composables'
 import { pbCollectionConfigDefaultGetFn, routerDict } from '@/config'
 import { usePbCollectionConfigQuery } from '@/queries'
 import { useAuthStore, useI18nStore, useUploadImageStore } from '@/stores'
@@ -47,15 +48,57 @@ const imageUploadAdd = async (uploadFile: UploadFile) => {
 const i18nStore = useI18nStore()
 
 const authStore = useAuthStore()
+
+const { permissionUploadImage, openPermissionAdminContactNotif } =
+  useUserPermissionsDesuwa()
 </script>
 
 <template>
   <div>
+    <!-- 登录提示 -->
+    <div v-if="authStore.isValid === false || authStore.record?.id == null">
+      <RouterLink :to="routerDict.LoginPage.path">
+        <div class="image-upload-box cursor-pointer">
+          <div class="border-[4px] border-transparent">
+            <div
+              class="upload-border-content rounded-b-[2px] rounded-t-[22px] border-[2px] border-dashed border-color-text-soft text-color-text-soft transition-colors"
+            >
+              <div class="mx-[10px] my-[16px] flex items-center justify-center">
+                <div class="mr-[8px]">
+                  <RiLoginBoxLine></RiLoginBoxLine>
+                </div>
+                <div class="select-none truncate text-[14px] font-bold">
+                  {{ i18nStore.t('imagePageImageLoginText')() }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </RouterLink>
+    </div>
+    <!-- 权限提示 -->
+    <div v-else-if="permissionUploadImage === false">
+      <div @click="openPermissionAdminContactNotif">
+        <div class="image-upload-box cursor-pointer">
+          <div class="border-[4px] border-transparent">
+            <div
+              class="upload-border-content rounded-b-[2px] rounded-t-[22px] border-[2px] border-dashed border-color-text-soft text-color-text-soft transition-colors"
+            >
+              <div class="mx-[10px] my-[16px] flex items-center justify-center">
+                <div class="mr-[8px]">
+                  <RiInformationLine></RiInformationLine>
+                </div>
+                <div class="select-none truncate text-[14px] font-bold">
+                  {{ i18nStore.t('permissionNoPermissionUploadImageText')() }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- 上传图片 -->
-    <div
-      v-if="authStore.isValid && authStore.record?.id != null"
-      class="upload-box"
-    >
+    <div v-else class="upload-box">
       <ElUpload
         :autoUpload="false"
         :accept="allowedTypes.join(',')"
@@ -81,27 +124,6 @@ const authStore = useAuthStore()
           </div>
         </div>
       </ElUpload>
-    </div>
-    <!-- 登录提示 -->
-    <div v-else>
-      <RouterLink :to="routerDict.LoginPage.path">
-        <div class="image-upload-box cursor-pointer">
-          <div class="border-[4px] border-transparent">
-            <div
-              class="upload-border-content rounded-b-[2px] rounded-t-[22px] border-[2px] border-dashed border-color-text-soft text-color-text-soft transition-colors"
-            >
-              <div class="mx-[10px] my-[16px] flex items-center justify-center">
-                <div class="mr-[8px]">
-                  <RiLoginBoxLine></RiLoginBoxLine>
-                </div>
-                <div class="select-none truncate text-[14px] font-bold">
-                  {{ i18nStore.t('imagePageImageLoginText')() }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </RouterLink>
     </div>
   </div>
 </template>

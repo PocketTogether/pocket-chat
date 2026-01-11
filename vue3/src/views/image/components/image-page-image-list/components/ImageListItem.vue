@@ -64,7 +64,7 @@ const imageAuthorAvatarUrl = computed(() => {
   return pb.files.getURL(
     props.imageData.expand.author,
     props.imageData.expand.author.avatar,
-    { thumb: fileUserAvatarConfig.thumb100x100f }
+    { thumb: fileUserAvatarConfig.thumb100x100 }
   )
 })
 

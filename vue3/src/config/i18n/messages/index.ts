@@ -6,6 +6,7 @@ import { i18nMessagesImagePart } from './image'
 import { i18nMessagesLoginPart } from './login'
 import { i18nMessagesNotificationPart } from './notification'
 import { i18nMessagesPagePart } from './page'
+import { i18nMessagesPermissionPart } from './permission'
 import { i18nMessagesRegisterPart } from './register'
 import { i18nMessagesRoomPart } from './room'
 import { i18nMessagesSettingPart } from './setting'
@@ -47,6 +48,8 @@ export const i18nMessages = {
   ...i18nMessagesUploadPart,
   // 图片页相关部分
   ...i18nMessagesImagePart,
+  // 权限相关部分
+  ...i18nMessagesPermissionPart,
 } as const satisfies I18nMessagesSatisfiesType
 
 // 通过类型体操，获取i18nMessages键的类型

@@ -8,12 +8,21 @@ const uploadImageProcessOptionsConfigSchema = z.object({
 
 // pocketbase 集合 config 其值的 zodSchema
 export const pbCollectionConfigSchema = {
+  'user-can-upload-image-default': z.boolean(),
+  'user-can-send-message-default': z.boolean(),
+  'user-register-oauth2-only': z.boolean(),
   'allow-users-to-register': z.boolean(),
   'allow-anonymous-view': z.boolean(),
   'email-update-rate-limit-second': z.number(),
   'email-verify-rate-limit-second': z.number(),
   'password-update-rate-limit-second': z.number(),
-  'website-name': z.string(),
+  'upload-image-process-options': z.object({
+    imageConfig: uploadImageProcessOptionsConfigSchema,
+    bigConfig: uploadImageProcessOptionsConfigSchema,
+    smallConfig: uploadImageProcessOptionsConfigSchema,
+    tinyConfig: uploadImageProcessOptionsConfigSchema,
+  }),
+  'admin-contact-info-for-permission': z.string(),
   'external-links-to-social-media-icons-etc': z.array(
     z.object({
       icon: z.string(),
@@ -21,12 +30,7 @@ export const pbCollectionConfigSchema = {
       name: z.string(),
     })
   ),
-  'upload-image-process-options': z.object({
-    imageConfig: uploadImageProcessOptionsConfigSchema,
-    bigConfig: uploadImageProcessOptionsConfigSchema,
-    smallConfig: uploadImageProcessOptionsConfigSchema,
-    tinyConfig: uploadImageProcessOptionsConfigSchema,
-  }),
+  'website-name': z.string(),
 }
 // 类型体操：自动推导出类型结构
 export type PbCollectionConfigType = {
@@ -49,6 +53,12 @@ export const pbCollectionConfigDefaultGetFn = () => {
       - vue3\src\config\pb-collection-config.ts
       - pocketbase\pb_hooks\init-config.pb.js
     */
+    /** 是否默认允许上传图片 */
+    'user-can-upload-image-default': true,
+    /** 是否默认允许发送消息 */
+    'user-can-send-message-default': true,
+    /** 是否只允许oauth2注册 */
+    'user-register-oauth2-only': false,
     /** 是否允许用户注册 */
     'allow-users-to-register': true,
     /** 是否允许任何人查看，不登录也能查看（游客访问） */
@@ -89,6 +99,11 @@ export const pbCollectionConfigDefaultGetFn = () => {
       【pbCollectionConfigDefault_public END】
     */
 
+    // 有关自部署自定义内容（名称、联系方式）相关信息的，前后端会略有区别
+    /**
+     * 管理员联系方式，主要用于用户权限不足时，提示给用户的联系方式，前后端默认值都为空字符串
+     */
+    'admin-contact-info-for-permission': '',
     /**
      * 社交媒体等图标外链（显示在登录页底部的图标链接） https://remixicon.com/
      * 此值特殊，在前端为空数组，在后端为默认图标数组
@@ -96,7 +111,7 @@ export const pbCollectionConfigDefaultGetFn = () => {
     'external-links-to-social-media-icons-etc': [],
     /**
      * 网站名称
-     * 此值特殊，在前端为空字符串，在后端为'PocketTogether'
+     * 此值特殊，在前端为空字符串，在后端为'PocketChat'
      */
     'website-name': '',
   } satisfies PbCollectionConfigType as PbCollectionConfigType

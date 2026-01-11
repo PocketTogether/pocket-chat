@@ -4,7 +4,7 @@ import type { ImageSelectListDesuwaType } from './dependencies'
 import { pbImageDataChooseBySmallestWithUrl } from '@/utils'
 import { useAuthStore, useI18nStore, useSelectionImageStore } from '@/stores'
 import { useRouter } from 'vue-router'
-import { useRouterHistoryTool } from '@/composables'
+import { useRouterHistoryTool, useUserPermissionsDesuwa } from '@/composables'
 import { routerDict } from '@/config'
 import { useQueryClient } from '@tanstack/vue-query'
 import { queryKeys } from '@/queries'
@@ -25,9 +25,15 @@ const { routerBackSafe } = useRouterHistoryTool()
 
 const authStore = useAuthStore()
 
+const { permissionSendMessage } = useUserPermissionsDesuwa()
+
 const canImageSelectSubmit = computed(() => {
   // 未登录时不能确认
   if (authStore.isValid === false || authStore.record?.id == null) {
+    return false
+  }
+  // 无发送消息权限时不能确认
+  if (permissionSendMessage.value === false) {
     return false
   }
   // 未选择图片时不能确认

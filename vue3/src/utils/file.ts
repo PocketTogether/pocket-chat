@@ -1,4 +1,36 @@
 /**
+ * 格式化文件大小为可读字符串。
+ *
+ * - 输入为字节数（bytes）。
+ * - 当 bytes 为 0 时返回 "0B"。
+ * - 使用单位：B, KB, MB, GB, TB。
+ * - 当结果数值 < 10 时保留一位小数，否则不保留小数。
+ *
+ * @param bytes 文件大小（字节数）
+ * @returns 格式化后的文件大小字符串，例如 "512KB", "1.2MB"
+ *
+ * @example
+ * formatFileSize(0)        // "0B"
+ * formatFileSize(512)      // "512B"
+ * formatFileSize(2048)     // "2KB"
+ * formatFileSize(1048576)  // "1.0MB"
+ * formatFileSize(12345678) // "12MB"
+ */
+export const formatFileSize = (bytes: number): string => {
+  if (bytes < 1) return '0B'
+
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const size = bytes / Math.pow(k, i)
+
+  // 小于 10 时保留一位小数，否则取整
+  const formatted = size < 10 ? size.toFixed(1) : size.toFixed(0)
+
+  return `${formatted}${sizes[i]}`
+}
+
+/**
  * 获取指定 MIME 类型对应的文件后缀名
  * @param mimeType - 文件的 MIME 类型，例如 'image/jpeg'
  * @returns 返回文件后缀，例如 'jpg'；若未知则返回 null

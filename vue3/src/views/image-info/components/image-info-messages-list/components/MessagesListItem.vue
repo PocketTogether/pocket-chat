@@ -28,7 +28,7 @@ const authorAvatarUrl = computed(() => {
 
   // 有头像，返回 PB 文件 URL
   return pb.files.getURL(messageAuthor.value, messageAuthor.value.avatar, {
-    thumb: fileUserAvatarConfig.thumb100x100f,
+    thumb: fileUserAvatarConfig.thumb100x100,
   })
 })
 

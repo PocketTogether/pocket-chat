@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRouteControlDialog } from '@/composables'
+import { useRouteControlDialog, useUserPermissionsDesuwa } from '@/composables'
 import type { ImageInfoQueryDesuwaType } from './dependencies'
 import { ContainerDialog } from '@/components'
 import { useI18nStore } from '@/stores'

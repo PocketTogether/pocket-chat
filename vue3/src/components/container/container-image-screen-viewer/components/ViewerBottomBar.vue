@@ -42,15 +42,19 @@ const {
                 @click="viewerImageSwitch(item.id)"
               >
                 <div
-                  class="h-[30px] w-[30px] border-2 bg-cover bg-center"
-                  :class="{
-                    'border-el-primary': item.id === viewerImageData?.id,
-                    'border-transparent': item.id !== viewerImageData?.id,
-                  }"
+                  class="h-[30px] w-[30px] bg-cover bg-center bg-no-repeat"
                   :style="{
                     backgroundImage: `url(${pbImageDataChooseBySmallestWithUrl(item).url})`,
                   }"
-                ></div>
+                >
+                  <div
+                    class="h-full w-full rounded-[4px] border-2"
+                    :class="{
+                      'border-el-primary': item.id === viewerImageData?.id,
+                      'border-transparent': item.id !== viewerImageData?.id,
+                    }"
+                  ></div>
+                </div>
               </div>
             </div>
           </div>

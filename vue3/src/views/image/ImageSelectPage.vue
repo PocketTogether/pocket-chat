@@ -216,7 +216,6 @@ if (imageSelectPagePageRecoverData == null) {
                           <ImageGroupViewerWithQueryAndRealtime
                             v-slot="{ imageItem, imageList }"
                             :imageList="imageSelectList"
-                            bgTwcss="bg-color-background-mute"
                           >
                             <div
                               class="h-full cursor-pointer"

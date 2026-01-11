@@ -7,6 +7,7 @@ import { queryKeys, queryRetryPbNetworkError } from '@/queries'
 import { compareDatesSafe, potoMessage } from '@/utils'
 import type { ElInput } from 'element-plus'
 import { useAuthStore, useI18nStore } from '@/stores'
+import { useUserPermissionsDesuwa } from '@/composables'
 
 const props = defineProps<{
   imageInfoQueryDesuwa: ImageInfoQueryDesuwaType
@@ -117,6 +118,8 @@ const canSubmitEditKeyword = computed(() => {
 })
 
 const i18nStore = useI18nStore()
+
+const { permissionUploadImage } = useUserPermissionsDesuwa()
 </script>
 
 <template>
@@ -155,7 +158,7 @@ const i18nStore = useI18nStore()
             <ElButton
               circle
               type="info"
-              :disabled="!isAuthorCurrent"
+              :disabled="!isAuthorCurrent || !permissionUploadImage"
               @click="startEditKeyword"
             >
               <template #icon>
