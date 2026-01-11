@@ -90,7 +90,8 @@ Creating a superuser is a [**required step after deployment**](#required-post-de
 
 `http://127.0.0.1:58090/_/` → PocketChat admin panel (accessible after creating the superuser)
 
-- `users` collection: view all registered users
+- `users` collection: can view all users and modify user permissions.  
+  See [users collection – user permission control](#users-collection--user-permission-control) (supported since `v0.3.0`)
 - `config` collection: project-specific settings (see [Config collection settings](#config-collection-settings))
 - `messages` collection: view all sent messages
 - `images` collection: view all uploaded images (supported since version `v0.2.0`).
@@ -351,16 +352,44 @@ Fill in email and password. The email does not need to be real (e.g. `admin@admi
 ### Config collection settings
 
 <!-- ![](./assets/Snipaste_2025-11-17_15-30-28.png) -->
-![](./assets/Snipaste_2026-01-05_10-56-53.png)
+<!-- ![](./assets/Snipaste_2026-01-05_10-56-53.png) -->
+![](./assets/Snipaste_2026-01-11_18-35-25.png)
 
 - `website-name` – Site name displayed on login page and top-left of chat
+
 - [`external-links-to-social-media-icons-etc`](#social-media-and-other-icon-external-links-external-links-to-social-media-icons-etc) – Social media icon links shown at the bottom of the login page
+
+- [`admin-contact-info-for-permission`](#admin-contact-info-for-permission) : Administrator contact information, mainly used to display to users when they lack permissions (supported since `v0.3.0`)
+
 - [`upload-image-process-options`](#image-processing-configuration-upload-image-process-options) – Image processing configuration `v0.2.0`
+
 - `password-update-rate-limit-second` – Seconds to wait before another password change request is allowed
+
 - `email-verify-rate-limit-second` – Seconds to wait before another email verification request is allowed
+
 - `email-update-rate-limit-second` – Seconds to wait before another email update request is allowed
+
 - `allow-anonymous-view` – `true` = guests can view chat; `false` = only logged-in users
+
 - `allow-users-to-register` – `true` = registration enabled; `false` = registration disabled and form hidden
+
+- `user-register-oauth2-only` : Whether to allow OAuth2-only registration. Default value: `false` (supported since `v0.3.0`)
+  - When `true`, only OAuth2 registration is allowed. Email-password registration is disabled, and the registration form will not appear on the login page.
+  - When `false`, both OAuth2 registration and email-password registration are allowed.
+  - Note: When `allow-users-to-register` is `false`, registration is completely disabled, and `user-register-oauth2-only` does not take effect.
+
+- `user-can-send-message-default` : Whether sending messages is allowed by default. Default value: `true` (supported since `v0.3.0`)
+  - Controls the system’s default message-sending permission when the `canSendMessage` field in the users collection is not set.  
+    This configuration only applies when the user record does not explicitly specify `"YES"` or `"NO"`.  
+    See [users collection – user permission control](#users-collection--user-permission-control)
+  - `true`: When `canSendMessage` is not set, the user is allowed to send messages by default.
+  - `false`: When `canSendMessage` is not set, the user is not allowed to send messages by default.
+
+- `user-can-upload-image-default` : Whether uploading images is allowed by default. Default value: `true` (supported since `v0.3.0`)
+  - Same behavior as `user-can-send-message-default`.
+  - `true`: When `canUploadImage` is not set, the user is allowed to upload images by default.
+  - `false`: When `canUploadImage` is not set, the user is not allowed to upload images by default.
+
 
 #### Social media and other icon external links (external-links-to-social-media-icons-etc)
 
@@ -393,6 +422,21 @@ Set to `[]` to disable.
 Icons come from https://remixicon.com/ (use the class name).
 
 ![](./assets/Snipaste_2025-11-17_15-50-13.png)
+
+### admin-contact-info-for-permission
+
+Default value: empty string `""`
+
+Recommended text (use `\n` for line breaks):
+
+```
+"Discord - discord.gg/aZq6u3Asak\nTelegram - t.me/PocketTogether"
+```
+
+Displayed in the frontend as:
+
+![](./assets/Snipaste_2026-01-11_19-19-53.jpg)
+
 
 #### Image processing configuration (upload-image-process-options)
 
@@ -477,6 +521,35 @@ key: upload-image-process-options
 ```
 
 ![](./assets/Snipaste_2026-01-05_13-30-55.png)
+
+### users collection – user permission control
+
+![](./assets/Snipaste_2026-01-11_19-27-16.png)
+
+#### canSendMessage
+Used to control whether the user has permission to send messages.  
+- Field type: **select**, options:
+- `"YES"`: Explicitly allow the user to send messages  
+- `"NO"`: Explicitly forbid the user from sending messages  
+- `N/A` (default): Not set. The system will use  
+  **user-can-send-message-default** from the config collection.
+
+#### canUploadImage
+Used to control whether the user has permission to upload images.  
+- Field type: **select**, options:
+- `"YES"`: Explicitly allow the user to upload images  
+- `"NO"`: Explicitly forbid the user from uploading images  
+- `N/A` (default): Not set. The system will use  
+  **user-can-upload-image-default** from the config collection.
+
+#### isBanned
+Used to mark whether a user is banned.  
+- Field type: **boolean**  
+- **false** (default): User is normal and can log in and use all features  
+- **true**: User is banned and cannot access any content
+
+Ban effect:  
+![](./assets/Snipaste_2026-01-11_19-37-25.png)
 
 ### Application settings
 
