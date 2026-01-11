@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <summary>📝 查看中文版本 (Chinese Version)</summary>
 
 ### 新增
+- Implement user access control and improve the front-end. by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/18
 - 实现用户权限控制，发送消息权限、发送图片权限
 - 实现用户封禁功能
 - 实现控制是否只允许oauth2注册
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 </details>
 
 ### Added
+- Implement user access control and improve the front-end. by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/18
 - Implemented user permission controls, including message‑sending and image‑sending permissions.  
 - Added user banning functionality.  
 - Added an option to restrict registration to OAuth2 only.  
