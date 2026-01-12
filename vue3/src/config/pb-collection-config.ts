@@ -8,6 +8,8 @@ const uploadImageProcessOptionsConfigSchema = z.object({
 
 // pocketbase 集合 config 其值的 zodSchema
 export const pbCollectionConfigSchema = {
+  'user-max-upload-file-size-default': z.number().int().gt(0), // 为正整数，大于0的整数
+  'user-can-upload-file-default': z.boolean(),
   'user-can-upload-image-default': z.boolean(),
   'user-can-send-message-default': z.boolean(),
   'user-register-oauth2-only': z.boolean(),
@@ -53,6 +55,10 @@ export const pbCollectionConfigDefaultGetFn = () => {
       - vue3\src\config\pb-collection-config.ts
       - pocketbase\pb_hooks\init-config.pb.js
     */
+    /** 默认允许上传文件的最大大小（字节数），为正整数，大于0的整数，默认20MB */
+    'user-max-upload-file-size-default': 20 * 1024 * 1024, //
+    /** 是否默认允许上传文件 */
+    'user-can-upload-file-default': true,
     /** 是否默认允许上传图片 */
     'user-can-upload-image-default': true,
     /** 是否默认允许发送消息 */
