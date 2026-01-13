@@ -1,7 +1,7 @@
 import type { I18nMessagesSatisfiesType } from './dependencies'
 import {
-  // 重命名 uploadImageStoreRecordStatusKeyConfig 为 UISRSKC 以便于使用
-  uploadImageStoreRecordStatusKeyConfig as UISRSKC,
+  // 重命名 uploadStoreRecordStatusKeyConfig 为 USRSKC 以便于使用
+  uploadStoreRecordStatusKeyConfig as USRSKC,
 } from '@/config/upload'
 
 /**
@@ -9,7 +9,7 @@ import {
  */
 export const i18nMessagesUploadPartUploadStoreRecordStatusText = {
   // 待上传
-  [`uploadStoreRecordStatusText_${UISRSKC.pending}` as const]: {
+  [`uploadStoreRecordStatusText_${USRSKC.pending}` as const]: {
     'en-US': () => 'Pending' as const,
     'zh-CN': () => '待上传' as const,
     'zh-TW': () => '待上傳' as const,
@@ -18,7 +18,7 @@ export const i18nMessagesUploadPartUploadStoreRecordStatusText = {
     'ru-RU': () => 'Ожидание' as const,
   },
   // 上传中
-  [`uploadStoreRecordStatusText_${UISRSKC.uploading}` as const]: {
+  [`uploadStoreRecordStatusText_${USRSKC.uploading}` as const]: {
     'en-US': () => 'Uploading' as const,
     'zh-CN': () => '上传中' as const,
     'zh-TW': () => '上傳中' as const,
@@ -27,7 +27,7 @@ export const i18nMessagesUploadPartUploadStoreRecordStatusText = {
     'ru-RU': () => 'Загрузка' as const,
   },
   // 上传完成
-  [`uploadStoreRecordStatusText_${UISRSKC.success}` as const]: {
+  [`uploadStoreRecordStatusText_${USRSKC.success}` as const]: {
     'en-US': () => 'Uploaded' as const,
     'zh-CN': () => '上传完成' as const,
     'zh-TW': () => '上傳完成' as const,
@@ -36,7 +36,7 @@ export const i18nMessagesUploadPartUploadStoreRecordStatusText = {
     'ru-RU': () => 'Загружено' as const,
   },
   // 在 pending 状态时被中止
-  [`uploadStoreRecordStatusText_${UISRSKC.aborted_while_pending}` as const]: {
+  [`uploadStoreRecordStatusText_${USRSKC.aborted_while_pending}` as const]: {
     'en-US': () => 'Aborted' as const,
     'zh-CN': () => '已中止' as const,
     'zh-TW': () => '已中止' as const,
@@ -45,7 +45,7 @@ export const i18nMessagesUploadPartUploadStoreRecordStatusText = {
     'ru-RU': () => 'Прервано' as const,
   },
   // 在 uploading 状态时被中止
-  [`uploadStoreRecordStatusText_${UISRSKC.aborted_while_uploading}` as const]: {
+  [`uploadStoreRecordStatusText_${USRSKC.aborted_while_uploading}` as const]: {
     'en-US': () => 'Aborted' as const,
     'zh-CN': () => '已中止' as const,
     'zh-TW': () => '已中止' as const,
@@ -54,7 +54,7 @@ export const i18nMessagesUploadPartUploadStoreRecordStatusText = {
     'ru-RU': () => 'Прервано' as const,
   },
   // 上传错误
-  [`uploadStoreRecordStatusText_${UISRSKC.error}` as const]: {
+  [`uploadStoreRecordStatusText_${USRSKC.error}` as const]: {
     'en-US': () => 'Error' as const,
     'zh-CN': () => '上传错误' as const,
     'zh-TW': () => '上傳錯誤' as const,
@@ -63,7 +63,7 @@ export const i18nMessagesUploadPartUploadStoreRecordStatusText = {
     'ru-RU': () => 'Ошибка' as const,
   },
   // 中断
-  [`uploadStoreRecordStatusText_${UISRSKC.interrupted}` as const]: {
+  [`uploadStoreRecordStatusText_${USRSKC.interrupted}` as const]: {
     'en-US': () => 'Interrupted' as const,
     'zh-CN': () => '已中断' as const,
     'zh-TW': () => '已中斷' as const,

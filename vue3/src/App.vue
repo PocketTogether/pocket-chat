@@ -3,6 +3,7 @@ import { i18nLocaleInfo } from './config'
 import {
   useI18nStore,
   useRealtimeMessagesStore,
+  useUploadFileStore,
   useUploadImageStore,
 } from './stores'
 import { useDark } from '@vueuse/core'
@@ -88,6 +89,10 @@ useInitWebNotif()
 // 初始化图片上传系统
 const uploadImageStore = useUploadImageStore()
 uploadImageStore.initialize()
+
+// 初始化文件上传系统
+const uploadFileStore = useUploadFileStore()
+uploadFileStore.initialize()
 
 const isDark = useDark()
 

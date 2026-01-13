@@ -1,9 +1,9 @@
 import {
-  // 重命名 uploadImageStoreRecordStatusKeyConfig 为 UISRSKC 以便于使用
-  uploadImageStoreRecordStatusKeyConfig as UISRSKC,
+  // 重命名 uploadStoreRecordStatusKeyConfig 为 USRSKC 以便于使用
+  uploadStoreRecordStatusKeyConfig as USRSKC,
   type I18nMessagesKeyType,
   type PbCollectionConfigType,
-  type UploadImageStoreRecordStatus,
+  type UploadStoreRecordStatus,
 } from '@/config'
 import type { UploadFile } from 'element-plus'
 import { defineStore } from 'pinia'
@@ -23,7 +23,7 @@ export interface UploadImageStoreRecord {
   type: string
   size: number
   addedAt: string
-  status: UploadImageStoreRecordStatus
+  status: UploadStoreRecordStatus
   errorContent?: {
     i18nMessagesKey: I18nMessagesUploadPartUploadProgressInfoErrorPartKeyType
     i18nTData?: unknown
@@ -45,7 +45,7 @@ export interface UploadImageStoreProgressInfo {
   estimated?: number // seconds
 }
 
-export interface UploadRecordWithFileAndProgressInfo {
+export interface UploadImageRecordWithFileAndProgressInfo {
   record: UploadImageStoreRecord
   file: UploadImageStoreFile | undefined
   progressInfo: UploadImageStoreProgressInfo | undefined
@@ -134,8 +134,8 @@ export const useUploadImageStore = defineStore(
 
         // 上传中、待上传 的，将其修改为中断
         uploadRecordList.value.forEach((r) => {
-          if (r.status === UISRSKC.pending || r.status === UISRSKC.uploading) {
-            r.status = UISRSKC.interrupted
+          if (r.status === USRSKC.pending || r.status === USRSKC.uploading) {
+            r.status = USRSKC.interrupted
           }
         })
       }

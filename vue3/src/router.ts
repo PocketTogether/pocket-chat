@@ -4,6 +4,8 @@ import { pbCollectionConfigDefaultGetFn, routerDict } from './config'
 import {
   ChatHome,
   ChatSetting,
+  FileInfoPage,
+  FileSelectPage,
   ImageInfoPage,
   ImageSelectPage,
   LayoutSimple,
@@ -44,6 +46,14 @@ const router = createRouter({
         {
           ...routerDict.ImageInfoPage,
           component: ImageInfoPage,
+        },
+        {
+          ...routerDict.FileSelectPage,
+          component: FileSelectPage,
+        },
+        {
+          ...routerDict.FileInfoPage,
+          component: FileInfoPage,
         },
       ],
     },
