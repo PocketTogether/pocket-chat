@@ -970,7 +970,7 @@
                 "hidden": false,
                 "id": "file2359244304",
                 "maxSelect": 1,
-                "maxSize": 0,
+                "maxSize": 8000000000,
                 "mimeTypes": [],
                 "name": "file",
                 "presentable": false,
