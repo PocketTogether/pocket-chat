@@ -1,6 +1,9 @@
-import type { ImagesResponseWithBaseExpand } from '@/api'
+import type {
+  FilesResponseWithBaseExpand,
+  ImagesResponseWithBaseExpand,
+} from '@/api'
 import { routerDict } from '@/config'
-import type { useImagesGetOneQuery } from '@/queries'
+import type { useFilesGetOneQuery, useImagesGetOneQuery } from '@/queries'
 import { queryKeys } from '@/queries'
 import { useRouterHistoryStore } from '@/stores'
 import { useQueryClient } from '@tanstack/vue-query'
@@ -100,8 +103,77 @@ export const useRouterHistoryTool = () => {
     })
   }
 
+  /**
+   * 跳转至文件详情页的方法，为方便使用封装至此
+   */
+  const routerGoFileInfoPage = (data: {
+    fileId: string
+    // 在跳转前预设置查询数据，这样跳转后就立即有数据
+    presetFileGetOneData?: FilesResponseWithBaseExpand
+  }) => {
+    const {
+      //
+      fileId,
+      presetFileGetOneData,
+    } = data
+
+    // FilesGetOneQuery 的数据类型
+    type FilesGetOneQueryDataValueType = ReturnType<
+      typeof useFilesGetOneQuery
+    >['data']['value']
+
+    // 对 useFilesGetOneQuery
+    // 在跳转前预设置查询数据，这样跳转后就立即有数据
+    if (presetFileGetOneData != null) {
+      // 立即执行的箭头函数，主要为了其中可以使用return以方便逻辑检查
+      ;(() => {
+        // getQueryData 原本返回类型为 unknown，这里 as 为应为的值
+        // try 以避免访问 getQueryData 获取的值时出错，如 TypeError: Cannot read properties of undefined
+        try {
+          const fileGetOneQueryKey = queryKeys.filesGetOne(fileId)
+
+          // 先检查是否已有缓存
+          const cached = queryClient.getQueryData(fileGetOneQueryKey) as
+            | FilesGetOneQueryDataValueType
+            | undefined
+
+          // 有缓存，且日期新，则不应再设置查询数据了
+          if (
+            cached != null &&
+            cached.updated >= presetFileGetOneData.updated
+          ) {
+            return
+          }
+
+          // 预设置查询数据
+          queryClient.setQueryData(
+            fileGetOneQueryKey,
+            // 确保类型正确
+            presetFileGetOneData satisfies FilesGetOneQueryDataValueType
+          )
+        } catch (error) {
+          console.warn(
+            'useRouterHistoryTool',
+            'routerGoFileInfoPage',
+            'presetFileGetOneData',
+            'queryClient.getQueryData',
+            error
+          )
+        }
+      })()
+    }
+
+    router.push({
+      name: routerDict.FileInfoPage.name,
+      params: {
+        [routerDict.FileInfoPage.paramsKey.id]: fileId,
+      },
+    })
+  }
+
   return {
     routerBackSafe,
     routerGoImageInfoPage,
+    routerGoFileInfoPage,
   }
 }

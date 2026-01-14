@@ -1,6 +1,7 @@
 import { i18nMessagesChatPart } from './chat'
 import { i18nMessagesDatePart } from './date'
 import type { I18nLocaleType } from './dependencies'
+import { i18nMessagesFilePart } from './file'
 import { i18nMessagesHomePart } from './home'
 import { i18nMessagesImagePart } from './image'
 import { i18nMessagesLoginPart } from './login'
@@ -50,6 +51,8 @@ export const i18nMessages = {
   ...i18nMessagesImagePart,
   // 权限相关部分
   ...i18nMessagesPermissionPart,
+  // 文件页相关部分
+  ...i18nMessagesFilePart,
 } as const satisfies I18nMessagesSatisfiesType
 
 // 通过类型体操，获取i18nMessages键的类型

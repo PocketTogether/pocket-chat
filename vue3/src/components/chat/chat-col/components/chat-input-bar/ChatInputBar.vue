@@ -157,14 +157,16 @@ const autosizeElInput = computed(() => {
           </template>
         </ChatTopBarMoreMenuItem>
         <!-- 菜单项 文件 -->
-        <!-- <ChatTopBarMoreMenuItem @click="() => {}">
+        <ChatTopBarMoreMenuItem
+          @click="$router.push(routerDict.FileSelectPage.path)"
+        >
           <template #icon>
             <RiFolderLine size="18px"></RiFolderLine>
           </template>
           <template #text>
             {{ i18nStore.t('chatInputBarBackMenuFile')() }}
           </template>
-        </ChatTopBarMoreMenuItem> -->
+        </ChatTopBarMoreMenuItem>
         <!-- 垫片 -->
         <div
           :style="{

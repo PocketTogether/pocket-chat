@@ -8,6 +8,14 @@ import {
   useFileSelectListDesuwa,
   useFileSelectPagePageRecoverDataDesuwa,
 } from './composables'
+import { ContainerBar, ContainerCol2 } from '@/components'
+import {
+  FilePageBottomBar,
+  FilePageControlPanel,
+  FilePageFileList,
+  FilePageTopBar,
+  FilePageUploadList,
+} from './components'
 
 const i18nStore = useI18nStore()
 
@@ -126,6 +134,9 @@ const uploadFileStore = useUploadFileStore()
             <FilePageFileList
               :fileQueryModeDesuwa="fileQueryModeDesuwa"
               :fileSelectListDesuwa="fileSelectListDesuwa"
+              :fileSelectPagePageRecoverDataDesuwa="
+                fileSelectPagePageRecoverDataDesuwa
+              "
             ></FilePageFileList>
           </div>
         </template>
