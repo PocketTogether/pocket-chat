@@ -76,7 +76,7 @@ const i18nStore = useI18nStore()
                 <div class="mr-[4px]">
                   <div class="flow-root">
                     <div class="m-[4px] text-color-text">
-                      <RiFileAddLine size="20px"></RiFileAddLine>
+                      <RiFolderUploadLine size="20px"></RiFolderUploadLine>
                     </div>
                   </div>
                 </div>

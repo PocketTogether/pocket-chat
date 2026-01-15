@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/vue-query'
+import { keepPreviousData, useQuery } from '@tanstack/vue-query'
 import { queryKeys } from './query-keys'
 import { pbFilePageListApi } from '@/api'
 import { queryRetryPbNetworkError } from './query-retry'
@@ -53,6 +53,8 @@ export const useFilePageListQuery = (data: {
     staleTime: queryConfig.staleTimeLong,
     // ✅ 在网络错误时重试
     retry: queryRetryPbNetworkError,
+    // 即使查询键已更改，在请求新数据时，仍可显示上次成功获取的数据
+    placeholderData: keepPreviousData,
   })
 
   return query

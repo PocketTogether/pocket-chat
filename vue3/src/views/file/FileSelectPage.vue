@@ -8,7 +8,11 @@ import {
   useFileSelectListDesuwa,
   useFileSelectPagePageRecoverDataDesuwa,
 } from './composables'
-import { ContainerBar, ContainerCol2 } from '@/components'
+import {
+  ContainerBar,
+  ContainerCol2,
+  FileContentCardWithBar,
+} from '@/components'
 import {
   FilePageBottomBar,
   FilePageControlPanel,
@@ -104,13 +108,15 @@ const uploadFileStore = useUploadFileStore()
                       <div
                         class="mx-auto"
                         :style="{
-                          maxWidth: `${400}px`,
+                          maxWidth: `${412}px`,
                         }"
                       >
                         <div
                           class="overflow-hidden rounded-[20px] bg-color-background-soft"
                         >
-                          <FileInfoCard></FileInfoCard>
+                          <FileContentCardWithBar
+                            :fileData="fileSelectList[0]"
+                          ></FileContentCardWithBar>
                         </div>
                       </div>
                     </div>

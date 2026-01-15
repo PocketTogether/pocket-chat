@@ -231,4 +231,24 @@ export const i18nMessagesFilePart = {
     'ko-KR': () => '메시지' as const,
     'ru-RU': () => 'Сообщения' as const,
   },
+
+  // 文件内容卡片：下载按钮文本
+  fileContentCardBarDownloadText: {
+    'en-US': () => 'Download' as const,
+    'zh-CN': () => '下载' as const,
+    'zh-TW': () => '下載' as const,
+    'ja-JP': () => 'ダウンロード' as const,
+    'ko-KR': () => '다운로드' as const,
+    'ru-RU': () => 'Скачать' as const,
+  },
+
+  // 文件内容卡片：打开按钮文本
+  fileContentCardBarOpenText: {
+    'en-US': () => 'Open' as const,
+    'zh-CN': () => '打开' as const,
+    'zh-TW': () => '開啟' as const,
+    'ja-JP': () => '開く' as const,
+    'ko-KR': () => '열기' as const,
+    'ru-RU': () => 'Открыть' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType

@@ -103,7 +103,7 @@ const fileUploadAdd = async (uploadFile: UploadFile) => {
             >
               <div class="mx-[10px] my-[16px] flex items-center justify-center">
                 <div class="mr-[8px]">
-                  <RiFileAddLine></RiFileAddLine>
+                  <RiFolderUploadLine></RiFolderUploadLine>
                 </div>
                 <div class="select-none truncate text-[14px] font-bold">
                   {{ i18nStore.t('filePageFileUploadText')() }}

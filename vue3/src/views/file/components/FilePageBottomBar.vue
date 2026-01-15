@@ -101,6 +101,24 @@ const i18nStore = useI18nStore()
                 </div>
               </div>
             </div> -->
+            <div
+              class="mx-2 flex select-none items-center justify-center text-color-text"
+            >
+              <!-- 图标 -->
+              <div class="mr-[6px]">
+                <RiFile3Fill size="24px"></RiFile3Fill>
+              </div>
+              <!-- 文件名 -->
+              <div class="truncate">
+                <div class="truncate text-[14px] font-bold">
+                  {{
+                    fileSelectList[0].fileName !== ''
+                      ? fileSelectList[0].fileName
+                      : fileSelectList[0].id
+                  }}
+                </div>
+              </div>
+            </div>
           </div>
           <!-- 提示 -->
           <div v-else>
