@@ -7,6 +7,8 @@ import {
   useFileQueryModeDesuwa,
   useFileSelectListDesuwa,
   useFileSelectPagePageRecoverDataDesuwa,
+  useFileSelectPagePageRecoverDataSetOnLeave,
+  useFileSelectPagePageRecoverScrollTop,
 } from './composables'
 import {
   ContainerBar,
@@ -49,6 +51,23 @@ const {
   //
   fileSelectList,
 } = fileSelectListDesuwa
+
+// 页面恢复 滚动恢复
+useFileSelectPagePageRecoverScrollTop({
+  fileSelectPagePageRecoverDataDesuwa,
+})
+
+const refFilePageFileList = ref<InstanceType<typeof FilePageFileList> | null>(
+  null
+)
+export type RefFilePageFileListType = typeof refFilePageFileList
+
+// 页面恢复数据收集
+useFileSelectPagePageRecoverDataSetOnLeave({
+  fileQueryModeDesuwa,
+  fileSelectListDesuwa,
+  refFilePageFileList,
+})
 
 const uploadFileStore = useUploadFileStore()
 </script>
@@ -108,11 +127,11 @@ const uploadFileStore = useUploadFileStore()
                       <div
                         class="mx-auto"
                         :style="{
-                          maxWidth: `${412}px`,
+                          // maxWidth: `${412}px`,
                         }"
                       >
                         <div
-                          class="overflow-hidden rounded-[20px] bg-color-background-soft"
+                          class="overflow-hidden rounded-b-[20px] rounded-t-[24px] bg-color-background-soft"
                         >
                           <FileContentCardWithBar
                             :fileData="fileSelectList[0]"
@@ -138,6 +157,7 @@ const uploadFileStore = useUploadFileStore()
         <template #col1>
           <div class="my-4 ml-2 mr-6">
             <FilePageFileList
+              ref="refFilePageFileList"
               :fileQueryModeDesuwa="fileQueryModeDesuwa"
               :fileSelectListDesuwa="fileSelectListDesuwa"
               :fileSelectPagePageRecoverDataDesuwa="

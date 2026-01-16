@@ -3,6 +3,8 @@ import type { FileQueryModeDesuwaType } from './query-mode'
 import type { FileSelectListDesuwaType } from './select-list'
 import { injectAppMainElScrollbar, useOnComponentLeave } from '@/composables'
 import { watchUntilSourceCondition } from '@/utils'
+import type { RefFilePageFileListType } from './dependencies'
+import { useWindowSize } from '@vueuse/core'
 
 /** 页面恢复数据获取 */
 export const useFileSelectPagePageRecoverDataDesuwa = () => {
@@ -69,11 +71,13 @@ export const useFileSelectPagePageRecoverDataSetOnLeave = (data: {
   //
   fileQueryModeDesuwa: FileQueryModeDesuwaType
   fileSelectListDesuwa: FileSelectListDesuwaType
+  refFilePageFileList: RefFilePageFileListType
 }) => {
   const {
     //
     fileQueryModeDesuwa,
     fileSelectListDesuwa,
+    refFilePageFileList,
   } = data
 
   const {
@@ -88,6 +92,8 @@ export const useFileSelectPagePageRecoverDataSetOnLeave = (data: {
     fileSelectList,
   } = fileSelectListDesuwa
 
+  // const windowSize = useWindowSize()
+
   const appMainElScrollbar = injectAppMainElScrollbar()
 
   const routerHistoryStore = useRouterHistoryStore()
@@ -99,6 +105,9 @@ export const useFileSelectPagePageRecoverDataSetOnLeave = (data: {
       fileQueryPage: fileQueryPage.value,
       fileSelectList: fileSelectList.value,
       appMainElScrollbarScrollTop: appMainElScrollbar.value?.wrapRef?.scrollTop,
+      // windowWidth: windowSize.width.value,
+      layoutBoxWidth: refFilePageFileList.value?.layoutBoxWidth,
+      transBoxHeight: refFilePageFileList.value?.transBoxHeight,
     })
   }
 

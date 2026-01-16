@@ -86,7 +86,7 @@ const goFileInfoPage = () => {
           <!-- 按钮 -->
           <div class="ml-3">
             <div>
-              <ElButton circle type="primary" @click="goFileInfoPage">
+              <ElButton circle type="primary" @click.stop="goFileInfoPage">
                 <template #icon>
                   <RiArrowRightLine></RiArrowRightLine>
                 </template>

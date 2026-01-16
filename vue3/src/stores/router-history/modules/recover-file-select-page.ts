@@ -9,6 +9,9 @@ export type PageRecoverDataForFileSelectPageItemType = {
     fileQueryPage: number
     fileSelectList: FilesResponseWithBaseExpand[]
     appMainElScrollbarScrollTop: number | undefined
+    // windowWidth: number | undefined
+    transBoxHeight: number | undefined
+    layoutBoxWidth: number | undefined
   }
 }
 

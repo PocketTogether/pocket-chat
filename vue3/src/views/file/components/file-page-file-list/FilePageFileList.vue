@@ -29,10 +29,19 @@ const {
 const { fileSelectPagePageRecoverData } =
   props.fileSelectPagePageRecoverDataDesuwa
 
+console.log('fileSelectPagePageRecoverData', fileSelectPagePageRecoverData)
+
 const windowsSize = useWindowSize()
 
 const refLayoutBox = ref<HTMLElement | null>(null)
 const sizeLayoutBox = useElementSize(refLayoutBox)
+
+const layoutBoxWidth = computed(() => {
+  if (sizeLayoutBox.width.value <= 0) {
+    return fileSelectPagePageRecoverData?.data.layoutBoxWidth ?? 0
+  }
+  return sizeLayoutBox.width.value
+})
 
 const refContentBox = ref<HTMLElement | null>(null)
 const sizeContentBox = useElementSize(refContentBox)
@@ -71,14 +80,20 @@ const transBoxHeight = computed(() => {
   if (transBoxHeightByCache.value > 10) {
     return transBoxHeightByCache.value
   }
+  const transBoxHeightByPageRecoverData =
+    fileSelectPagePageRecoverData?.data.transBoxHeight
+  if (
+    transBoxHeightByPageRecoverData != null &&
+    transBoxHeightByPageRecoverData > 10
+  ) {
+    return transBoxHeightByPageRecoverData
+  }
   return transBoxHeightByDefault()
 })
 
 defineExpose({
-  // // 父组件将等待这些数据，等待有内容高度，有内容高度才能初始化滚动
-  // refContentBox,
-  // sizeContentBox,
-  // contentBoxHeigh,
+  transBoxHeight,
+  layoutBoxWidth,
 })
 </script>
 
@@ -88,7 +103,7 @@ defineExpose({
     <!-- 布局盒子，获取宽度 -->
     <div ref="refLayoutBox">
       <Transition name="fade800ms" mode="out-in">
-        <div v-if="sizeLayoutBox.width.value > 0">
+        <div v-if="layoutBoxWidth > 0">
           <!-- 样式盒子 -->
           <div
             class="overflow-hidden rounded-t-[24px] bg-color-background-soft"
@@ -131,7 +146,7 @@ defineExpose({
                         <FileListItem
                           :fileData="item"
                           :fileSelectListDesuwa="fileSelectListDesuwa"
-                          :layoutBoxWidth="sizeLayoutBox.width.value"
+                          :layoutBoxWidth="layoutBoxWidth"
                         ></FileListItem>
                       </div>
                     </div>
