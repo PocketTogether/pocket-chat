@@ -7,6 +7,7 @@ import { useRouterHistoryTool, useUserPermissionsDesuwa } from '@/composables'
 import { routerDict } from '@/config'
 import { useQueryClient } from '@tanstack/vue-query'
 import { queryKeys } from '@/queries'
+import { fileTypeResolveIconContentUtil } from '@/utils'
 
 const props = defineProps<{
   fileSelectListDesuwa: FileSelectListDesuwaType
@@ -106,7 +107,14 @@ const i18nStore = useI18nStore()
             >
               <!-- 图标 -->
               <div class="mr-[6px]">
-                <RiFile3Fill size="24px"></RiFile3Fill>
+                <!-- <RiFile3Fill size="24px"></RiFile3Fill> -->
+                <i
+                  :class="
+                    fileTypeResolveIconContentUtil(fileSelectList[0])
+                      .riIconClass
+                  "
+                  style="font-size: 24px; line-height: 24px"
+                ></i>
               </div>
               <!-- 文件名 -->
               <div class="truncate">

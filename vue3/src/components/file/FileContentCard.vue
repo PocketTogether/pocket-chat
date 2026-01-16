@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import type { FilesResponseWithBaseExpand } from '@/api'
-import { formatFileSize } from '@/utils'
+import { fileTypeResolveIconContentUtil, formatFileSize } from '@/utils'
 
 const props = defineProps<{
   fileData: FilesResponseWithBaseExpand
 }>()
+
+const iconContent = computed(() => {
+  return fileTypeResolveIconContentUtil(props.fileData)
+})
 </script>
 
 <template>
@@ -13,8 +17,12 @@ const props = defineProps<{
     <div class="flex items-center">
       <!-- 图标 -->
       <div class="mr-[10px] flow-root">
-        <div class="my-[2px]">
-          <RiFile3Fill size="32px"></RiFile3Fill>
+        <div class="my-[2px]" :class="iconContent.textColorTwcss">
+          <!-- <RiFile3Fill size="32px"></RiFile3Fill> -->
+          <i
+            :class="iconContent.riIconClass"
+            style="font-size: 32px; line-height: 32px"
+          ></i>
         </div>
       </div>
       <!-- 文字 -->
