@@ -382,6 +382,7 @@ export const useChatColPageRecoverDataSetOnBeforeUnmountAndRouteLeave = (data: {
     const {
       chatInputContent,
       chatImageSelectList,
+      chatFileSelectList,
       chatReplyMessage,
       chatEditMessage,
       chatMessageIsRealtimeTimeout,
@@ -403,6 +404,7 @@ export const useChatColPageRecoverDataSetOnBeforeUnmountAndRouteLeave = (data: {
         chatRoomMessagesLimitBottomCursor.value,
       chatInputContent,
       chatImageSelectList,
+      chatFileSelectList,
       chatReplyMessage,
       chatEditMessage,
       chatMessageIsRealtimeTimeout,

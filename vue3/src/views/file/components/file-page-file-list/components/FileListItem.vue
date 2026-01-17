@@ -28,7 +28,7 @@ const isItemSelectAlready = computed(
 )
 // 选中当前
 const itemSwitch = () => {
-  fileSelectListSwitch(props.fileData)
+  fileSelectListSwitch(fileDataWithQueryAndRealtime.value)
 }
 
 // 头像

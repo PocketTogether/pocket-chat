@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// /* eslint vue/no-undef-components: "warn" */
 import { useI18nStore } from '@/stores'
 import {
   FileInfoControlPanel,

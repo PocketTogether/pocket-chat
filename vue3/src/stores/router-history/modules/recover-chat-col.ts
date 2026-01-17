@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import type {
+  FilesResponseWithBaseExpand,
   ImagesResponseWithBaseExpand,
   MessagesResponseWidthExpand,
   MessagesResponseWidthExpandReplyMessage,
@@ -21,6 +22,7 @@ export type PageRecoverDataForChatColItemType = {
     chatRoomMessagesLimitBottomCursor: ChatRoomMessagesLimitCursorValType
     chatInputContent: string
     chatImageSelectList: ImagesResponseWithBaseExpand[]
+    chatFileSelectList: FilesResponseWithBaseExpand[]
     chatReplyMessage: MessagesResponseWidthExpandReplyMessage | null
     chatEditMessage: MessagesResponseWidthExpand | null
     chatMessageIsRealtimeTimeout: boolean
