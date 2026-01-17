@@ -14,6 +14,7 @@ import {
   useFirstDataLoadingAndAnimationMaskClose,
   useInitPbAuth,
   useInitWebNotif,
+  useRealtimeFilesSubscribe,
   useRealtimeImagesSubscribe,
   useRealtimeMessagesSubscribe,
   useWatchAllowAnonymousViewAndAuthStoreIsValidCheckRouterLoginPage,
@@ -76,6 +77,10 @@ useFirstDataLoadingAndAnimationMaskClose({
 // use图片订阅
 const realtimeImagesSubscribe = useRealtimeImagesSubscribe()
 realtimeImagesSubscribe.startSubscribe()
+
+// use文件订阅
+const realtimeFilesSubscribe = useRealtimeFilesSubscribe()
+realtimeFilesSubscribe.startSubscribe()
 
 // 在程序初始化时，进行关于pocketbase身份验证的一些操作
 useInitPbAuth()
