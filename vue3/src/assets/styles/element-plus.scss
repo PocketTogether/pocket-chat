@@ -119,9 +119,12 @@ $dark-steps: 1, 2, 3, 4, 5, 6, 7, 8, 9;
   border: none;
   background-color: var(--color-background-soft);
   box-shadow: 0 0 6px 6px var(--color-background);
+
   .el-notification__content {
-    overflow-wrap: anywhere;     /* 尽可能在任意点断行，避免水平滚动，但仍优先保持词完整 */
-    white-space: pre-wrap;       /* 保留空格和换行，同时允许自动换行 */
+    overflow-wrap: anywhere;
+    /* 尽可能在任意点断行，避免水平滚动，但仍优先保持词完整 */
+    white-space: pre-wrap;
+    /* 保留空格和换行，同时允许自动换行 */
   }
 }
 
@@ -223,9 +226,12 @@ $dark-steps: 1, 2, 3, 4, 5, 6, 7, 8, 9;
 // 遮罩（主要用于对话框），为偏透明的背景色
 .el-overlay.el-overlay {
   background-color: var(--color-background-a80);
-  backdrop-filter: blur(15px);         /* 模糊背景内容 */
-  -webkit-backdrop-filter: blur(15px); /* Safari 支持 */
+  backdrop-filter: blur(15px);
+  /* 模糊背景内容 */
+  -webkit-backdrop-filter: blur(15px);
+  /* Safari 支持 */
 }
+
 // dark背景色更深一些
 :root.dark .el-overlay.el-overlay {
   background-color: var(--color-background-a90);
@@ -239,10 +245,12 @@ $dark-steps: 1, 2, 3, 4, 5, 6, 7, 8, 9;
   // --el-dialog-border-radius: 20px;
   --el-dialog-border-radius: 0;
   --el-dialog-padding-primary: 0;
+
   // border-radius: 20px;
   .el-dialog__header {
     display: none;
   }
+
   .el-dialog__body {
     color: var(--color-text);
   }
@@ -256,5 +264,20 @@ $dark-steps: 1, 2, 3, 4, 5, 6, 7, 8, 9;
 .el-scrollbar.el-scrollbar {
   .el-scrollbar__bar {
     z-index: 10;
+    pointer-events: none; // bar 不可点击
+
+    .el-scrollbar__thumb {
+      pointer-events: auto; // thumb 可点击
+    }
+  }
+
+  // 屏幕宽度小于或等于 500 时
+  @media (max-width: 500px) {
+    .el-scrollbar__bar.is-vertical {
+      width: 4.5px;
+    }
+    .el-scrollbar__bar.is-horizontal {
+      height: 4.5px;
+    }
   }
 }
