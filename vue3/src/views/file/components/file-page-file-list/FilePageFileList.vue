@@ -29,7 +29,7 @@ const {
 const { fileSelectPagePageRecoverData } =
   props.fileSelectPagePageRecoverDataDesuwa
 
-console.log('fileSelectPagePageRecoverData', fileSelectPagePageRecoverData)
+// console.log('fileSelectPagePageRecoverData', fileSelectPagePageRecoverData)
 
 const windowsSize = useWindowSize()
 

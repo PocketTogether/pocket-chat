@@ -144,7 +144,7 @@ const uploadFileStore = useUploadFileStore()
               </template>
               <template #bar>
                 <div class="flow-root">
-                  <!-- 图片页底栏 -->
+                  <!-- 文件页底栏 -->
                   <FilePageBottomBar
                     :fileSelectListDesuwa="fileSelectListDesuwa"
                   ></FilePageBottomBar>
@@ -169,7 +169,63 @@ const uploadFileStore = useUploadFileStore()
       </ContainerCol2>
     </div>
     <!-- 小屏 单列 -->
-    <div v-else></div>
+    <div v-else>
+      <!-- 顶栏 底栏 操作面板 文件列表 -->
+      <div class="mx-[8px]">
+        <div
+          class="mx-auto"
+          :style="{
+            maxWidth: '500px',
+          }"
+        >
+          <ContainerBar :defaultBarHeight="52">
+            <template #default>
+              <div class="relative mb-4">
+                <div class="sticky top-0 z-[1] flow-root">
+                  <!-- 文件页顶栏 -->
+                  <FilePageTopBar
+                    :pageTitle="i18nStore.t('pageFileSelect')()"
+                    :fileQueryModeDesuwa="fileQueryModeDesuwa"
+                  ></FilePageTopBar>
+                </div>
+                <!-- 操作面板 -->
+                <div class="mt-4">
+                  <FilePageControlPanel
+                    :fileQueryModeDesuwa="fileQueryModeDesuwa"
+                  ></FilePageControlPanel>
+                </div>
+                <!-- 上传列表 -->
+                <Transition name="fade" mode="out-in">
+                  <div
+                    v-if="uploadFileStore.uploadRecordList.length > 0"
+                    class="mt-4"
+                  >
+                    <FilePageUploadList></FilePageUploadList>
+                  </div>
+                </Transition>
+                <!-- 文件列表 -->
+                <div class="mt-4">
+                  <FilePageFileList
+                    ref="refFilePageFileList"
+                    :fileQueryModeDesuwa="fileQueryModeDesuwa"
+                    :fileSelectListDesuwa="fileSelectListDesuwa"
+                    :fileSelectPagePageRecoverDataDesuwa="
+                      fileSelectPagePageRecoverDataDesuwa
+                    "
+                  ></FilePageFileList>
+                </div>
+              </div>
+            </template>
+            <template #bar>
+              <!-- 文件页底栏 -->
+              <FilePageBottomBar
+                :fileSelectListDesuwa="fileSelectListDesuwa"
+              ></FilePageBottomBar>
+            </template>
+          </ContainerBar>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
