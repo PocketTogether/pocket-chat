@@ -115,7 +115,7 @@ const fileDownloadUrl = computed(() => {
         </div>
       </div>
 
-      <!-- 右侧：复制文件链接按钮 -->
+      <!-- 右侧：链接按钮 -->
       <div>
         <div class="mx-[3px] flex items-center">
           <a

@@ -4,6 +4,7 @@ import type { ImageInfoQueryDesuwaType } from './dependencies'
 import { computed } from 'vue'
 import { pb } from '@/lib'
 import {
+  pbImageDataChooseByLargest,
   pbImageDataChooseByLargestWithUrl,
   potoMessage,
   potoNotification,
@@ -113,6 +114,34 @@ const copyImageLink = async () => {
     })
   }
 }
+
+const imageChoose = computed(() => {
+  if (imageRecord.value == null) {
+    return null
+  }
+  return pbImageDataChooseByLargest(imageRecord.value)
+})
+
+const imageOpenUrl = computed(() => {
+  if (imageRecord.value == null) {
+    return null
+  }
+  if (imageChoose.value == null) {
+    return null
+  }
+  return pb.files.getURL(imageRecord.value, imageChoose.value.image)
+})
+const imageDownloadUrl = computed(() => {
+  if (imageRecord.value == null) {
+    return null
+  }
+  if (imageChoose.value == null) {
+    return null
+  }
+  return pb.files.getURL(imageRecord.value, imageChoose.value.image, {
+    download: true,
+  })
+})
 </script>
 
 <template>
@@ -141,13 +170,26 @@ const copyImageLink = async () => {
         </div>
       </div>
 
-      <!-- 右侧：复制图片链接按钮 -->
+      <!-- 右侧：链接按钮 -->
       <div>
-        <div
-          class="mx-[10px] cursor-pointer text-color-text hover:text-el-primary"
-          @click="copyImageLink"
-        >
-          <RiMultiImageFill size="24px" />
+        <div class="mx-[3px] flex items-center">
+          <a
+            v-if="imageDownloadUrl != null"
+            class="mx-[7px] cursor-pointer text-color-text hover:text-el-primary"
+            :href="imageDownloadUrl"
+            download
+          >
+            <RiDownloadLine size="24px" />
+          </a>
+          <a
+            v-if="imageOpenUrl != null"
+            class="mx-[7px] cursor-pointer text-color-text hover:text-el-primary"
+            :href="imageOpenUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <RiShareBoxLine size="24px" />
+          </a>
         </div>
       </div>
     </div>
