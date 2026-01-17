@@ -2,10 +2,16 @@
 import type { FilesResponseWithBaseExpand } from '@/api'
 import { fileTypeResolveIconContentUtil, formatFileSize } from '@/utils'
 
-const props = defineProps<{
-  fileData: FilesResponseWithBaseExpand
-}>()
-
+const props = withDefaults(
+  defineProps<{
+    fileData: FilesResponseWithBaseExpand
+    /** 是否优先显示文件类型 */
+    isPrioritizeDisplayingFileType?: boolean
+  }>(),
+  {
+    isPrioritizeDisplayingFileType: false,
+  }
+)
 const iconContent = computed(() => {
   return fileTypeResolveIconContentUtil(props.fileData)
 })
@@ -36,7 +42,13 @@ const iconContent = computed(() => {
               {{ fileData.fileName !== '' ? fileData.fileName : fileData.id }}
             </div>
             <!-- 下 文件描述 -->
-            <div v-if="fileData.description !== ''">
+            <div
+              v-if="
+                fileData.description !== '' &&
+                (fileData.fileType === '' ||
+                  isPrioritizeDisplayingFileType === false)
+              "
+            >
               <!-- <div v-if="true"> -->
               <div class="truncate text-[10px]">
                 {{ fileData.description }}

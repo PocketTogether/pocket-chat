@@ -3,7 +3,10 @@ import type { FilesResponseWithBaseExpand } from '@/api'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import type { FileSelectListDesuwaType } from './dependencies'
-import { useRouterHistoryTool } from '@/composables'
+import {
+  useFileDataWithQueryAndRealtimeDesuwa,
+  useRouterHistoryTool,
+} from '@/composables'
 import { formatFileSize } from '@/utils'
 import { FileContentCard, FileContentCardLong } from '@/components'
 
@@ -58,6 +61,10 @@ const goFileInfoPage = () => {
     presetFileGetOneData: props.fileData,
   })
 }
+
+const { fileDataWithQueryAndRealtime } = useFileDataWithQueryAndRealtimeDesuwa({
+  fileData: computed(() => props.fileData),
+})
 </script>
 
 <template>
@@ -78,9 +85,12 @@ const goFileInfoPage = () => {
             <div class="text-color-text">
               <FileContentCardLong
                 v-if="layoutBoxWidth > 550"
-                :fileData="fileData"
+                :fileData="fileDataWithQueryAndRealtime"
               ></FileContentCardLong>
-              <FileContentCard v-else :fileData="fileData"></FileContentCard>
+              <FileContentCard
+                v-else
+                :fileData="fileDataWithQueryAndRealtime"
+              ></FileContentCard>
             </div>
           </div>
           <!-- 按钮 -->

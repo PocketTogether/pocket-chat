@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useI18nStore } from '@/stores'
-// import {
-//   FileInfoControlPanel,
-//   FileInfoPageTopBar,
-//   FileInfoMessagesList,
-// } from './components'
+import {
+  FileInfoControlPanel,
+  FileInfoPageTopBar,
+  FileInfoMessagesList,
+} from './components'
 import { useRoute, useRouter } from 'vue-router'
 import { routerDict } from '@/config'
 import { useFileInfoQueryDesuwa } from './composables'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MessagesResponseWithImageInfoMessageListExpand } from '@/api'
+import type { MessagesResponseWithFileInfoMessageListExpand } from '@/api'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import { useI18nStore } from '@/stores'
@@ -7,7 +7,7 @@ import { useTimeAgo } from '@vueuse/core'
 import { useMessageLinkProcess } from '@/composables'
 
 const props = defineProps<{
-  messageItem: MessagesResponseWithImageInfoMessageListExpand
+  messageItem: MessagesResponseWithFileInfoMessageListExpand
 }>()
 
 const messageData = computed(() => props.messageItem)

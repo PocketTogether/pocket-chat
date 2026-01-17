@@ -109,7 +109,7 @@ export const useFilesGetOneQueriesForCache = (data: {
  * @returns {UseQueryReturnType}
  *   返回一个查询对象，反映当前缓存状态（data、status、error 等）。
  */
-export const useFileGetOneQueryForCache = (data: {
+export const useFilesGetOneQueryForCache = (data: {
   fileId: ComputedRef<string | null>
 }) => {
   const { fileId } = data

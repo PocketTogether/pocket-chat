@@ -14,6 +14,7 @@ import {
   ContainerBar,
   ContainerCol2,
   FileContentCardWithBar,
+  FileContentCardWithBarAndDataWithQueryAndRealtime,
 } from '@/components'
 import {
   FilePageBottomBar,
@@ -133,9 +134,9 @@ const uploadFileStore = useUploadFileStore()
                         <div
                           class="overflow-hidden rounded-b-[20px] rounded-t-[24px] bg-color-background-soft"
                         >
-                          <FileContentCardWithBar
+                          <FileContentCardWithBarAndDataWithQueryAndRealtime
                             :fileData="fileSelectList[0]"
-                          ></FileContentCardWithBar>
+                          ></FileContentCardWithBarAndDataWithQueryAndRealtime>
                         </div>
                       </div>
                     </div>
