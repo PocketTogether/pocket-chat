@@ -136,7 +136,7 @@ const isImageError = computed(() => {
                   <div
                     class="pointer-events-auto mx-auto max-w-[500px]"
                     @mousedown.stop="stopOverlayJudge"
-                    @mouseup.stop="stopOverlayJudge"
+                    @mouseup="stopOverlayJudge"
                   >
                     <ViewerTopBar
                       :viewerControlDesuwa="viewerControlDesuwa"
