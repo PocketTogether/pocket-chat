@@ -12,6 +12,7 @@ export enum Collections {
 	Otps = "_otps",
 	Superusers = "_superusers",
 	Config = "config",
+	Files = "files",
 	Images = "images",
 	Messages = "messages",
 	Users = "users",
@@ -101,6 +102,20 @@ export type ConfigRecord<Tvalue = unknown> = {
 	value?: null | Tvalue
 }
 
+export type FilesRecord = {
+	author: RecordIdString
+	created?: IsoDateString
+	description?: string
+	file: string
+	fileName?: string
+	fileSize?: number
+	fileType?: string
+	id: string
+	isDeleted?: boolean
+	keyword?: string
+	updated?: IsoDateString
+}
+
 export type ImagesRecord = {
 	alt?: string
 	author: RecordIdString
@@ -131,6 +146,7 @@ export type MessagesRecord = {
 	author: RecordIdString
 	content?: string
 	created?: IsoDateString
+	file?: RecordIdString
 	id: string
 	images?: RecordIdString[]
 	isDeleted?: boolean
@@ -149,16 +165,24 @@ export enum UsersCanUploadImageOptions {
 	"NO" = "NO",
 	"" = "",
 }
+
+export enum UsersCanUploadFileOptions {
+	"YES" = "YES",
+	"NO" = "NO",
+	"" = "",
+}
 export type UsersRecord = {
 	avatar?: string
 	bio?: string
 	canSendMessage?: UsersCanSendMessageOptions
+	canUploadFile?: UsersCanUploadFileOptions
 	canUploadImage?: UsersCanUploadImageOptions
 	created?: IsoDateString
 	email: string
 	emailVisibility?: boolean
 	id: string
 	isBanned?: boolean
+	maxUploadFileSize?: number
 	name?: string
 	password: string
 	tokenKey: string
@@ -174,6 +198,7 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ConfigResponse<Tvalue = unknown, Texpand = unknown> = Required<ConfigRecord<Tvalue>> & BaseSystemFields<Texpand>
+export type FilesResponse<Texpand = unknown> = Required<FilesRecord> & BaseSystemFields<Texpand>
 export type ImagesResponse<Texpand = unknown> = Required<ImagesRecord> & BaseSystemFields<Texpand>
 export type MessagesResponse<Texpand = unknown> = Required<MessagesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -187,6 +212,7 @@ export type CollectionRecords = {
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
 	config: ConfigRecord
+	files: FilesRecord
 	images: ImagesRecord
 	messages: MessagesRecord
 	users: UsersRecord
@@ -199,6 +225,7 @@ export type CollectionResponses = {
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
 	config: ConfigResponse
+	files: FilesResponse
 	images: ImagesResponse
 	messages: MessagesResponse
 	users: UsersResponse
@@ -214,6 +241,7 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_otps'): RecordService<OtpsResponse>
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
 	collection(idOrName: 'config'): RecordService<ConfigResponse>
+	collection(idOrName: 'files'): RecordService<FilesResponse>
 	collection(idOrName: 'images'): RecordService<ImagesResponse>
 	collection(idOrName: 'messages'): RecordService<MessagesResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>

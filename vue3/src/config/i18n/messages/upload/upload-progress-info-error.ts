@@ -22,6 +22,16 @@ export const i18nMessagesUploadPartUploadProgressInfoErrorPart = {
     'ko-KR': (data: unknown) => '이미지 처리 오류' as const,
     'ru-RU': (data: unknown) => 'Ошибка обработки изображения' as const,
   },
+
+  // 文件处理错误
+  uploadProgressInfoErrorFileProcessText: {
+    'en-US': (data: unknown) => 'File processing error' as const,
+    'zh-CN': (data: unknown) => '文件处理错误' as const,
+    'zh-TW': (data: unknown) => '檔案處理錯誤' as const,
+    'ja-JP': (data: unknown) => 'ファイル処理エラー' as const,
+    'ko-KR': (data: unknown) => '파일 처리 오류' as const,
+    'ru-RU': (data: unknown) => 'Ошибка обработки файла' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType
 
 // 通过类型体操，获取i18nMessages键的类型

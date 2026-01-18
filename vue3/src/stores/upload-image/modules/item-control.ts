@@ -1,6 +1,6 @@
 import {
-  // 重命名 uploadImageStoreRecordStatusKeyConfig 为 UISRSKC 以便于使用
-  uploadImageStoreRecordStatusKeyConfig as UISRSKC,
+  // 重命名 uploadStoreRecordStatusKeyConfig 为 USRSKC 以便于使用
+  uploadStoreRecordStatusKeyConfig as USRSKC,
 } from '@/config'
 import type { UploadImageStoreDependenciesDataForModule } from './dependencies'
 
@@ -17,11 +17,11 @@ export const useUploadImageItemControlModule = (
 
     return (
       [
-        UISRSKC.success,
-        UISRSKC.aborted_while_pending,
-        UISRSKC.aborted_while_uploading,
-        UISRSKC.error,
-        UISRSKC.interrupted,
+        USRSKC.success,
+        USRSKC.aborted_while_pending,
+        USRSKC.aborted_while_uploading,
+        USRSKC.error,
+        USRSKC.interrupted,
       ] as string[]
     ).includes(r.status)
   }
@@ -43,7 +43,7 @@ export const useUploadImageItemControlModule = (
   // 是否能设置针对待上传的中止（参数uuid），只有 待上传 时才能进行
   const canUploadAbortPending = (uuid: string) => {
     const r = uploadRecordList.value.find((i) => i.uuid === uuid)
-    return r?.status === UISRSKC.pending
+    return r?.status === USRSKC.pending
   }
   // 设置针对待上传的中止 将其对应 uploadRecord 状态改为aborted_while_pending即可
   const uploadAbortPending = (uuid: string) => {
@@ -53,13 +53,13 @@ export const useUploadImageItemControlModule = (
     }
     const r = uploadRecordList.value.find((i) => i.uuid === uuid)
     if (r == null) return
-    r.status = UISRSKC.aborted_while_pending
+    r.status = USRSKC.aborted_while_pending
   }
 
   // 是否能设置针对上传中的中止（参数uuid），只有 上传中 时才能进行
   const canUploadAbortUploading = (uuid: string) => {
     const r = uploadRecordList.value.find((i) => i.uuid === uuid)
-    return r?.status === UISRSKC.uploading
+    return r?.status === USRSKC.uploading
   }
   // 设置针对上传中的中止 找到参数uuid所指的 uploadProgressInfo 项，用其 controller 中止 然后返回即可
   //     没有 uploadProgressInfo 项的话，将其对应 uploadRecord 状态改为aborted_while_uploading即可
@@ -75,7 +75,7 @@ export const useUploadImageItemControlModule = (
     if (p?.controller != null) {
       p.controller.abort()
     } else {
-      r.status = UISRSKC.aborted_while_uploading
+      r.status = USRSKC.aborted_while_uploading
     }
   }
 
@@ -86,9 +86,9 @@ export const useUploadImageItemControlModule = (
     if (r == null || f == null) return false
     return (
       [
-        UISRSKC.error,
-        UISRSKC.aborted_while_pending,
-        UISRSKC.aborted_while_uploading,
+        USRSKC.error,
+        USRSKC.aborted_while_pending,
+        USRSKC.aborted_while_uploading,
       ] as string[]
     ).includes(r.status)
   }
@@ -101,7 +101,7 @@ export const useUploadImageItemControlModule = (
     const r = uploadRecordList.value.find((i) => i.uuid === uuid)
     const f = uploadFileList.value.find((i) => i.uuid === uuid)
     if (r == null || f == null) return
-    r.status = UISRSKC.pending
+    r.status = USRSKC.pending
   }
 
   return {

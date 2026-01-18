@@ -1,4 +1,9 @@
-import { UsersCanSendMessageOptions, UsersCanUploadImageOptions } from '@/lib'
+import { pbCollectionConfigDefaultGetFn } from '@/config'
+import {
+  UsersCanSendMessageOptions,
+  UsersCanUploadFileOptions,
+  UsersCanUploadImageOptions,
+} from '@/lib'
 import { usePbCollectionConfigQuery, useProfileQuery } from '@/queries'
 import { useAuthStore, useI18nStore } from '@/stores'
 import { potoNotification } from '@/utils'
@@ -16,7 +21,7 @@ export const useUserPermissionsDesuwa = () => {
       pbCollectionConfigQuery.data.value?.['user-can-upload-image-default']
     // val == null 只为了类型确定，理论上此值不会为空，默认为true
     if (val == null) {
-      return true
+      return pbCollectionConfigDefaultGetFn()['user-can-upload-image-default']
     }
     return val
   })
@@ -26,7 +31,30 @@ export const useUserPermissionsDesuwa = () => {
       pbCollectionConfigQuery.data.value?.['user-can-send-message-default']
     // val == null 只为了类型确定，理论上此值不会为空，默认为true
     if (val == null) {
-      return true
+      return pbCollectionConfigDefaultGetFn()['user-can-send-message-default']
+    }
+    return val
+  })
+  /** 是否默认允许上传文件 */
+  const configUserCanUploadFileDefault = computed(() => {
+    const val =
+      pbCollectionConfigQuery.data.value?.['user-can-upload-file-default']
+    // val == null 只为了类型确定，理论上不会为空，默认为 true
+    if (val == null) {
+      return pbCollectionConfigDefaultGetFn()['user-can-upload-file-default']
+    }
+    return val
+  })
+
+  /** 默认最大上传文件大小（字节数） */
+  const configUserMaxUploadFileSizeDefault = computed(() => {
+    const val =
+      pbCollectionConfigQuery.data.value?.['user-max-upload-file-size-default']
+    // val == null 只为了类型确定，理论上不会为空，默认为 20MB
+    if (val == null) {
+      return pbCollectionConfigDefaultGetFn()[
+        'user-max-upload-file-size-default'
+      ]
     }
     return val
   })
@@ -37,6 +65,12 @@ export const useUserPermissionsDesuwa = () => {
   )
   const profileCanUploadImage = computed(
     () => profileQuery.data.value?.canUploadImage
+  )
+  const profileCanUploadFile = computed(
+    () => profileQuery.data.value?.canUploadFile
+  )
+  const profileMaxUploadFileSize = computed(
+    () => profileQuery.data.value?.maxUploadFileSize
   )
 
   // 是否有发送消息权限
@@ -63,6 +97,7 @@ export const useUserPermissionsDesuwa = () => {
     // if (profileCanSendMessage.value === UsersCanSendMessageOptions[''])
     return configUserCanSendMessageDefault.value
   })
+
   // 是否有上传图片权限
   const permissionUploadImage = computed(() => {
     // 未登录，返回false
@@ -88,6 +123,47 @@ export const useUserPermissionsDesuwa = () => {
     return configUserCanUploadImageDefault.value
   })
 
+  // 是否有上传文件权限
+  const permissionUploadFile = computed(() => {
+    // 未登录
+    if (authStore.isValid === false || authStore.record?.id == null) {
+      return false
+    }
+    // profile 未加载
+    if (profileCanUploadFile.value == null) {
+      return false
+    }
+    // YES
+    if (profileCanUploadFile.value === UsersCanUploadFileOptions.YES) {
+      return true
+    }
+    // NO
+    if (profileCanUploadFile.value === UsersCanUploadFileOptions.NO) {
+      return false
+    }
+    // N/A("") → 使用 config 默认值
+    return configUserCanUploadFileDefault.value
+  })
+
+  // 最终可上传文件最大大小
+  const permissionMaxUploadFileSize = computed(() => {
+    // 未登录
+    if (authStore.isValid === false || authStore.record?.id == null) {
+      return 0
+    }
+    // profile 未加载
+    if (profileMaxUploadFileSize.value == null) {
+      return 0
+    }
+    const userVal = profileMaxUploadFileSize.value
+    // 用户字段 > 0 → 使用用户字段
+    if (userVal > 0) {
+      return userVal
+    }
+    // 用户字段为 0 → 使用 config 默认值
+    return configUserMaxUploadFileSizeDefault.value
+  })
+
   const i18nStore = useI18nStore()
 
   const openPermissionAdminContactNotif = () => {
@@ -104,6 +180,8 @@ export const useUserPermissionsDesuwa = () => {
   return {
     permissionSendMessage,
     permissionUploadImage,
+    permissionUploadFile,
+    permissionMaxUploadFileSize,
     openPermissionAdminContactNotif,
   }
 }

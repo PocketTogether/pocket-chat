@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   chatRoomMessagesClassIdNamingFnConfig,
+  fileChatColFileDisplayMaxWidthConfig,
   imageCalcMaxWidthByRatioSizeLimitHandlerConfig,
   imageCalcMaxWidthByRatioStepsOnChatPageConfig,
   imageCalcMaxWidthByRatioStepsOnImagePageConfig,
@@ -13,6 +14,7 @@ import type {
   ImageScreenViewerDesuwaType,
 } from './dependencies'
 import type {
+  MessagesResponseWidthExpandFile,
   MessagesResponseWidthExpandImages,
   PMLRCApiParameters0DataPageParamNonNullable,
 } from '@/api'
@@ -23,6 +25,7 @@ import {
 } from './composables'
 import { useI18nStore } from '@/stores'
 import {
+  FileContentCardWithBarAndDataWithQueryAndRealtime,
   IGVSoltAltLable,
   ImageGroupViewerWithQueryAndRealtime,
   TextWithLink,
@@ -129,6 +132,13 @@ type MessageShowModeWithDataValueType =
       }
     }
   | {
+      mode: 'file'
+      data: {
+        file: MessagesResponseWidthExpandFile
+        messageMaxWidth: string
+      }
+    }
+  | {
       mode: 'text'
       data: {
         messageMaxWidth: undefined
@@ -174,6 +184,16 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
         data: {
           images: imageList,
           messageMaxWidth: `${imageGroupMaxWidth}px`,
+        },
+      } as const
+    }
+    // file mode
+    else if (currentMessageData.value.expand?.file != null) {
+      return {
+        mode: 'file',
+        data: {
+          file: currentMessageData.value.expand.file,
+          messageMaxWidth: `${fileChatColFileDisplayMaxWidthConfig}px`,
         },
       } as const
     }
@@ -232,6 +252,7 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
           class="col-message truncate"
           :class="{
             'show-mode-images': messageShowModeWithData.mode === 'images',
+            'show-mode-file': messageShowModeWithData.mode === 'file',
             'show-mode-text': messageShowModeWithData.mode === 'text',
           }"
           :style="{
@@ -293,80 +314,107 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
                     }"
                   >
                     <!-- 回复的消息 -->
-                    <div
+                    <template
                       v-if="currentMessageData.expand?.replyMessage != null"
-                      class="mb-[4px] ml-[4px] mr-[12px]"
-                      :class="{
-                        'mt-2': messageShowModeWithData.mode === 'images',
-                      }"
                     >
                       <div
-                        class="flex items-center"
+                        class="ml-[4px] mr-[12px]"
                         :class="{
-                          'cursor-pointer':
-                            !currentMessageData.expand.replyMessage.isDeleted,
-                          'cursor-not-allowed':
-                            currentMessageData.expand.replyMessage.isDeleted,
+                          'mb-[4px] mt-2':
+                            messageShowModeWithData.mode === 'images',
+                          'mb-[8px] mt-[8px]':
+                            messageShowModeWithData.mode === 'file',
+                          'mb-[4px]': messageShowModeWithData.mode === 'text',
                         }"
-                        @click="
-                          () => {
-                            if (
-                              currentMessageData.expand?.replyMessage != null &&
-                              currentMessageData.expand.replyMessage.isDeleted
-                            ) {
-                              return
-                            }
-                            replyMessagesPositioningFn()
-                          }
-                        "
                       >
-                        <!-- 头像 -->
-                        <div class="ml-[4px] mr-[6px]">
-                          <div
-                            class="h-[20px] w-[20px] rounded-full bg-color-background-soft"
-                            :style="{
-                              backgroundImage: `url('${messageReplyMessageUserAvatarUrl}')`,
-                              backgroundSize: 'cover',
-                              backgroundPosition: 'center',
-                            }"
-                          ></div>
-                        </div>
-                        <!-- 内容 -->
-                        <div class="truncate">
-                          <div
-                            v-if="
-                              currentMessageData.expand.replyMessage.isDeleted
-                            "
-                            class="select-none truncate text-[12px] text-color-text"
-                          >
-                            {{
-                              i18nStore.t(
-                                'chatMessageReplyMessageDeletedShowText'
-                              )()
-                            }}
+                        <div
+                          class="flex items-center"
+                          :class="{
+                            'cursor-pointer':
+                              !currentMessageData.expand.replyMessage.isDeleted,
+                            'cursor-not-allowed':
+                              currentMessageData.expand.replyMessage.isDeleted,
+                          }"
+                          @click="
+                            () => {
+                              if (
+                                currentMessageData.expand?.replyMessage !=
+                                  null &&
+                                currentMessageData.expand.replyMessage.isDeleted
+                              ) {
+                                return
+                              }
+                              replyMessagesPositioningFn()
+                            }
+                          "
+                        >
+                          <!-- 头像 -->
+                          <div class="ml-[4px] mr-[6px]">
+                            <div
+                              class="h-[20px] w-[20px] rounded-full bg-color-background-soft"
+                              :style="{
+                                backgroundImage: `url('${messageReplyMessageUserAvatarUrl}')`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                              }"
+                            ></div>
                           </div>
-                          <div
-                            v-else-if="
-                              currentMessageData.expand.replyMessage.images
-                                .length > 0
-                            "
-                            class="select-none truncate text-[12px] text-color-text"
-                          >
-                            {{
-                              i18nStore.t(
-                                'chatMessageReplyMessageImageShowText'
-                              )()
-                            }}
-                          </div>
-                          <div
-                            v-else
-                            class="select-none truncate text-[12px] text-color-text"
-                          >
-                            {{ currentMessageData.expand.replyMessage.content }}
+                          <!-- 内容 -->
+                          <div class="truncate">
+                            <div
+                              v-if="
+                                currentMessageData.expand.replyMessage.isDeleted
+                              "
+                              class="select-none truncate text-[12px] text-color-text"
+                            >
+                              {{
+                                i18nStore.t(
+                                  'chatMessageReplyMessageDeletedShowText'
+                                )()
+                              }}
+                            </div>
+                            <div
+                              v-else-if="
+                                currentMessageData.expand.replyMessage.images
+                                  .length > 0
+                              "
+                              class="select-none truncate text-[12px] text-color-text"
+                            >
+                              {{
+                                i18nStore.t(
+                                  'chatMessageReplyMessageImageShowText'
+                                )()
+                              }}
+                            </div>
+                            <div
+                              v-else-if="
+                                currentMessageData.expand.replyMessage.file !==
+                                ''
+                              "
+                              class="select-none truncate text-[12px] text-color-text"
+                            >
+                              {{
+                                i18nStore.t(
+                                  'chatMessageReplyMessageFileShowText'
+                                )()
+                              }}
+                            </div>
+                            <div
+                              v-else
+                              class="select-none truncate text-[12px] text-color-text"
+                            >
+                              {{
+                                currentMessageData.expand.replyMessage.content
+                              }}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                      <div
+                        v-if="messageShowModeWithData.mode === 'file'"
+                        class="border-t-[3px] border-color-background"
+                      ></div>
+                    </template>
                     <!-- 消息图片内容，优先于文字 -->
                     <div
                       v-if="messageShowModeWithData.mode === 'images'"
@@ -406,6 +454,19 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
                           </div>
                         </ImageGroupViewerWithQueryAndRealtime>
                       </div>
+                    </div>
+                    <!-- 消息文件内容，优先于文字 -->
+                    <div
+                      v-else-if="messageShowModeWithData.mode === 'file'"
+                      class=""
+                    >
+                      <FileContentCardWithBarAndDataWithQueryAndRealtime
+                        :fileData="messageShowModeWithData.data.file"
+                        :noIconColor="
+                          isMessageCurrentUser ||
+                          isCurrentMessageRealtimeUpdatedIsDeleted
+                        "
+                      ></FileContentCardWithBarAndDataWithQueryAndRealtime>
                     </div>
                     <!-- 消息文字内容 -->
                     <div
@@ -559,7 +620,8 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
         100% - var(--avatar-width) - var(--icon-width) - var(--gap) - var(--gap)
       );
     }
-    &.show-mode-images {
+    &.show-mode-images,
+    &.show-mode-file {
       width: calc(
         100% - var(--avatar-width) - var(--icon-width) - var(--gap) - var(--gap)
       );

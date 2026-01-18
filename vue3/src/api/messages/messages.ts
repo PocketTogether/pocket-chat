@@ -23,20 +23,32 @@ export const pbMessagesSendChatApi = async (data: {
   replyMessageId?: string | null
   /** 发送图片 */
   images: string[]
+  /** 发送文件 */
+  file: string | null
 }) => {
-  const { roomId, content, replyMessageId, images } = data
+  const { roomId, content, replyMessageId, images, file } = data
 
   // 未登录，抛出错误
   if (!pb.authStore.isValid || pb.authStore.record?.id == null) {
     throw new Error('!pb.authStore.isValid || pb.authStore.record?.id == null')
   }
 
-  // 图片和内容互斥，优先发送图片消息
-  const { processedContent, processedImages } = (() => {
+  // 文件、图片、内容互斥，优先发送图片消息
+  const { processedContent, processedImages, processedFile } = (() => {
+    // images
     if (images.length > 0) {
       return {
         processedContent: '',
         processedImages: images,
+        processedFile: '',
+      }
+    }
+    // file
+    else if (file != null && file !== '') {
+      return {
+        processedContent: '',
+        processedImages: [],
+        processedFile: file,
       }
     }
     // content
@@ -44,6 +56,7 @@ export const pbMessagesSendChatApi = async (data: {
       return {
         processedContent: content,
         processedImages: [],
+        processedFile: '',
       }
     }
   })()
@@ -53,6 +66,7 @@ export const pbMessagesSendChatApi = async (data: {
     author: pb.authStore.record.id,
     content: processedContent,
     images: processedImages,
+    file: processedFile,
     // room: (() => {
     //   if (roomId == null) {
     //     return undefined
@@ -100,20 +114,32 @@ export const pbMessagesEditChatApi = async (data: {
   replyMessageId?: string | null
   /** 发送图片 */
   images: string[]
+  /** 发送文件 */
+  file: string | null
 }) => {
-  const { chatEditMessageId, content, images, replyMessageId } = data
+  const { chatEditMessageId, content, images, replyMessageId, file } = data
 
   // 未登录，抛出错误
   if (!pb.authStore.isValid || pb.authStore.record?.id == null) {
     throw new Error('!pb.authStore.isValid || pb.authStore.record?.id == null')
   }
 
-  // 图片和内容互斥，优先发送图片消息
-  const { processedContent, processedImages } = (() => {
+  // 文件、图片、内容互斥，优先发送图片消息
+  const { processedContent, processedImages, processedFile } = (() => {
+    // images
     if (images.length > 0) {
       return {
         processedContent: '',
         processedImages: images,
+        processedFile: '',
+      }
+    }
+    // file
+    else if (file != null && file !== '') {
+      return {
+        processedContent: '',
+        processedImages: [],
+        processedFile: file,
       }
     }
     // content
@@ -121,6 +147,7 @@ export const pbMessagesEditChatApi = async (data: {
       return {
         processedContent: content,
         processedImages: [],
+        processedFile: '',
       }
     }
   })()
@@ -129,6 +156,7 @@ export const pbMessagesEditChatApi = async (data: {
   const updateData: Update<Collections.Messages> = {
     content: processedContent,
     images: processedImages,
+    file: processedFile,
     replyMessage: (() => {
       if (replyMessageId == null) {
         return ''

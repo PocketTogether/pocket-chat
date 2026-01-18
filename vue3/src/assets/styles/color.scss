@@ -1,3 +1,13 @@
+@use "sass:color";
+
+@function color-lighten($color, $step) {
+  @return color.mix(#ffffff, $color, $step * 10%);
+}
+
+@function color-darken($color, $step) {
+  @return color.mix(#181818, $color, $step * 10%);
+}
+
 // 将原本的css变量，改用scss封装RGB值，利于调整其透明度
 $vt-c-white: 255, 255, 255;
 $vt-c-white-soft: 248, 248, 248;
@@ -99,5 +109,63 @@ $opacity-steps: 10, 20, 30, 40, 50, 60, 70, 80, 90, 95;
   @each $i in $opacity-steps {
     $opacity: $i * 0.01;
     --my-neutral-a#{$i}: rgba(#{$my-neutral-rgb}, #{$opacity});
+  }
+}
+
+$types: (
+  // 1. Yellow
+  harvest-wheat: #C9B86A,
+  // 2. Yellow-Orange
+  amber-sand:    #BB9854,
+  // 3. Orange
+  clay-orange:   #C78A5A,
+  // 4. Red-Orange
+  ember-rust:    #B45F4A,
+  // 5. Red
+  terra-red:     #A85A58,
+  // 6. Red-Purple
+  plum-rose:     #AB4378,
+  // 7. Purple
+  violet-dusk:   #7A5A8F,
+  // 8. Blue-Purple
+  indigo-mist:   #6A6FA3,
+  // 9. Blue
+  mist-blue:     #7899CC,
+  // 10. Blue-Green
+  dusk-cyan:     #5A7583,
+  // 11. Green
+  moss-green:    #799978,
+  // 12. Yellow-Green
+  olive-haze:    #9AA76A,
+);
+
+$light-steps: 3, 5, 7, 8, 9;
+$dark-steps: 2;
+
+:root:root {
+  @each $type, $color in $types {
+    --poto-color-#{$type}: #{$color};
+
+    @each $step in $light-steps {
+      --poto-color-#{$type}-light-#{$step}: #{color-lighten($color, $step)};
+    }
+
+    @each $step in $dark-steps {
+      --poto-color-#{$type}-dark-#{$step}: #{color-darken($color, $step)};
+    }
+  }
+}
+
+:root:root.dark {
+  @each $type, $color in $types {
+    --poto-color-#{$type}: #{$color};
+
+    @each $step in $light-steps {
+      --poto-color-#{$type}-light-#{$step}: #{color-darken($color, $step)};
+    }
+
+    @each $step in $dark-steps {
+      --poto-color-#{$type}-dark-#{$step}: #{color-lighten($color, $step)};
+    }
   }
 }

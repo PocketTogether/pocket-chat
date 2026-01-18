@@ -1,8 +1,8 @@
 import { pbImageUploadWithAxios } from '@/api'
 import {
   uploadImageMaxSimultaneousNumConfig,
-  // 重命名 uploadImageStoreRecordStatusKeyConfig 为 UISRSKC 以便于使用
-  uploadImageStoreRecordStatusKeyConfig as UISRSKC,
+  // 重命名 uploadStoreRecordStatusKeyConfig 为 USRSKC 以便于使用
+  uploadStoreRecordStatusKeyConfig as USRSKC,
   uploadImageProgressUpdateIntervalMsConfig,
   uploadImageSchedulerPollingIntervalMsConfig,
 } from '@/config'
@@ -45,14 +45,14 @@ export const useUploadImageSchedulerModule = (
   const uploadScheduler = async () => {
     // 正在上传中的数量
     const uploadingCount = uploadRecordList.value.filter(
-      (i) => i.status === UISRSKC.uploading
+      (i) => i.status === USRSKC.uploading
     ).length
     // 正在上传中的数量 大于等于最大同时上传数时 返回
     if (uploadingCount >= uploadImageMaxSimultaneousNumConfig) return
 
     // 准备下一个待上传的项，状态为待上传
     const next = uploadRecordList.value.find(
-      (i) => i.status === UISRSKC.pending
+      (i) => i.status === USRSKC.pending
     )
     // 没有待上传，返回
     if (next == null) return
@@ -61,12 +61,12 @@ export const useUploadImageSchedulerModule = (
     const file = uploadFileList.value.find((i) => i.uuid === next.uuid)
     // 没有文件，将其状态设置为错误，返回
     if (file == null) {
-      next.status = UISRSKC.error
+      next.status = USRSKC.error
       return
     }
 
     // 准备开始上传，状态设置为上传中
-    next.status = UISRSKC.uploading
+    next.status = USRSKC.uploading
     // 创建中止控制器
     const controller = new AbortController()
     // 上传进度记录列表 uploadProgressInfoList 中添加项
@@ -100,7 +100,7 @@ export const useUploadImageSchedulerModule = (
         },
       })
       // 成功，状态设置为已完成
-      next.status = UISRSKC.success
+      next.status = USRSKC.success
       // 成功后可以删除文件
       uploadFileList.value = uploadFileList.value.filter(
         (i) => i.uuid !== next.uuid
@@ -108,7 +108,7 @@ export const useUploadImageSchedulerModule = (
     } catch (err: unknown) {
       // 中止的情况
       if (controller.signal.aborted) {
-        next.status = UISRSKC.aborted_while_uploading
+        next.status = USRSKC.aborted_while_uploading
       }
       // 错误的情况
       else {
@@ -124,7 +124,7 @@ export const useUploadImageSchedulerModule = (
           //   i18nMessagesKey: 'uploadProgressInfoErrorUnknowText',
           // }
         }
-        next.status = UISRSKC.error
+        next.status = USRSKC.error
         console.error('upload-image error:', err)
       }
     } finally {
@@ -137,7 +137,7 @@ export const useUploadImageSchedulerModule = (
     // 当最后一个上传任务完成时（即已没有待上传或上传中的记录）、将图片查询invalidateQueries
     if (
       uploadRecordList.value.find(
-        (i) => i.status === UISRSKC.pending || i.status === UISRSKC.uploading
+        (i) => i.status === USRSKC.pending || i.status === USRSKC.uploading
       ) == null
     ) {
       queryClient.invalidateQueries({

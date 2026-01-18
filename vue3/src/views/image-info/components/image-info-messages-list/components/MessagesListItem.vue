@@ -68,9 +68,7 @@ const {
                 <div
                   class="h-[24px] w-[24px] rounded-full bg-color-background-mute"
                   :style="{
-                    backgroundImage: authorAvatarUrl
-                      ? `url('${authorAvatarUrl}')`
-                      : undefined,
+                    backgroundImage: `url('${authorAvatarUrl}')`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }"

@@ -3,6 +3,7 @@ import { i18nLocaleInfo } from './config'
 import {
   useI18nStore,
   useRealtimeMessagesStore,
+  useUploadFileStore,
   useUploadImageStore,
 } from './stores'
 import { useDark } from '@vueuse/core'
@@ -13,6 +14,7 @@ import {
   useFirstDataLoadingAndAnimationMaskClose,
   useInitPbAuth,
   useInitWebNotif,
+  useRealtimeFilesSubscribe,
   useRealtimeImagesSubscribe,
   useRealtimeMessagesSubscribe,
   useWatchAllowAnonymousViewAndAuthStoreIsValidCheckRouterLoginPage,
@@ -76,6 +78,10 @@ useFirstDataLoadingAndAnimationMaskClose({
 const realtimeImagesSubscribe = useRealtimeImagesSubscribe()
 realtimeImagesSubscribe.startSubscribe()
 
+// use文件订阅
+const realtimeFilesSubscribe = useRealtimeFilesSubscribe()
+realtimeFilesSubscribe.startSubscribe()
+
 // 在程序初始化时，进行关于pocketbase身份验证的一些操作
 useInitPbAuth()
 
@@ -88,6 +94,10 @@ useInitWebNotif()
 // 初始化图片上传系统
 const uploadImageStore = useUploadImageStore()
 uploadImageStore.initialize()
+
+// 初始化文件上传系统
+const uploadFileStore = useUploadFileStore()
+uploadFileStore.initialize()
 
 const isDark = useDark()
 

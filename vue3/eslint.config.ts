@@ -169,6 +169,17 @@ export default defineConfigWithVueTs(
             fixStyle: 'separate-type-imports', // 让 ESLint 自动修复
           },
         ],
+        // 'vue/no-undef-components': [
+        //   'warn',
+        //   {
+        //     ignorePatterns: [
+        //       // 允许的全局组件名（如果你有）
+        //       // 'RouterView',
+        //       // 'RouterLink',
+        //     ],
+        //   },
+        // ],
+        '@typescript-eslint/no-unsafe-member-access': 'error',
       },
     },
   ]

@@ -3,7 +3,7 @@ import { UploadProgressIcon } from '@/components'
 import {
   useI18nStore,
   useUploadImageStore,
-  type UploadRecordWithFileAndProgressInfo,
+  type UploadImageRecordWithFileAndProgressInfo,
 } from '@/stores'
 import {
   convertSecondsToTimeDuration,
@@ -17,16 +17,16 @@ import {
   RiTimeFill,
 } from '@remixicon/vue'
 import {
-  // 重命名 uploadImageStoreRecordStatusKeyConfig 为 UISRSKC 以便于使用
-  uploadImageStoreRecordStatusKeyConfig as UISRSKC,
-  type UploadImageStoreRecordStatus,
+  // 重命名 uploadStoreRecordStatusKeyConfig 为 USRSKC 以便于使用
+  uploadStoreRecordStatusKeyConfig as USRSKC,
+  type UploadStoreRecordStatus,
 } from '@/config'
 import type { IconDescriptionKeyType } from './dependencies'
 
 // uploadProgressPercentageUtil
 
 const props = defineProps<{
-  uploadRecordInfo: UploadRecordWithFileAndProgressInfo
+  uploadRecordInfo: UploadImageRecordWithFileAndProgressInfo
   setIconDescription: (key: IconDescriptionKeyType) => void
   clearIconDescription: () => void
 }>()
@@ -144,7 +144,7 @@ const uploadProgressLoadedTotalText = computed(() => {
               <Transition name="fade150ms" mode="out-in">
                 <!-- 待上传 -->
                 <div
-                  v-if="uploadRecordInfo.record.status === UISRSKC.pending"
+                  v-if="uploadRecordInfo.record.status === USRSKC.pending"
                   class="m-[4px] text-el-warning"
                 >
                   <RiTimeFill size="20px"></RiTimeFill>
@@ -152,7 +152,7 @@ const uploadProgressLoadedTotalText = computed(() => {
                 <!-- 上传中 -->
                 <div
                   v-else-if="
-                    uploadRecordInfo.record.status === UISRSKC.uploading
+                    uploadRecordInfo.record.status === USRSKC.uploading
                   "
                   class="m-[4px]"
                   :class="{
@@ -167,7 +167,7 @@ const uploadProgressLoadedTotalText = computed(() => {
                 </div>
                 <!-- 上传完成 -->
                 <div
-                  v-else-if="uploadRecordInfo.record.status === UISRSKC.success"
+                  v-else-if="uploadRecordInfo.record.status === USRSKC.success"
                   class="m-[4px] text-el-success"
                 >
                   <RiCheckboxCircleFill size="20px"></RiCheckboxCircleFill>
@@ -176,9 +176,9 @@ const uploadProgressLoadedTotalText = computed(() => {
                 <div
                   v-else-if="
                     uploadRecordInfo.record.status ===
-                      UISRSKC.aborted_while_pending ||
+                      USRSKC.aborted_while_pending ||
                     uploadRecordInfo.record.status ===
-                      UISRSKC.aborted_while_uploading
+                      USRSKC.aborted_while_uploading
                   "
                   class="m-[4px] text-el-info"
                 >

@@ -24,6 +24,7 @@ export const useChatInputBarDispaly = (
     props,
     chatInputContent,
     chatImageSelectList,
+    chatFileSelectList,
     chatReplyMessage,
     chatEditMessage,
     chatMessageIsRealtimeTimeout,
@@ -109,6 +110,7 @@ export const useChatInputBarDispaly = (
     // 【251222】图片选择后，也为send
     if (
       chatImageSelectList.value.length > 0 ||
+      chatFileSelectList.value.length > 0 ||
       chatInputContent.value !== '' ||
       messageSendSubmitRunning.value
     ) {
