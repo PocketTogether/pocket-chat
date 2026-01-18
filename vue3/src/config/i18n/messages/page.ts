@@ -52,6 +52,22 @@ export const i18nMessagesPagePart = {
     'ko-KR': () => '이미지 상세정보' as const,
     'ru-RU': () => 'Сведения об изображении' as const,
   },
+  pageFileSelect: {
+    'en-US': () => 'File Selection' as const,
+    'zh-CN': () => '文件选择' as const,
+    'zh-TW': () => '檔案選擇' as const,
+    'ja-JP': () => 'ファイル選択' as const,
+    'ko-KR': () => '파일 선택' as const,
+    'ru-RU': () => 'Выбор файла' as const,
+  },
+  pageFileInfo: {
+    'en-US': () => 'File Details' as const,
+    'zh-CN': () => '文件详情' as const,
+    'zh-TW': () => '檔案詳情' as const,
+    'ja-JP': () => 'ファイルの詳細' as const,
+    'ko-KR': () => '파일 상세정보' as const,
+    'ru-RU': () => 'Сведения о файле' as const,
+  },
   pageSetting: {
     'en-US': () => 'Setting' as const,
     'zh-CN': () => '设置' as const,

@@ -59,6 +59,42 @@ export const queryKeys = {
     ] as const
   },
 
+  /** useFilePageListQuery */
+  filePageList: (
+    authorId?: string | null,
+    searchContent?: string | null,
+    pageNum?: number | null,
+    /** 可自定义的充当唯一标识的字符串 */
+    customStrId?: string | null
+  ) => {
+    return [
+      'filePageList',
+      ...definedOrEmpty(authorId),
+      ...definedOrEmpty(searchContent),
+      ...definedOrEmpty(pageNum),
+      ...definedOrEmpty(customStrId),
+    ] as const
+    // return ['filePageList', pageNum, authorId, searchContent] as const
+  },
+
+  /** useFilesGetOneQuery */
+  filesGetOne: (fileId?: string | null) => {
+    return [
+      //
+      'filesGetOne',
+      ...definedOrEmpty(fileId),
+    ] as const
+  },
+
+  /** useFileInfoMessageListQuery */
+  fileInfoMessageList: (fileId?: string | null, pageNum?: number | null) => {
+    return [
+      'fileInfoMessageList',
+      ...definedOrEmpty(fileId),
+      ...definedOrEmpty(pageNum),
+    ] as const
+  },
+
   /**  */
   rooms: (...args: string[]) => ['rooms', ...args] as const,
   /** useRoomsGetOneQuery */

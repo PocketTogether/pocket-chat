@@ -5,6 +5,7 @@ import type {
 } from '@/api'
 import {
   ContainerDialog,
+  FileContentCardWithBarAndDataWithQueryAndRealtime,
   IGVSoltHoverSlideInfoGo,
   ImageGroupViewer,
   TextWithLink,
@@ -234,6 +235,17 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
                         }}
                       </div>
                       <div
+                        v-else-if="
+                          chatRoomMessagesGetOneQuery.data.value.expand
+                            .replyMessage.file !== ''
+                        "
+                        class="select-none truncate text-[12px] text-color-text"
+                      >
+                        {{
+                          i18nStore.t('chatMessageReplyMessageFileShowText')()
+                        }}
+                      </div>
+                      <div
                         v-else
                         class="select-none truncate text-[12px] text-color-text"
                       >
@@ -258,7 +270,7 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
                   <div
                     class="mx-[15px]"
                     :class="{
-                      // 无回复消息是，上边距多一点
+                      // 无回复消息时，上边距多一点
                       'mt-[5px]':
                         chatRoomMessagesGetOneQuery.data.value.expand
                           ?.replyMessage == null,
@@ -285,6 +297,33 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
                           "
                         ></IGVSoltHoverSlideInfoGo>
                       </ImageGroupViewer>
+                    </div>
+                  </div>
+                </div>
+                <!-- 文件 -->
+                <div
+                  v-if="
+                    chatRoomMessagesGetOneQuery.data.value.expand?.file != null
+                  "
+                  class="flow-root"
+                >
+                  <div
+                    class="mx-[15px]"
+                    :class="{
+                      // 无回复消息时，上边距多一点
+                      'mt-[5px]':
+                        chatRoomMessagesGetOneQuery.data.value.expand
+                          ?.replyMessage == null,
+                    }"
+                  >
+                    <div
+                      class="overflow-hidden rounded-[20px] border-[3px] border-color-background bg-color-background-soft"
+                    >
+                      <FileContentCardWithBarAndDataWithQueryAndRealtime
+                        :fileData="
+                          chatRoomMessagesGetOneQuery.data.value.expand.file
+                        "
+                      ></FileContentCardWithBarAndDataWithQueryAndRealtime>
                     </div>
                   </div>
                 </div>

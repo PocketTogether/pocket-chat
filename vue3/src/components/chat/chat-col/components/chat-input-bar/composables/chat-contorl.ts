@@ -27,6 +27,7 @@ export const useChatInputBarControl = (
     props,
     chatInputContent,
     chatImageSelectList,
+    chatFileSelectList,
     chatReplyMessage,
     chatEditMessage,
     chatEditMessageSet,
@@ -76,17 +77,27 @@ export const useChatInputBarControl = (
         roomId: props.roomId,
         replyMessageId: chatReplyMessage.value?.id,
         images: chatImageSelectList.value.map((i) => i.id),
+        file: (() => {
+          if (chatFileSelectList.value.length > 0) {
+            return chatFileSelectList.value[0].id
+          }
+          return null
+        })(),
       })
       // console.log(pbRes)
       return pbRes
     },
     // 一些收尾工作
     onSuccess: (data) => {
+      // // 发送后重置输入栏
+      // chatInputContent.value = ''
+      // chatImageSelectList.value = []
+      // chatFileSelectList.value = []
+      // // 发送后取消刚刚的回复消息
+      // chatReplyMessage.value = null
+
       // 发送后重置输入栏
-      chatInputContent.value = ''
-      chatImageSelectList.value = []
-      // 发送后取消刚刚的回复消息
-      chatReplyMessage.value = null
+      chatEditMessageSet(null)
     },
     // 错误处理
     onError: (error) => {
@@ -106,7 +117,8 @@ export const useChatInputBarControl = (
   const messageSendSubmit = async () => {
     if (
       chatInputContent.value.trim() === '' &&
-      chatImageSelectList.value.length <= 0
+      chatImageSelectList.value.length <= 0 &&
+      chatFileSelectList.value.length <= 0
     ) {
       return
     }
@@ -181,6 +193,12 @@ export const useChatInputBarControl = (
         content: chatInputContent.value,
         replyMessageId: chatReplyMessage.value?.id,
         images: chatImageSelectList.value.map((i) => i.id),
+        file: (() => {
+          if (chatFileSelectList.value.length > 0) {
+            return chatFileSelectList.value[0].id
+          }
+          return null
+        })(),
       })
       // console.log(pbRes)
       return pbRes
@@ -206,7 +224,8 @@ export const useChatInputBarControl = (
   const messageEditSubmit = async () => {
     if (
       chatInputContent.value.trim() === '' &&
-      chatImageSelectList.value.length <= 0
+      chatImageSelectList.value.length <= 0 &&
+      chatFileSelectList.value.length <= 0
     ) {
       return
     }

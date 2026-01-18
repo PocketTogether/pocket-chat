@@ -176,4 +176,12 @@ export const i18nMessagesChatPart = {
     'ko-KR': () => '[이미지]' as const,
     'ru-RU': () => '[изображение]' as const,
   },
+  chatMessageReplyMessageFileShowText: {
+    'en-US': () => '[file]' as const,
+    'zh-CN': () => '[文件]' as const,
+    'zh-TW': () => '[檔案]' as const,
+    'ja-JP': () => '[ファイル]' as const,
+    'ko-KR': () => '[파일]' as const,
+    'ru-RU': () => '[Файл]' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType

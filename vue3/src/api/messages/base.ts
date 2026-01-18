@@ -1,6 +1,7 @@
 /** messages pb查询时一般要用的 Expand ，将在多个api中使用 */
 
 import type {
+  FilesResponse,
   ImagesResponse,
   MessagesRecord,
   MessagesResponse,
@@ -21,11 +22,17 @@ export type MessagesResponseWidthExpandReplyMessage = MessagesResponse<
 export type MessagesResponseWidthExpandImages = ImagesResponse<
   MessagesRecordExpandImages | undefined
 >
+// 辅助类型，消息中file的类型
+export type MessagesResponseWidthExpandFile = FilesResponse<
+  MessagesRecordExpandFile | undefined
+>
+
 // 🎯 指定集合中需要展开的关联字段及其响应类型
 type MessagesRecordExpand = {
   author?: UsersResponse
   replyMessage?: MessagesResponseWidthExpandReplyMessage
   images?: MessagesResponseWidthExpandImages[]
+  file?: MessagesResponseWidthExpandFile
 }
 
 type MessagesRecordExpandReplyMessage = {
@@ -33,6 +40,10 @@ type MessagesRecordExpandReplyMessage = {
 }
 
 type MessagesRecordExpandImages = {
+  author?: UsersResponse
+}
+
+type MessagesRecordExpandFile = {
   author?: UsersResponse
 }
 
@@ -59,6 +70,7 @@ export const messagesExpand = (() => {
     author: 'author',
     replyMessage: 'replyMessage',
     images: 'images',
+    file: 'file',
   } as const satisfies Group<
     // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
     Partial<KeyValueMirror<keyof MessagesRecord>>
@@ -86,11 +98,22 @@ export const messagesExpand = (() => {
     KeyValueMirror<keyof MessagesRecordExpandImages>
   >
 
+  const recordKeysFile = {
+    author: 'author',
+  } as const satisfies Group<
+    // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
+    Partial<KeyValueMirror<keyof FilesResponse>>
+  > satisfies Group<
+    // 限制键集合必须与 `[CollectionName]RecordExpand[DeepExpandKey]` 完全一致，且每个键的值必须与键名相同（KeyValueMirror）
+    KeyValueMirror<keyof MessagesRecordExpandFile>
+  >
+
   // 🧩 将字段键拼接为 expand 查询字符串
   // 模板字面量类型（Template Literal Types）可以在类型层面进行字符串拼接、组合和约束。
   const rk = recordKeys
   const rkrm = recordKeysReplyMessage
   const rki = recordKeysImages
-  return `${rk.author},${rk.replyMessage}.${rkrm.author},${rk.images}.${rki.author}` as const
-  // type const = "author,replyMessage.author,images.author"
+  const rkf = recordKeysFile
+  return `${rk.author},${rk.replyMessage}.${rkrm.author},${rk.images}.${rki.author},${rk.file}.${rkf.author}` as const
+  // type const = "author,replyMessage.author,images.author,file.author"
 })()

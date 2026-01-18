@@ -17,6 +17,10 @@ onBootstrap((e) => {
       - vue3\src\config\pb-collection-config.ts
       - pocketbase\pb_hooks\init-config.pb.js
     */
+    /** 默认允许上传文件的最大大小（字节数），为正整数，大于0的整数，默认20MB */
+    'user-max-upload-file-size-default': 20 * 1024 * 1024, //
+    /** 是否默认允许上传文件 */
+    'user-can-upload-file-default': true,
     /** 是否默认允许上传图片 */
     'user-can-upload-image-default': true,
     /** 是否默认允许发送消息 */
@@ -119,7 +123,7 @@ onBootstrap((e) => {
             record.set('value', pbCollectionConfigDefault[key])
             $app.save(record);
           } catch (error) {
-            console.log(`config 集合 ${key} 初始化失败`)
+            console.log(`Failed to initialize config entry: ${key}`)
           }
         }
       })

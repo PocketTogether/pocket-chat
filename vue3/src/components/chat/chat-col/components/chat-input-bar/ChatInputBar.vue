@@ -15,7 +15,10 @@ import {
 } from './composables'
 import { RouterLink } from 'vue-router'
 import { useElementSize, useWindowSize } from '@vueuse/core'
-import { pbImageDataChooseBySmallestWithUrl } from '@/utils'
+import {
+  fileTypeResolveIconContentUtil,
+  pbImageDataChooseBySmallestWithUrl,
+} from '@/utils'
 
 const props = defineProps<{
   /** 房间id，空字符串为全局聊天 */
@@ -47,6 +50,7 @@ const chatInputBarData = useChatInputBarData({ props })
 const {
   chatInputContent,
   chatImageSelectList,
+  chatFileSelectList,
   chatReplyMessage,
   chatReplyMessageSet,
   chatEditMessage,
@@ -95,6 +99,7 @@ const {
 defineExpose({
   chatInputContent,
   chatImageSelectList,
+  chatFileSelectList,
   chatReplyMessage,
   chatReplyMessageSet,
   chatEditMessage,
@@ -157,14 +162,16 @@ const autosizeElInput = computed(() => {
           </template>
         </ChatTopBarMoreMenuItem>
         <!-- 菜单项 文件 -->
-        <!-- <ChatTopBarMoreMenuItem @click="() => {}">
+        <ChatTopBarMoreMenuItem
+          @click="$router.push(routerDict.FileSelectPage.path)"
+        >
           <template #icon>
             <RiFolderLine size="18px"></RiFolderLine>
           </template>
           <template #text>
             {{ i18nStore.t('chatInputBarBackMenuFile')() }}
           </template>
-        </ChatTopBarMoreMenuItem> -->
+        </ChatTopBarMoreMenuItem>
         <!-- 垫片 -->
         <div
           :style="{
@@ -298,6 +305,12 @@ const autosizeElInput = computed(() => {
                       }}
                     </div>
                     <div
+                      v-else-if="chatReplyMessage.file !== ''"
+                      class="select-none truncate text-[12px] text-color-text"
+                    >
+                      {{ i18nStore.t('chatMessageReplyMessageFileShowText')() }}
+                    </div>
+                    <div
                       v-else
                       class="select-none truncate text-[12px] text-color-text"
                     >
@@ -319,8 +332,8 @@ const autosizeElInput = computed(() => {
               <!-- :placeholder="
                   i18nStore.t('chatInputBarShiftEnterPlaceholderText')()
                 " -->
-              <div class="flex flex-1 items-center">
-                <div class="flex-1">
+              <div class="flex flex-1 items-center truncate">
+                <div class="flex-1 truncate">
                   <!-- 图片选择 -->
                   <div v-if="chatImageSelectList.length > 0" class="">
                     <div class="flex items-center">
@@ -365,6 +378,69 @@ const autosizeElInput = computed(() => {
                                   backgroundImage: `url(${pbImageDataChooseBySmallestWithUrl(item).url})`,
                                 }"
                               ></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 文件选择 -->
+                  <div v-else-if="chatFileSelectList.length > 0" class="">
+                    <div class="flex items-center">
+                      <!-- 取消按钮 或 文件重新选择 -->
+                      <div>
+                        <!-- 在消息编辑时，应显示 图片重新选择 -->
+                        <ElButton
+                          v-if="chatInputBarFunctionChoose === 'edit'"
+                          circle
+                          type="info"
+                          :disabled="messageEditSubmitRunning"
+                          @click="$router.push(routerDict.FileSelectPage.path)"
+                        >
+                          <template #icon>
+                            <RiFolderLine></RiFolderLine>
+                          </template>
+                        </ElButton>
+                        <!-- 取消按钮 -->
+                        <ElButton
+                          v-else
+                          circle
+                          type="info"
+                          :disabled="messageSendSubmitRunning"
+                          @click="chatFileSelectList = []"
+                        >
+                          <template #icon>
+                            <RiCloseFill></RiCloseFill>
+                          </template>
+                        </ElButton>
+                      </div>
+                      <!-- 文件 -->
+                      <div class="flex-1 truncate">
+                        <div class="ml-1 flow-root">
+                          <div
+                            class="mx-3 flex select-none items-center justify-center text-color-text"
+                          >
+                            <!-- 图标 -->
+                            <div class="mr-[6px]">
+                              <!-- <RiFile3Fill size="24px"></RiFile3Fill> -->
+                              <i
+                                :class="
+                                  fileTypeResolveIconContentUtil(
+                                    chatFileSelectList[0]
+                                  ).riIconClass
+                                "
+                                style="font-size: 24px; line-height: 24px"
+                              ></i>
+                            </div>
+                            <!-- 文件名 -->
+                            <div class="truncate">
+                              <div class="truncate text-[14px] font-bold">
+                                {{
+                                  chatFileSelectList[0].fileName !== ''
+                                    ? chatFileSelectList[0].fileName
+                                    : chatFileSelectList[0].id
+                                }}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -460,6 +536,7 @@ const autosizeElInput = computed(() => {
                   :disabled="
                     chatInputContent.trim() === '' &&
                     chatImageSelectList.length <= 0 &&
+                    chatFileSelectList.length <= 0 &&
                     !messageEditSubmitRunning
                   "
                   @click="messageEditSubmit"
@@ -494,6 +571,7 @@ const autosizeElInput = computed(() => {
                   :disabled="
                     chatInputContent.trim() === '' &&
                     chatImageSelectList.length <= 0 &&
+                    chatFileSelectList.length <= 0 &&
                     !messageEditSubmitRunning
                   "
                   @click="messageEditSubmit"
@@ -514,6 +592,7 @@ const autosizeElInput = computed(() => {
               :disabled="
                 chatInputContent.trim() === '' &&
                 chatImageSelectList.length <= 0 &&
+                chatFileSelectList.length <= 0 &&
                 !messageSendSubmitRunning
               "
               @click="messageSendSubmit"

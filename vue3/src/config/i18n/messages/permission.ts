@@ -22,6 +22,31 @@ export const i18nMessagesPermissionPart = {
     'ru-RU': () => 'Нет прав на загрузку изображений' as const,
   },
 
+  permissionNoPermissionUploadFileText: {
+    'en-US': () => 'No permission to upload files' as const,
+    'zh-CN': () => '暂无上传文件权限' as const,
+    'zh-TW': () => '沒有上傳檔案的權限' as const,
+    'ja-JP': () => 'ファイルをアップロードする権限がありません' as const,
+    'ko-KR': () => '파일을 업로드할 권한이 없습니다' as const,
+    'ru-RU': () => 'Нет прав на загрузку файлов' as const,
+  },
+  permissionFileTooLargeText: {
+    'en-US': (size: string) => `File is larger than ${size}` as const,
+    'zh-CN': (size: string) => `文件大于 ${size}` as const,
+    'zh-TW': (size: string) => `檔案大於 ${size}` as const,
+    'ja-JP': (size: string) => `${size} を超えるファイルです` as const,
+    'ko-KR': (size: string) => `파일이 ${size} 보다 큽니다` as const,
+    'ru-RU': (size: string) => `Файл больше чем ${size}` as const,
+  },
+  permissionFileMaxSizeText: {
+    'en-US': (size: string) => `Maximum ${size}` as const,
+    'zh-CN': (size: string) => `最大 ${size}` as const,
+    'zh-TW': (size: string) => `最大 ${size}` as const,
+    'ja-JP': (size: string) => `最大 ${size}` as const,
+    'ko-KR': (size: string) => `최대 ${size}` as const,
+    'ru-RU': (size: string) => `Максимум ${size}` as const,
+  },
+
   permissionAdminContactText: {
     'en-US': () => 'Contact the administrator for access' as const,
     'zh-CN': () => '联系管理员获取权限' as const,

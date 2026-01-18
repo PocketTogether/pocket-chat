@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-01-18
+
+<details>
+<summary>📝 查看中文版本 (Chinese Version)</summary>
+
+### 新增
+- 实现文件功能 by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/20
+
+### 修复
+- el-scrollbar 优化 by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/21
+  - 取消其点击滚动条上的任意位置来跳转，因为其体验不太好、移动端也容易误触
+  - 当屏幕小于500px时，减小滚动条的宽度
+- 图片查看器优化动态过渡判断 by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/22
+
+</details>
+
+### Added
+- Implement file functionality by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/20
+
+### Fixed
+- el-scrollbar optimization by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/21
+  - Removed the functionality of clicking anywhere on the scrollbar to jump to a specific position, as the user experience was poor and prone to accidental touches on mobile devices.
+  - Reduced the scrollbar width when the screen width is less than 500px.
+- Image viewer optimized for dynamic transition handling. by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/22
+
 ## [0.3.0] - 2026-01-11
 
 <details>
@@ -152,7 +177,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pocket-chat: 一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3. 
 
-[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.3.0...HEAD
+[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.0...v0.2.1

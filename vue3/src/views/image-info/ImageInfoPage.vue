@@ -76,6 +76,7 @@ const router = useRouter()
 // 清除路由中的查询参数，避免页面初始化时图片查看器就打开
 const newQuery = { ...route.query }
 delete newQuery[imageScreenViewerDialogQueryKey]
+delete newQuery['ImageDeleteDialog']
 router.replace({
   path: route.path,
   query: newQuery,

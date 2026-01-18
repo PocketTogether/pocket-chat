@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { v4 as uuidv4 } from 'uuid'
 import {
   useRecoverChatColModule,
+  useRecoverFileSelectPageModule,
   useRecoverImageSelectPageModule,
 } from './modules'
 
@@ -63,6 +64,12 @@ export const useRouterHistoryStore = defineStore(
       currentUuid,
     })
     const { pageRecoverDataForImageSelectPage } = recoverImageSelectPageModule
+
+    // 【页面恢复数据 FileSelectPage 】用于 FileSelectPage 的页面恢复数据
+    const recoverFileSelectPageModule = useRecoverFileSelectPageModule({
+      currentUuid,
+    })
+    const { pageRecoverDataForFileSelectPage } = recoverFileSelectPageModule
 
     // 【页面恢复数据】END
 
@@ -132,6 +139,15 @@ export const useRouterHistoryStore = defineStore(
             }
             return false
           })
+        // 【页面恢复数据清理 FileSelectPage 】
+        pageRecoverDataForFileSelectPage.value =
+          pageRecoverDataForFileSelectPage.value.filter((i) => {
+            const find = stack.value.find((item) => item.uuid === i.uuid)
+            if (find != null) {
+              return true
+            }
+            return false
+          })
       }
 
       const routorHistoryUuid = history.state?.routorHistoryUuid
@@ -174,6 +190,7 @@ export const useRouterHistoryStore = defineStore(
       routerAfterEachCheckHistoryStateAndControlRouterHistoryStack,
       ...recoverChatColModule,
       ...recoverImageSelectPageModule,
+      ...recoverFileSelectPageModule,
     }
   }
 )

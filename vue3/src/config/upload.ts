@@ -5,6 +5,13 @@ export const uploadImageSchedulerPollingIntervalMsConfig = 2000 as const
 /** 上传图片 上传进度更新间隔 单位 ms*/
 export const uploadImageProgressUpdateIntervalMsConfig = 1000 as const
 
+/** 上传文件 最大同时上传数 */
+export const uploadFileMaxSimultaneousNumConfig = 2 as const
+/** 上传文件 调度轮询间隔 单位 ms*/
+export const uploadFileSchedulerPollingIntervalMsConfig = 2000 as const
+/** 上传文件 上传进度更新间隔 单位 ms*/
+export const uploadFileProgressUpdateIntervalMsConfig = 1000 as const
+
 /**
  * 上传记录状态配置对象。
  *
@@ -15,7 +22,7 @@ export const uploadImageProgressUpdateIntervalMsConfig = 1000 as const
  * 示例：
  * ```ts
  * // 推荐写法：使用配置对象中的常量
- * if (record.status === uploadImageStoreRecordStatusKeyConfig.pending) {
+ * if (record.status === uploadStoreRecordStatusKeyConfig.pending) {
  *   // ...
  * }
  *
@@ -34,7 +41,7 @@ export const uploadImageProgressUpdateIntervalMsConfig = 1000 as const
  * - `error`                  上传错误
  * - `interrupted`            中断（初始化时将 pending/uploading 改为此状态）
  */
-export const uploadImageStoreRecordStatusKeyConfig = {
+export const uploadStoreRecordStatusKeyConfig = {
   pending: 'pending',
   uploading: 'uploading',
   success: 'success',
@@ -47,9 +54,9 @@ export const uploadImageStoreRecordStatusKeyConfig = {
 /**
  * 上传记录状态类型。
  *
- * 该类型由 `uploadImageStoreRecordStatusKeyConfig` 自动推导，
+ * 该类型由 `uploadStoreRecordStatusKeyConfig` 自动推导，
  * 表示所有可能的上传状态值的联合类型。
  * 使用此类型可以在编译期获得完整的状态范围提示。
  */
-export type UploadImageStoreRecordStatus =
-  (typeof uploadImageStoreRecordStatusKeyConfig)[keyof typeof uploadImageStoreRecordStatusKeyConfig]
+export type UploadStoreRecordStatus =
+  (typeof uploadStoreRecordStatusKeyConfig)[keyof typeof uploadStoreRecordStatusKeyConfig]
