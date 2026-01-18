@@ -58,6 +58,16 @@ const { sourceHaveHold: isFetchingForAni } = useWatchSourceToHoldTime({
   source: isFetching,
   holdMs: 500,
 })
+
+const router = useRouter()
+
+// 清除路由中的查询参数，避免页面初始化时对话框就打开
+const newQuery = { ...route.query }
+delete newQuery['FileDeleteDialog']
+router.replace({
+  path: route.path,
+  query: newQuery,
+})
 </script>
 
 <template>

@@ -55,6 +55,10 @@ export const useRealtimeMessagesSubscribe = () => {
       if (newMessage.images.length > 0) {
         return i18nStore.t('chatMessageReplyMessageImageShowText')()
       }
+      // 内容可能为文件
+      if (newMessage.file !== '') {
+        return i18nStore.t('chatMessageReplyMessageFileShowText')()
+      }
       return newMessage.content
     })()
     /** 图标-头像 */

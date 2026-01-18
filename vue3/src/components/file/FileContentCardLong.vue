@@ -2,9 +2,15 @@
 import type { FilesResponseWithBaseExpand } from '@/api'
 import { fileTypeResolveIconContentUtil, formatFileSize } from '@/utils'
 
-const props = defineProps<{
-  fileData: FilesResponseWithBaseExpand
-}>()
+const props = withDefaults(
+  defineProps<{
+    fileData: FilesResponseWithBaseExpand
+    noIconColor?: boolean
+  }>(),
+  {
+    noIconColor: false,
+  }
+)
 
 const iconContent = computed(() => {
   return fileTypeResolveIconContentUtil(props.fileData)
@@ -17,7 +23,12 @@ const iconContent = computed(() => {
     <div class="flex items-center">
       <!-- 图标 -->
       <div class="mr-[10px] flow-root">
-        <div class="my-[2px]" :class="iconContent.textColorTwcss">
+        <div
+          class="my-[2px] transition-colors"
+          :class="{
+            [iconContent.textColorTwcss]: !noIconColor,
+          }"
+        >
           <!-- <RiFile3Fill size="32px"></RiFile3Fill> -->
           <i
             :class="iconContent.riIconClass"

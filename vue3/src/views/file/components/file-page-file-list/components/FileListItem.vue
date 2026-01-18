@@ -86,10 +86,12 @@ const { fileDataWithQueryAndRealtime } = useFileDataWithQueryAndRealtimeDesuwa({
               <FileContentCardLong
                 v-if="layoutBoxWidth > 550"
                 :fileData="fileDataWithQueryAndRealtime"
+                :noIconColor="isItemSelectAlready"
               ></FileContentCardLong>
               <FileContentCard
                 v-else
                 :fileData="fileDataWithQueryAndRealtime"
+                :noIconColor="isItemSelectAlready"
               ></FileContentCard>
             </div>
           </div>

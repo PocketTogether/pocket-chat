@@ -305,6 +305,12 @@ const autosizeElInput = computed(() => {
                       }}
                     </div>
                     <div
+                      v-else-if="chatReplyMessage.file !== ''"
+                      class="select-none truncate text-[12px] text-color-text"
+                    >
+                      {{ i18nStore.t('chatMessageReplyMessageFileShowText')() }}
+                    </div>
+                    <div
                       v-else
                       class="select-none truncate text-[12px] text-color-text"
                     >

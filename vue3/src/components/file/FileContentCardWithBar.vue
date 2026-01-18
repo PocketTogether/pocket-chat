@@ -4,10 +4,17 @@ import { FileContentCard } from '.'
 import { useRouterHistoryTool } from '@/composables'
 import { pb } from '@/lib'
 import { useI18nStore } from '@/stores'
+import { useElementSize } from '@vueuse/core'
 
-const props = defineProps<{
-  fileData: FilesResponseWithBaseExpand
-}>()
+const props = withDefaults(
+  defineProps<{
+    fileData: FilesResponseWithBaseExpand
+    noIconColor?: boolean
+  }>(),
+  {
+    noIconColor: false,
+  }
+)
 
 // RiDownloadLine
 // RiExternalLinkLine
@@ -34,13 +41,20 @@ const fileDownloadUrl = computed(() => {
   })
 })
 const i18nStore = useI18nStore()
+
+const refContentDiv = ref<HTMLElement | null>()
+const sizeContentDiv = useElementSize(refContentDiv)
 </script>
 
 <template>
-  <div class="text-color-text">
+  <div ref="refContentDiv" class="text-color-text">
     <div class="flow-root cursor-pointer select-none" @click="goFileInfoPage">
       <div class="mx-[15px] my-[12px]">
-        <FileContentCard :fileData="fileData"></FileContentCard>
+        <FileContentCard
+          :fileData="fileData"
+          :isSecondLineDisplayingFileSize="sizeContentDiv.width.value < 330"
+          :noIconColor="noIconColor"
+        ></FileContentCard>
       </div>
     </div>
     <div class="border-t-[3px] border-color-background"></div>

@@ -7,9 +7,15 @@ const props = withDefaults(
     fileData: FilesResponseWithBaseExpand
     /** 是否优先显示文件类型 */
     isPrioritizeDisplayingFileType?: boolean
+    /** 是否让文件大小显示在第二行 */
+    isSecondLineDisplayingFileSize?: boolean
+    /** 不为图标上色 */
+    noIconColor?: boolean
   }>(),
   {
     isPrioritizeDisplayingFileType: false,
+    isSecondLineDisplayingFileSize: false,
+    noIconColor: false,
   }
 )
 const iconContent = computed(() => {
@@ -23,7 +29,12 @@ const iconContent = computed(() => {
     <div class="flex items-center">
       <!-- 图标 -->
       <div class="mr-[10px] flow-root">
-        <div class="my-[2px]" :class="iconContent.textColorTwcss">
+        <div
+          class="my-[2px] transition-colors"
+          :class="{
+            [iconContent.textColorTwcss]: !noIconColor,
+          }"
+        >
           <!-- <RiFile3Fill size="32px"></RiFile3Fill> -->
           <i
             :class="iconContent.riIconClass"
@@ -41,27 +52,41 @@ const iconContent = computed(() => {
             <div class="truncate text-[14px] font-bold">
               {{ fileData.fileName !== '' ? fileData.fileName : fileData.id }}
             </div>
-            <!-- 下 文件描述 -->
-            <div
-              v-if="
-                fileData.description !== '' &&
-                (fileData.fileType === '' ||
-                  isPrioritizeDisplayingFileType === false)
-              "
-            >
-              <!-- <div v-if="true"> -->
-              <div class="truncate text-[10px]">
-                {{ fileData.description }}
+            <!-- 下 小字 -->
+            <div class="flex items-center">
+              <!-- 文件描述、类型 -->
+              <div class="flex-1 truncate">
+                <div
+                  v-if="
+                    fileData.description !== '' &&
+                    (fileData.fileType === '' ||
+                      isPrioritizeDisplayingFileType === false)
+                  "
+                >
+                  <!-- <div v-if="true"> -->
+                  <div class="truncate text-[10px]">
+                    {{ fileData.description }}
+                  </div>
+                </div>
+                <div v-else>
+                  <div class="truncate text-[10px]">
+                    {{ fileData.fileType }}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div v-else>
-              <div class="truncate text-[10px]">
-                {{ fileData.fileType }}
+              <!-- 大小 -->
+              <div v-if="isSecondLineDisplayingFileSize" class="ml-2">
+                <div class="truncate text-[10px] font-bold">
+                  {{ formatFileSize(fileData.fileSize) }}
+                </div>
               </div>
             </div>
           </div>
-          <!-- 类型、大小 -->
-          <div class="ml-2 flex items-center">
+          <!-- 大小 -->
+          <div
+            v-if="!isSecondLineDisplayingFileSize"
+            class="ml-2 flex items-center"
+          >
             <div>
               <div class="truncate text-[14px] font-bold">
                 {{ formatFileSize(fileData.fileSize) }}
