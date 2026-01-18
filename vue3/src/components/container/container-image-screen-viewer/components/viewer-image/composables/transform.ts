@@ -14,6 +14,9 @@ export const useViewerImageTransformDesuwa = (data: {
   const translateX = ref(0)
   const translateY = ref(0)
 
+  // 优化动态过渡判断
+  const isContinuousTransformInteracting = ref(false)
+
   // const minLeft = 40
   const minLeft = computed(() => {
     if (allSize.value.windowWidth > 768) {
@@ -235,6 +238,8 @@ export const useViewerImageTransformDesuwa = (data: {
   const onMouseMove = (e: MouseEvent) => {
     if (!isDragging.value) return
 
+    isContinuousTransformInteracting.value = true
+
     const dx = e.clientX - lastX
     const dy = e.clientY - lastY
 
@@ -249,6 +254,7 @@ export const useViewerImageTransformDesuwa = (data: {
 
   const onMouseUp = () => {
     isDragging.value = false
+    isContinuousTransformInteracting.value = false
   }
 
   // ---------------------------
@@ -314,6 +320,8 @@ export const useViewerImageTransformDesuwa = (data: {
   }
 
   const onTouchMove = (e: TouchEvent) => {
+    isContinuousTransformInteracting.value = true
+
     // -------------------------
     // 双指 pinch 缩放 + 平移（连续差分）
     // -------------------------
@@ -374,6 +382,7 @@ export const useViewerImageTransformDesuwa = (data: {
     if (e.touches.length === 0) {
       isSingleFinger.value = false
       isPinching.value = false
+      isContinuousTransformInteracting.value = false
     }
 
     // if (e.touches.length === 1) {
@@ -487,7 +496,7 @@ export const useViewerImageTransformDesuwa = (data: {
       return `translate(${translateX.value}px, ${translateY.value}px) scale(${scale.value})`
     }),
     transition: computed(() => {
-      if (isDragging.value || isPinching.value || isSingleFinger.value) {
+      if (isContinuousTransformInteracting.value) {
         // 连续操作：平滑补偿
         return 'transform 50ms linear'
       }
