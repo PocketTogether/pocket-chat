@@ -39,17 +39,21 @@
 - Supports message reply, edit, delete, and jumping to a message via its link.
 - Supports in-site new message notifications and desktop new message notifications.
 - Supports image sending, image viewing, and image metadata editing
+- Supports file sending, file downloading, and file metadata editing.
+- Supports user permission control: message sending permission, image upload permission, file upload permission, and user banning.
 - Project address: https://github.com/PocketTogether/pocket-chat
 - Live demo: https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
-![](./assets/Snipaste_2026-01-05_10-11-45.jpg)
+![](./assets/Snipaste_2026-01-18_17-30-48.png)
 
 <details>
 <summary>📸 <b>More Screenshots</b></summary>
 
+![](./assets/Snipaste_2026-01-18_16-31-41.png)
 ![](./assets/Snipaste_2026-01-05_10-33-05.jpg)
 ![](./assets/Snipaste_2026-01-05_10-34-08.jpg)
+![](./assets/Snipaste_2026-01-05_10-11-45.jpg)
 ![](./assets/Snipaste_2025-11-16_16-00-27.png)
 ![](./assets/Snipaste_2025-11-26_19-39-09.png)
 ![](./assets/Snipaste_2025-11-26_19-30-04.png)
@@ -95,6 +99,7 @@ Creating a superuser is a [**required step after deployment**](#required-post-de
 - `config` collection: project-specific settings (see [Config collection settings](#config-collection-settings))
 - `messages` collection: view all sent messages
 - `images` collection: view all uploaded images (supported since version `v0.2.0`).
+- `files` collection: view all uploaded files (supported since version `v0.4.0`).
 
 ![](./assets/image-4.png)
 
@@ -102,6 +107,13 @@ Creating a superuser is a [**required step after deployment**](#required-post-de
 <summary><b>images collection v0.2.0</b></summary>
 
 ![](./assets/Snipaste_2026-01-05_10-50-02.png)
+
+</details>
+
+<details>
+<summary><b>files collection v0.4.0</b></summary>
+
+![](./assets/Snipaste_2026-01-18_16-35-24.png)
 
 </details>
 
@@ -125,6 +137,9 @@ For clarity, this guide uses the [1Panel](https://github.com/1Panel-dev/1Panel) 
 > In this example the port is 58091 because 58090 was already in use by another PocketChat instance. How to change the port is explained in [Change port (optional)](#change-port-optional)
 
 After creating the proxy, enable HTTPS (refer to 1Panel docs: https://docs.1panel.pro/user_manual/websites/website_config_basic/#https)
+
+For configuring browser caching in the reverse proxy, see
+[Configuring Browser Caching in the Reverse Proxy](#configuring-browser-caching-in-the-reverse-proxy)
 
 #### Download and extract
 
@@ -236,7 +251,7 @@ docker logs PocketChat
 
 #### Manual Update Guide
 
-The following steps apply to **PocketChat deployed via binary (non‑Docker)**. All operations can be performed through **1Panel**.
+The following steps apply to **PocketChat deployed via binary (non-Docker)**. All operations can be performed through **1Panel**.
 
 ##### 1. Stop the currently running service
 ```sh
@@ -390,6 +405,17 @@ Fill in email and password. The email does not need to be real (e.g. `admin@admi
   - `true`: When `canUploadImage` is not set, the user is allowed to upload images by default.
   - `false`: When `canUploadImage` is not set, the user is not allowed to upload images by default.
 
+- `user-can-upload-file-default` : Whether uploading files is allowed by default. Default value: `true` (supported since `v0.4.0`)
+  - Same behavior as `user-can-upload-image-default`.
+  - `true`: When `canUploadFile` is not set, the user is allowed to upload files by default.
+  - `false`: When `canUploadFile` is not set, the user is not allowed to upload files by default.
+
+- `user-max-upload-file-size-default` : Default maximum file upload size (in bytes). Default value: `20971520` (`20 * 1024 * 1024`), which equals 20MB (supported since `v0.4.0`)
+  - Used when a user’s `maxUploadFileSize` field is set to `0`, determining the default maximum file size the user is allowed to upload.
+  - Must be a positive integer (greater than 0), measured in bytes.
+  - Note that both `maxUploadFileSize` and `user-max-upload-file-size-default` only provide data for the frontend to enforce size limits. The actual file size restriction is handled on the frontend. See  
+    [users collection — permission control: maxUploadFileSize](#maxuploadfilesize)
+
 
 #### Social media and other icon external links (external-links-to-social-media-icons-etc)
 
@@ -524,7 +550,8 @@ key: upload-image-process-options
 
 ### users collection – user permission control
 
-![](./assets/Snipaste_2026-01-11_19-27-16.png)
+<!-- ![](./assets/Snipaste_2026-01-11_19-27-16.png) -->
+![](./assets/Snipaste_2026-01-18_18-22-51.png)
 
 #### canSendMessage
 Used to control whether the user has permission to send messages.  
@@ -541,6 +568,30 @@ Used to control whether the user has permission to upload images.
 - `"NO"`: Explicitly forbid the user from uploading images  
 - `N/A` (default): Not set. The system will use  
   **user-can-upload-image-default** from the config collection.
+
+#### canUploadFile
+Used to control whether the user has permission to upload files.  
+- Field type: **select**, options:  
+- `"YES"`: Explicitly allow the user to upload files  
+- `"NO"`: Explicitly forbid the user from uploading files  
+- `N/A` (default): Not set. The system will use  
+  **user-can-upload-file-default** from the config collection.
+
+#### maxUploadFileSize
+Used to control the maximum file size (in bytes) the user is allowed to upload.  
+- Field type: **number**, must be an integer greater than or equal to `0`  
+- `> 0`: Explicitly specifies the maximum upload file size (in bytes) for this user  
+- `0` (default): Not set. The system will use  
+  **user-max-upload-file-size-default** from the config collection.
+
+Additional notes:  
+- `maxUploadFileSize` and `user-max-upload-file-size-default` are **only used for frontend-side size enforcement**, because PocketBase currently does not support file size limits in API rules.  
+- Permissions such as `canUploadFile`, however, are fully enforceable on both the frontend and backend (via PocketBase API rules).
+
+If you want to enforce a backend-level file size limit (this limit applies globally to all users), you can modify the `Max file size` option in the **files** collection → **file** field settings.  
+Make sure to save the collection after making changes.
+
+![](./assets/Snipaste_2026-01-18_18-28-45.png)
 
 #### isBanned
 Used to mark whether a user is banned.  
@@ -618,6 +669,102 @@ After creation you get Client ID and Client Secret.
 ![](./assets/Snipaste_2025-11-17_19-38-39.png)
 
 You can also set an app logo, e.g. https://github.com/PocketTogether/pocket-chat/blob/master/resources/icon1.png
+
+## Configuring Browser Caching in the Reverse Proxy
+
+- It is not recommended to use 1Panel’s visual form to configure the reverse proxy.  
+- Instead, it is recommended to directly edit the Nginx configuration file within 1Panel and manually configure the reverse proxy and browser caching policies.  
+- This approach provides more flexibility and is better suited for the fine-grained caching control required by PocketChat (such as static asset caching, PocketBase file caching, dynamic content no-cache, etc.).
+
+```nginx
+# PocketBase file caching
+location ^~ /api/files/ {
+    proxy_pass http://127.0.0.1:58090;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+
+    add_header X-Cache $upstream_cache_status;
+
+    # File caching policy
+    expires 180d;
+    add_header Cache-Control "public, max-age=15552000, immutable";
+
+    proxy_ssl_server_name off;
+    proxy_ssl_name $proxy_host;
+}
+
+# Static asset caching
+location ~* \.(gif|png|jpg|jpeg|svg|webp|ico|css|js|woff|woff2|ttf|eot|otf|mp4|webm|ogg|mp3|wav|flac|m4a)$ {
+    # Still fetched through reverse proxy
+    proxy_pass http://127.0.0.1:58090;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+
+    add_header X-Cache $upstream_cache_status;
+
+    # Browser caching policy
+    expires 180d;
+    add_header Cache-Control "public, max-age=15552000, immutable";
+
+    proxy_ssl_server_name off;
+    proxy_ssl_name $proxy_host;
+}
+
+# Dynamic content (HTML, API, etc.)
+location / {
+    proxy_pass http://127.0.0.1:58090;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+
+    add_header X-Cache $upstream_cache_status;
+
+    # Disable caching for dynamic content
+    add_header Cache-Control "no-cache";
+
+    proxy_ssl_server_name off;
+    proxy_ssl_name $proxy_host;
+}
+
+```
+
+### Notes on PocketBase File
+
+All files in PocketBase (images, videos, etc.) are accessed through a fixed path:
+
+```
+/api/files/:collectionId/:recordId/:filename
+
+http://127.0.0.1:58090/api/files/pbc_3607937828/426c1mnva7cd4k4/image_twlm01yw5w.webp
+```
+
+Each uploaded file is stored using the original filename (sanitized) with an additional suffix — a random segment (typically 10 characters). For example:
+
+```
+image_twlm01yw5w.webp
+```
+
+https://pocketbase.io/docs/files-handling/#file-url
 
 ## Development Guide
 

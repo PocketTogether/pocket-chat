@@ -39,17 +39,21 @@
 - 支持消息回复、编辑、删除等操作，支持通过消息链接定位访问消息。
 - 支持网站内新消息通知，支持桌面新消息通知。
 - 支持图片发送、图片查看、图片信息编辑
+- 支持文件发送、文件下载、文件信息编辑
+- 支持用户权限控制：发送消息权限、上传图片权限、上传文件权限、用户封禁功能
 - 项目地址 https://github.com/PocketTogether/pocket-chat
 - 预览 https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
-![](./assets/Snipaste_2026-01-05_10-11-45.jpg)
+![](./assets/Snipaste_2026-01-18_17-30-48.png)
 
 <details>
 <summary>📸 <b>更多截图</b></summary>
 
+![](./assets/Snipaste_2026-01-18_16-31-41.png)
 ![](./assets/Snipaste_2026-01-05_10-33-05.jpg)
 ![](./assets/Snipaste_2026-01-05_10-34-08.jpg)
+![](./assets/Snipaste_2026-01-05_10-11-45.jpg)
 ![](./assets/Snipaste_2025-11-16_16-00-27.png)
 ![](./assets/Snipaste_2025-11-26_19-39-09.png)
 ![](./assets/Snipaste_2025-11-26_19-30-04.png)
@@ -95,6 +99,7 @@ PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 htt
 - config 集合，可查看或修改关于本项目的一些配置，详见 [config 集合配置](#config-集合配置)
 - messages 集合，可查看所有用户发送的所有消息
 - images 集合，可查看全部图片（ `v0.2.0` 版本后支持）
+- files 集合，可查看全部文件（ `v0.4.0` 版本后支持）
 
 ![](./assets/image-4.png)
 
@@ -102,6 +107,13 @@ PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 htt
 <summary><b>images 集合 v0.2.0</b></summary>
 
 ![](./assets/Snipaste_2026-01-05_10-50-02.png)
+
+</details>
+
+<details>
+<summary><b>files 集合 v0.4.0</b></summary>
+
+![](./assets/Snipaste_2026-01-18_16-35-24.png)
 
 </details>
 
@@ -126,6 +138,8 @@ PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 htt
 > 笔者因为在此之前就已经部署了一个 PocketChat ，默认端口 58090 已被使用了，所以设置的是 58091，之后会讲到 PocketChat 如何 [修改端口](#修改端口)
 
 创建反向代理之后，还要再为它配置 https ，这里就不讲了 [1Panel 文档 HTTPS](https://docs.1panel.pro/user_manual/websites/website_config_basic/#https)
+
+反向代理中配置浏览器缓存，详见 [反向代理中配置浏览器缓存](#反向代理中配置浏览器缓存)
 
 #### 下载与解压
 
@@ -390,6 +404,16 @@ docker logs PocketChat
   - `true` ，当用户的 canUploadImage 字段未设置时，系统默认允许该用户上传图片
   - `false` ，当用户的 canUploadImage 字段未设置时，系统默认不允许该用户上传图片
 
+- `user-can-upload-file-default` : 是否默认允许上传文件，默认值为 `true` （ `v0.4.0` 版本后支持）  
+  - 和 `user-can-upload-image-default` 类似
+  - `true` ，当用户的 canUploadFile 字段未设置时，系统默认允许该用户上传文件  
+  - `false` ，当用户的 canUploadFile 字段未设置时，系统默认不允许该用户上传文件  
+
+- `user-max-upload-file-size-default` : 默认文件上传大小限制（字节数），默认值为 `20971520` （`20 * 1024 * 1024`） 即 20MB （ `v0.4.0` 版本后支持）  
+  - 用于控制当 users 集合中用户记录中的 maxUploadFileSize 字段为 `0` 时，系统对该用户的默认最大文件上传大小限制。
+  - 必须为正整数（大于 0 的整数），单位为字节  
+  - 注意 maxUploadFileSize 或 user-max-upload-file-size-default 都仅仅是给前端提供数据，是由前端来进行大小限制的，详见 [users 集合 用户权限控制 maxUploadFileSize](#maxuploadfilesize)
+
 #### 社交媒体等图标外链 external-links-to-social-media-icons-etc
 
 ![](./assets/Snipaste_2025-11-17_15-47-40.png)
@@ -512,7 +536,8 @@ key: upload-image-process-options
 
 ### users 集合 用户权限控制
 
-![](./assets/Snipaste_2026-01-11_19-27-16.png)
+<!-- ![](./assets/Snipaste_2026-01-11_19-27-16.png) -->
+![](./assets/Snipaste_2026-01-18_18-22-51.png)
 
 #### canSendMessage
 用于控制用户是否具备发送消息的权限。  
@@ -529,6 +554,29 @@ key: upload-image-process-options
 - `"NO"`：显式禁止该用户上传图片  
 - `N/A`（默认）：未设置，此时系统将根据 config 集合中的  
   **user-can-upload-image-default** 配置决定是否允许上传图片
+
+#### canUploadFile
+用于控制用户是否具备上传文件的权限。  
+- 字段类型：**select**，可选值：  
+- `"YES"`：显式允许该用户上传文件  
+- `"NO"`：显式禁止该用户上传文件  
+- `N/A`（默认）：未设置，此时系统将根据 config 集合中的  
+  **user-can-upload-file-default** 配置决定是否允许上传文件  
+
+#### maxUploadFileSize
+用于控制用户可上传文件的最大大小（字节数）。  
+- 字段类型：**number**，需为大于或等于 `0` 的整数  
+- `> 0`：显式指定该用户可上传文件的最大大小（字节数）  
+- `0`（默认）：未设置，此时系统将根据 config 集合中的  
+  **user-max-upload-file-size-default** 配置决定该用户可上传文件的最大大小  
+
+额外说明：  
+- `maxUploadFileSize` 与 `user-max-upload-file-size-default` **仅用于前端限制**，因为 PocketBase 当前不支持在 API 规则中限制文件大小  
+- 但 `canUploadFile` 这类的可以放心，其可在前后端双重保证
+
+如果想强制限制上传文件大小（会对所有用户生效），可在 files集合-设置-file字段 修改其 `Max file size` ，修改后记得保存
+
+![](./assets/Snipaste_2026-01-18_18-28-45.png)
 
 #### isBanned
 用于标记用户是否被封禁。  
@@ -604,6 +652,100 @@ https://yourdomain.com/api/oauth2-redirect
 ![](./assets/Snipaste_2025-11-17_19-38-39.png)
 
 除此之外，还能设置 Application logo ，可使用此图标 https://github.com/PocketTogether/pocket-chat/blob/master/resources/icon1.png
+
+## 反向代理中配置浏览器缓存
+
+- 建议不要使用 1Panel 的可视化表单来配置反向代理。
+- 更推荐在 1Panel 中直接编辑 Nginx 配置文件，以手动方式完成反向代理与浏览器缓存策略的设置。
+- 这种方式更灵活，也更适合 PocketChat 所需的精细化缓存控制（例如静态资源缓存、PocketBase 文件缓存、动态内容 no-cache 等）。
+
+```nginx
+# PocketBase file caching
+location ^~ /api/files/ {
+    proxy_pass http://127.0.0.1:58090;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+
+    add_header X-Cache $upstream_cache_status;
+
+    # File caching policy
+    expires 180d;
+    add_header Cache-Control "public, max-age=15552000, immutable";
+
+    proxy_ssl_server_name off;
+    proxy_ssl_name $proxy_host;
+}
+
+# Static asset caching
+location ~* \.(gif|png|jpg|jpeg|svg|webp|ico|css|js|woff|woff2|ttf|eot|otf|mp4|webm|ogg|mp3|wav|flac|m4a)$ {
+    # Still fetched through reverse proxy
+    proxy_pass http://127.0.0.1:58090;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+
+    add_header X-Cache $upstream_cache_status;
+
+    # Browser caching policy
+    expires 180d;
+    add_header Cache-Control "public, max-age=15552000, immutable";
+
+    proxy_ssl_server_name off;
+    proxy_ssl_name $proxy_host;
+}
+
+# Dynamic content (HTML, API, etc.)
+location / {
+    proxy_pass http://127.0.0.1:58090;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+
+    add_header X-Cache $upstream_cache_status;
+
+    # Disable caching for dynamic content
+    add_header Cache-Control "no-cache";
+
+    proxy_ssl_server_name off;
+    proxy_ssl_name $proxy_host;
+}
+
+```
+
+### 关于 PocketBase 文件的一些说明
+
+PocketBase 的所有文件（图片、视频等）都通过固定路径访问：
+```
+/api/files/:collectionId/:recordId/:filename
+
+http://127.0.0.1:58090/api/files/pbc_3607937828/426c1mnva7cd4k4/image_twlm01yw5w.webp
+```
+
+每个上传的文件都将以原始文件名（已脱敏处理）存储，并添加一个后缀。 随机部分（通常为 10 个字符）。例如： 
+```
+image_twlm01yw5w.webp
+```
+
+https://pocketbase.io/docs/files-handling/#file-url
 
 ## 开发指南
 
