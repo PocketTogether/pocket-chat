@@ -26,7 +26,10 @@ import {
   usePbCollectionConfigQuery,
   useProfileQuery,
 } from './queries'
-import { watchUntilQueryReady } from './utils'
+import {
+  watchUntilQueryReady,
+  watchUntilQueryReadyWithoutIsPending,
+} from './utils'
 import { PocketBannedMask } from './components'
 
 const i18nStore = useI18nStore()
@@ -69,7 +72,7 @@ useFirstDataLoadingAndAnimationMaskClose({
     await realtimeMessagesSubscribe.startSubscribe()
     // 遮罩的关闭会等待主要的query
     await watchUntilQueryReady(pbCollectionConfigQuery)
-    await watchUntilQueryReady(profileQuery)
+    await watchUntilQueryReadyWithoutIsPending(profileQuery)
     // await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery)
   },
 })
