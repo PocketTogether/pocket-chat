@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-01-20
+
+<details>
+<summary>📝 查看中文版本 (Chinese Version)</summary>
+
+### 新增
+- 支持pwa安装，即“安装”或“添加到主屏幕” by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/24
+  - 支持 桌面端、移动端 的pwa安装
+  - 支持一定程度的离线访问
+  - 网站中的图片和文件拥有更稳定缓存
+
+### 修复
+- 解决图片查看器顶栏Alt滚动条点击后会持续拖拽无法放开的问题 by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/25
+
+</details>
+
+### Added
+- Support for PWA installation, including “Install App” or “Add to Home Screen” by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/24
+  - Works on both desktop and mobile devices  
+  - Provides partial offline access  
+  - Offers more reliable caching for images and files  
+
+### Fixed
+- Fix an issue where clicking the Alt scrollbar in the image viewer’s top bar causes continuous dragging that cannot be released by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/25
+
 ## [0.4.0] - 2026-01-18
 
 <details>
@@ -177,7 +202,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pocket-chat: 一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3. 
 
-[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.1...v0.2.2

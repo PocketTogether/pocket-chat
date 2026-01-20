@@ -41,6 +41,7 @@
 - 支持图片发送、图片查看、图片信息编辑
 - 支持文件发送、文件下载、文件信息编辑
 - 支持用户权限控制：发送消息权限、上传图片权限、上传文件权限、用户封禁功能
+- 支持pwa安装，即“安装”或“添加到主屏幕”。支持一定程度的离线访问
 - 项目地址 https://github.com/PocketTogether/pocket-chat
 - 预览 https://sakiko.top
 
@@ -57,13 +58,15 @@
 ![](./assets/Snipaste_2025-11-16_16-00-27.png)
 ![](./assets/Snipaste_2025-11-26_19-39-09.png)
 ![](./assets/Snipaste_2025-11-26_19-30-04.png)
+![](./assets/Snipaste_2026-01-20_18-06-50.png)
+![](./assets/Snipaste_2026-01-20_15-58-20.jpg)
+![](./assets/Snipaste_2026-01-20_15-59-39.jpg)
 
 </details>
 
 <details>
 <summary>💡 <b>开发计划</b></summary>
 
-- 文件发送功能
 - 用户列表、在线状态显示功能
 - 用户@功能
 - 语音发送功能
@@ -658,6 +661,7 @@ https://yourdomain.com/api/oauth2-redirect
 - 建议不要使用 1Panel 的可视化表单来配置反向代理。
 - 更推荐在 1Panel 中直接编辑 Nginx 配置文件，以手动方式完成反向代理与浏览器缓存策略的设置。
 - 这种方式更灵活，也更适合 PocketChat 所需的精细化缓存控制（例如静态资源缓存、PocketBase 文件缓存、动态内容 no-cache 等）。
+- v0.5.0 后，为了更稳定地支持pwa安装，还要在此为 manifest.webmanifest 设置正确的 MIME
 
 ```nginx
 # PocketBase file caching
@@ -672,20 +676,16 @@ location ^~ /api/files/ {
     proxy_set_header Connection $http_connection;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_http_version 1.1;
-
     add_header X-Cache $upstream_cache_status;
-
-    # File caching policy
-    expires 180d;
-    add_header Cache-Control "public, max-age=15552000, immutable";
-
     proxy_ssl_server_name off;
     proxy_ssl_name $proxy_host;
+    
+    expires 180d;
+    add_header Cache-Control "public, max-age=15552000, s-maxage=15552000, immutable";
 }
 
 # Static asset caching
-location ~* \.(gif|png|jpg|jpeg|svg|webp|ico|css|js|woff|woff2|ttf|eot|otf|mp4|webm|ogg|mp3|wav|flac|m4a)$ {
-    # Still fetched through reverse proxy
+location ~ (^/assets/|^/workbox-|^/remixicon|^/Snipaste_|^/_/) {
     proxy_pass http://127.0.0.1:58090;
 
     proxy_set_header Host $host;
@@ -696,15 +696,12 @@ location ~* \.(gif|png|jpg|jpeg|svg|webp|ico|css|js|woff|woff2|ttf|eot|otf|mp4|w
     proxy_set_header Connection $http_connection;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_http_version 1.1;
-
     add_header X-Cache $upstream_cache_status;
-
-    # Browser caching policy
-    expires 180d;
-    add_header Cache-Control "public, max-age=15552000, immutable";
-
     proxy_ssl_server_name off;
     proxy_ssl_name $proxy_host;
+    
+    expires 180d;
+    add_header Cache-Control "public, max-age=15552000, s-maxage=15552000, immutable";
 }
 
 # Dynamic content (HTML, API, etc.)
@@ -719,16 +716,33 @@ location / {
     proxy_set_header Connection $http_connection;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_http_version 1.1;
-
     add_header X-Cache $upstream_cache_status;
-
-    # Disable caching for dynamic content
-    add_header Cache-Control "no-cache";
-
     proxy_ssl_server_name off;
     proxy_ssl_name $proxy_host;
+
+    add_header Cache-Control "no-cache";
 }
 
+# Set the correct MIME type for manifest.webmanifest
+location = /manifest.webmanifest {
+    proxy_pass http://127.0.0.1:58090;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+    add_header X-Cache $upstream_cache_status;
+    proxy_ssl_server_name off;
+    proxy_ssl_name $proxy_host;
+
+    proxy_hide_header Content-Type;
+    add_header Content-Type "application/manifest+json";
+    add_header Cache-Control "no-cache";
+}
 ```
 
 ### 关于 PocketBase 文件的一些说明

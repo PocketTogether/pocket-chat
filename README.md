@@ -41,6 +41,7 @@
 - Supports image sending, image viewing, and image metadata editing
 - Supports file sending, file downloading, and file metadata editing.
 - Supports user permission control: message sending permission, image upload permission, file upload permission, and user banning.
+- Supports PWA installation, including “Install App” or “Add to Home Screen”, and provides partial offline access.
 - Project address: https://github.com/PocketTogether/pocket-chat
 - Live demo: https://sakiko.top
 
@@ -57,13 +58,15 @@
 ![](./assets/Snipaste_2025-11-16_16-00-27.png)
 ![](./assets/Snipaste_2025-11-26_19-39-09.png)
 ![](./assets/Snipaste_2025-11-26_19-30-04.png)
+![](./assets/Snipaste_2026-01-20_18-06-50.png)
+![](./assets/Snipaste_2026-01-20_15-58-20.jpg)
+![](./assets/Snipaste_2026-01-20_15-59-39.jpg)
 
 </details>
 
 <details>
 <summary>💡 <b>Development Plan</b></summary>
 
-- File sending functionality
 - User list and online status display
 - User @ mention functionality
 - Voice sending functionality
@@ -675,6 +678,7 @@ You can also set an app logo, e.g. https://github.com/PocketTogether/pocket-chat
 - It is not recommended to use 1Panel’s visual form to configure the reverse proxy.  
 - Instead, it is recommended to directly edit the Nginx configuration file within 1Panel and manually configure the reverse proxy and browser caching policies.  
 - This approach provides more flexibility and is better suited for the fine-grained caching control required by PocketChat (such as static asset caching, PocketBase file caching, dynamic content no-cache, etc.).
+- Starting from v0.5.0, to ensure more reliable PWA installation, you should also configure the correct MIME type for `manifest.webmanifest` in this section.
 
 ```nginx
 # PocketBase file caching
@@ -689,20 +693,16 @@ location ^~ /api/files/ {
     proxy_set_header Connection $http_connection;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_http_version 1.1;
-
     add_header X-Cache $upstream_cache_status;
-
-    # File caching policy
-    expires 180d;
-    add_header Cache-Control "public, max-age=15552000, immutable";
-
     proxy_ssl_server_name off;
     proxy_ssl_name $proxy_host;
+    
+    expires 180d;
+    add_header Cache-Control "public, max-age=15552000, s-maxage=15552000, immutable";
 }
 
 # Static asset caching
-location ~* \.(gif|png|jpg|jpeg|svg|webp|ico|css|js|woff|woff2|ttf|eot|otf|mp4|webm|ogg|mp3|wav|flac|m4a)$ {
-    # Still fetched through reverse proxy
+location ~ (^/assets/|^/workbox-|^/remixicon|^/Snipaste_|^/_/) {
     proxy_pass http://127.0.0.1:58090;
 
     proxy_set_header Host $host;
@@ -713,15 +713,12 @@ location ~* \.(gif|png|jpg|jpeg|svg|webp|ico|css|js|woff|woff2|ttf|eot|otf|mp4|w
     proxy_set_header Connection $http_connection;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_http_version 1.1;
-
     add_header X-Cache $upstream_cache_status;
-
-    # Browser caching policy
-    expires 180d;
-    add_header Cache-Control "public, max-age=15552000, immutable";
-
     proxy_ssl_server_name off;
     proxy_ssl_name $proxy_host;
+    
+    expires 180d;
+    add_header Cache-Control "public, max-age=15552000, s-maxage=15552000, immutable";
 }
 
 # Dynamic content (HTML, API, etc.)
@@ -736,16 +733,33 @@ location / {
     proxy_set_header Connection $http_connection;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_http_version 1.1;
-
     add_header X-Cache $upstream_cache_status;
-
-    # Disable caching for dynamic content
-    add_header Cache-Control "no-cache";
-
     proxy_ssl_server_name off;
     proxy_ssl_name $proxy_host;
+
+    add_header Cache-Control "no-cache";
 }
 
+# Set the correct MIME type for manifest.webmanifest
+location = /manifest.webmanifest {
+    proxy_pass http://127.0.0.1:58090;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+    add_header X-Cache $upstream_cache_status;
+    proxy_ssl_server_name off;
+    proxy_ssl_name $proxy_host;
+
+    proxy_hide_header Content-Type;
+    add_header Content-Type "application/manifest+json";
+    add_header Cache-Control "no-cache";
+}
 ```
 
 ### Notes on PocketBase File
