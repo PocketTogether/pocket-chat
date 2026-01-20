@@ -79,6 +79,30 @@ export const watchUntilQueryReady = async (queryStatus: {
   }
 }
 
+/** 不等 isPending */
+export const watchUntilQueryReadyWithoutIsPending = async (queryStatus: {
+  isLoading: Ref<boolean>
+  isFetching: Ref<boolean>
+  // isPending: Ref<boolean>
+  error?: Ref<unknown>
+}): Promise<void> => {
+  // 创建一个计算属性，表示是否仍在加载中
+  const isQueryPending = computed(() => {
+    return (
+      queryStatus.isLoading.value || queryStatus.isFetching.value
+      // queryStatus.isPending.value
+    )
+  })
+
+  // 等待查询状态变为“非加载中”
+  await watchUntilSourceCondition(isQueryPending, (pending) => !pending)
+
+  // 查询完成后，判断是否有错误
+  if (queryStatus.error?.value != null) {
+    throw queryStatus.error.value
+  }
+}
+
 /**
  * useWatchSourceToHoldTime
  *

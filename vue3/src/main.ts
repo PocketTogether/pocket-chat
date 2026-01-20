@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createHead } from '@unhead/vue/client'
 import { VueQueryPlugin } from '@tanstack/vue-query'
+import { registerSW } from 'virtual:pwa-register'
 
 import App from './App.vue'
 import router from './router'
@@ -24,3 +25,5 @@ app.use(head)
 app.use(VueQueryPlugin)
 
 app.mount('#app')
+
+registerSW({ immediate: true })
