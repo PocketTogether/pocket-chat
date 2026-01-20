@@ -28,6 +28,9 @@ export const useFirstDataLoadingAndAnimationMaskClose = (data: {
 
   // 等待加载数据，最多等待5秒，最少等待1秒
   const dataFirstLoadAwait = async () => {
+    // const start = performance.now()
+    // console.log(`[dataFirstLoadAwait] 开始时间: ${new Date().toISOString()}`)
+
     // const maxTimeout = statesStore.isFirstLoadFirstData ? 10000 : 3000
     const maxTimeout = 5000
     const minTimeout = 1000
@@ -40,6 +43,11 @@ export const useFirstDataLoadingAndAnimationMaskClose = (data: {
     ])
     // 首屏遮罩增加额外300ms等待时间，以等待聊天页的加载图标过渡结束
     await new Promise((resolve) => setTimeout(resolve, 300))
+
+    // const end = performance.now()
+    // const diff = Math.round(end - start)
+    // console.log(`[dataFirstLoadAwait] 结束时间: ${new Date().toISOString()}`)
+    // console.log(`[dataFirstLoadAwait] 总耗时: ${diff}ms`)
   }
 
   // 关闭加载遮罩，恢复滚动条，同时防止抖动
