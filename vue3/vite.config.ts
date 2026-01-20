@@ -79,25 +79,90 @@ export default defineConfig({
             purpose: 'maskable',
           },
         ],
-        background_color: '#7899CC',
+        background_color: '#FFFFFF',
         theme_color: '#7899CC',
         screenshots: [
           {
-            src: 'Snipaste_2026-01-18_17-30-48.jpg',
-            sizes: '1920x1080',
-            type: 'image/jpeg',
-            form_factor: 'wide',
-          },
-          {
-            src: 'Snipaste_2026-01-19_20-39-40.jpg',
+            src: 'Snipaste_2026-01-20_15-58-20.jpg',
             sizes: '900x1440',
             type: 'image/jpeg',
             form_factor: 'wide',
           },
           {
-            src: 'Snipaste_2026-01-19_20-41-08.jpg',
-            sizes: '537x1165',
+            src: 'Snipaste_2026-01-20_15-59-39.jpg',
+            sizes: '900x1440',
             type: 'image/jpeg',
+            form_factor: 'wide',
+          },
+          {
+            src: 'Snipaste_2026-01-20_15-58-20.jpg',
+            sizes: '900x1440',
+            type: 'image/jpeg',
+          },
+          {
+            src: 'Snipaste_2026-01-20_15-59-39.jpg',
+            sizes: '900x1440',
+            type: 'image/jpeg',
+          },
+        ],
+      },
+      workbox: {
+        // navigateFallback: null,
+        navigateFallbackDenylist: [
+          // PocketBase API (File)
+          /^\/api\//,
+          // PocketBase Admin UI
+          /^\/_\//,
+        ],
+        runtimeCaching: [
+          // 1. 图标缓存 /remixicon
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith('/remixicon'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'remixicon-cache',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 180,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+
+          // 2. 文件缓存 /api/files/
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith('/api/files/'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'files-cache',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 180,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+
+          // 3. API 缓存 /api/collections/（只在离线时生效）
+          {
+            urlPattern: ({ url }) =>
+              url.pathname.startsWith('/api/collections/'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              networkTimeoutSeconds: 0,
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 10,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
           },
         ],
       },
