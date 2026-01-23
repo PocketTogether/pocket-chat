@@ -230,7 +230,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/PocketTogether/pocket-chat-github-actions-test:0.0.13
+  ghcr.io/pockettogether/pocket-chat-github-actions-test:0.0.13
 
 docker logs PocketChat
 ```

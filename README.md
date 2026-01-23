@@ -244,7 +244,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/PocketTogether/pocket-chat:latest
+  ghcr.io/pockettogether/pocket-chat:latest
 
 docker logs PocketChat
 ```
@@ -317,14 +317,14 @@ Visit:
 https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 Choose the version you want to update to, for example:
-`ghcr.io/PocketTogether/pocket-chat:0.2.1`
+`ghcr.io/pockettogether/pocket-chat:0.2.1`
 ```
-ghcr.io/PocketTogether/pocket-chat:<VERSION>
+ghcr.io/pockettogether/pocket-chat:<VERSION>
 ```
 
 (Optional) Pull the image in advance:
 ```sh
-docker pull ghcr.io/PocketTogether/pocket-chat:<VERSION>
+docker pull ghcr.io/pockettogether/pocket-chat:<VERSION>
 ```
 
 Benefits of pulling beforehand:
@@ -347,7 +347,7 @@ docker run -d \
   -v ${HOME}/PocketChat/pb_data:/app/pb_data \
   -p 58090:58090 \
   --restart unless-stopped \
-  ghcr.io/PocketTogether/pocket-chat:<VERSION>
+  ghcr.io/pockettogether/pocket-chat:<VERSION>
 ```
 
 ##### 4. Check logs to confirm everything is running correctly
