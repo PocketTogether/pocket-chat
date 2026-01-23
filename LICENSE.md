@@ -1,5 +1,5 @@
 The MIT License (MIT)
-Copyright (c) 2023 - present, haruki
+Copyright (c) 2025 - present, PocketTogether
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 and associated documentation files (the "Software"), to deal in the Software without restriction,
