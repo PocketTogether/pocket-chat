@@ -33,10 +33,10 @@
  * - FILE_TYPES: string[] → 需要处理的文件类型扩展名数组，例如 ['.js', '.ts', '.vue']
  *
  * 🚀 使用方法：
- *   node project-tools-node/dev-flatten-text-to-ai.js "绝对路径"
+ *   node ai-dev-tool/dev-flatten-text-to-ai.js "绝对路径"
  *
  *   示例：
- *   node project-tools-node/dev-flatten-text-to-ai.js "C:/Users/Haruki/Desktop/myproject"
+ *   node ai-dev-tool/dev-flatten-text-to-ai.js "C:/Users/Haruki/Desktop/myproject"
  *
  * 📑 注意事项：
  * - 输入路径必须为绝对路径。
