@@ -210,16 +210,21 @@ function main() {
   const outputContent = (() => {
     const outputContent = buildOutput(allFiles);
 
-    // 【260113】发现有大量<或>时会导致上传失败，将其替换
-    // 为避免大量 < 或 > 导致上传失败，将其替换为 URL 安全字符
-    // 同时压缩连续空格以减小文件体积
+    // 【260113】发现有大量<或>时会导致上传失败（可能是cf的风控），将其替换
     const safeContent = outputContent
       // .replace(/script>/g, "s_c_r_i_p_t>")
       // .replace(/<script/g, "<s_c_r_i_p_t")
       // .replace(/</g, "&lt;")
       // .replace(/>/g, "&gt;")
-      .replace(/</g, "[[LT]]")
-      .replace(/>/g, "[[GT]]")
+      // .replace(/<script/g, "[[LT]]script")
+      // .replace(/script>/g, "script[[GT]]")
+
+      // .replace(/</g, "[[LT]]")
+      // .replace(/>/g, "[[GT]]")
+      // 这样文件更小
+      .replace(/</g, "《")
+      .replace(/>/g, "》")
+
       .replace(/\\/g, "/")
       .replace(/\t/g, " ")
       .replace(/\r\n/g, "\n")

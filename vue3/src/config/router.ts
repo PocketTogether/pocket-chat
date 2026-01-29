@@ -1,5 +1,3 @@
-import type { I18nMessagesKeyType } from '@/config'
-
 interface RouterItem {
   path: string
   name: string
