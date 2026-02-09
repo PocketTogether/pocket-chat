@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-02-09
+
+<details>
+<summary>📝 查看中文版本 (Chinese Version)</summary>
+
+### 新增
+- 文件图标这一块，新增 苹果、安卓、Windows 相关文件的图标支持
+
+</details>
+
+### Added
+- Added icon support for Apple‑related, Android‑related, and Windows‑related file types.
+
 ## [0.5.0] - 2026-01-20
 
 <details>
@@ -202,7 +215,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pocket-chat: 一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3. 
 
-[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.2.2...v0.3.0
