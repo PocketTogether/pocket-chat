@@ -42,6 +42,7 @@
 - 支持文件发送、文件下载、文件信息编辑
 - 支持用户权限控制：发送消息权限、上传图片权限、上传文件权限、用户封禁功能
 - 支持pwa安装，即“安装”或“添加到主屏幕”。支持一定程度的离线访问
+- 配套安卓项目 [PocketNotifier](https://github.com/PocketTogether/pocket-notifier)，可在手机后台实时获取新消息
 - 项目地址 https://github.com/PocketTogether/pocket-chat
 - 预览 https://sakiko.top
 
@@ -59,8 +60,10 @@
 ![](./assets/Snipaste_2025-11-26_19-39-09.png)
 ![](./assets/Snipaste_2025-11-26_19-30-04.png)
 ![](./assets/Snipaste_2026-01-20_18-06-50.png)
-![](./assets/Snipaste_2026-01-20_15-58-20.jpg)
-![](./assets/Snipaste_2026-01-20_15-59-39.jpg)
+<!-- ![](./assets/Snipaste_2026-01-20_15-58-20.jpg) -->
+<!-- ![](./assets/Snipaste_2026-01-20_15-59-39.jpg) -->
+![](./assets/collage-260208-1748.jpeg)
+![](./assets/collage-260208-1749.jpeg)
 
 </details>
 
