@@ -81,6 +81,9 @@ const CATEGORY_TO_RI_ICON = {
   reduce: 'ri-file-reduce-fill',
   marked: 'ri-file-marked-fill',
   file: 'ri-file-3-fill',
+  apple: 'ri-apple-fill',
+  android: 'ri-android-fill',
+  windows: 'ri-windows-fill',
 } as const
 
 const TEXT_POTO_COLOR_TWCSS_DICT = {
@@ -140,6 +143,10 @@ const CATEGORY_TO_POTO_COLOR: Record<
   marked: 'amber-sand', // 标记 → 黄（高亮）
 
   file: 'color-text', // fallback → 中性文本色
+
+  apple: 'mist-blue',
+  android: 'moss-green',
+  windows: 'dusk-cyan',
 } as const
 
 // MIME → 分类（优先级最高）
@@ -261,10 +268,10 @@ const MIME_TO_CATEGORY: Record<string, keyof typeof CATEGORY_TO_RI_ICON> = {
   // ============================
   // Executables
   // ============================
-  'application/x-msdownload': 'settings', // exe
-  'application/vnd.apple.installer+xml': 'settings', // pkg
-  'application/x-sh': 'settings',
-  'application/x-bat': 'settings',
+  'application/x-msdownload': 'windows', // exe
+  'application/vnd.apple.installer+xml': 'apple', // pkg
+  'application/x-sh': 'code',
+  'application/x-bat': 'windows',
 
   // ============================
   // Certificates / Security
@@ -576,19 +583,19 @@ const EXT_TO_CATEGORY: Record<string, keyof typeof CATEGORY_TO_RI_ICON> = {
   groovy: 'code',
   gradle: 'code',
 
-  sh: 'settings',
-  bash: 'settings',
-  zsh: 'settings',
-  ksh: 'settings',
-  fish: 'settings',
-  csh: 'settings',
-  tcsh: 'settings',
+  sh: 'code',
+  bash: 'code',
+  zsh: 'code',
+  ksh: 'code',
+  fish: 'code',
+  csh: 'code',
+  tcsh: 'code',
 
-  bat: 'settings',
-  cmd: 'settings',
-  ps1: 'settings',
-  psd1: 'settings',
-  psm1: 'settings',
+  bat: 'windows',
+  cmd: 'windows',
+  ps1: 'code',
+  psd1: 'code',
+  psm1: 'code',
 
   sql: 'code',
   db: 'chart',
@@ -636,7 +643,7 @@ const EXT_TO_CATEGORY: Record<string, keyof typeof CATEGORY_TO_RI_ICON> = {
   lzh: 'archive',
   iso: 'game',
   img: 'archive',
-  dmg: 'settings',
+  dmg: 'apple',
   bin: 'chart',
   cue: 'chart',
   nrg: 'archive',
@@ -710,17 +717,17 @@ const EXT_TO_CATEGORY: Record<string, keyof typeof CATEGORY_TO_RI_ICON> = {
   // ============================
   // Settings / Executables
   // ============================
-  exe: 'settings',
-  msi: 'settings',
-  msp: 'settings',
+  exe: 'windows',
+  msi: 'windows',
+  msp: 'windows',
   com: 'settings',
   scr: 'settings',
-  app: 'settings',
-  apk: 'settings',
-  aab: 'settings',
+  app: 'apple',
+  apk: 'android',
+  aab: 'android',
   xap: 'settings',
-  ipa: 'settings',
-  xapk: 'settings',
+  ipa: 'apple',
+  xapk: 'android',
   elf: 'settings',
   so: 'settings',
   dll: 'settings',
@@ -734,7 +741,7 @@ const EXT_TO_CATEGORY: Record<string, keyof typeof CATEGORY_TO_RI_ICON> = {
   crx: 'settings',
   xpi: 'settings',
   vsix: 'settings',
-  pkg: 'settings',
+  pkg: 'apple',
   deb: 'settings',
   rpm: 'settings',
   flatpak: 'settings',
