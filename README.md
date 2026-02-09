@@ -42,6 +42,7 @@
 - Supports file sending, file downloading, and file metadata editing.
 - Supports user permission control: message sending permission, image upload permission, file upload permission, and user banning.
 - Supports PWA installation, including “Install App” or “Add to Home Screen”, and provides partial offline access.
+- It comes with a companion Android project, [PocketNotifier](https://github.com/PocketTogether/pocket-notifier), which provides real‑time background notifications on mobile devices.
 - Project address: https://github.com/PocketTogether/pocket-chat
 - Live demo: https://sakiko.top
 
@@ -59,8 +60,10 @@
 ![](./assets/Snipaste_2025-11-26_19-39-09.png)
 ![](./assets/Snipaste_2025-11-26_19-30-04.png)
 ![](./assets/Snipaste_2026-01-20_18-06-50.png)
-![](./assets/Snipaste_2026-01-20_15-58-20.jpg)
-![](./assets/Snipaste_2026-01-20_15-59-39.jpg)
+<!-- ![](./assets/Snipaste_2026-01-20_15-58-20.jpg) -->
+<!-- ![](./assets/Snipaste_2026-01-20_15-59-39.jpg) -->
+![](./assets/collage-260208-1748.jpeg)
+![](./assets/collage-260208-1749.jpeg)
 
 </details>
 

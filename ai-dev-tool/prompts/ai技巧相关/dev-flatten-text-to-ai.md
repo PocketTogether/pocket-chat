@@ -1,10 +1,10 @@
 使用 dev-flatten-text-to-ai.js 时可以附带本目录或本目录下的单个文件以达到技术架构提示的效果
-```PowerShell
+```powershell
 
 node dev-flatten-text-to-ai.js `
 xxxxx `
 E:\Project\pocket-chat\vue3\src\lib `
-E:\Project\pocket-chat\note\草稿251212\-copilot
+E:\Project\pocket-chat\ai-dev-tool\prompts
 
 ```
 

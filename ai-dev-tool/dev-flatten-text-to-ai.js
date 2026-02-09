@@ -33,10 +33,10 @@
  * - FILE_TYPES: string[] → 需要处理的文件类型扩展名数组，例如 ['.js', '.ts', '.vue']
  *
  * 🚀 使用方法：
- *   node project-tools-node/dev-flatten-text-to-ai.js "绝对路径"
+ *   node ai-dev-tool/dev-flatten-text-to-ai.js "绝对路径"
  *
  *   示例：
- *   node project-tools-node/dev-flatten-text-to-ai.js "C:/Users/Haruki/Desktop/myproject"
+ *   node ai-dev-tool/dev-flatten-text-to-ai.js "C:/Users/Haruki/Desktop/myproject"
  *
  * 📑 注意事项：
  * - 输入路径必须为绝对路径。
@@ -210,16 +210,21 @@ function main() {
   const outputContent = (() => {
     const outputContent = buildOutput(allFiles);
 
-    // 【260113】发现有大量<或>时会导致上传失败，将其替换
-    // 为避免大量 < 或 > 导致上传失败，将其替换为 URL 安全字符
-    // 同时压缩连续空格以减小文件体积
+    // 【260113】发现有大量<或>时会导致上传失败（可能是cf的风控），将其替换
     const safeContent = outputContent
       // .replace(/script>/g, "s_c_r_i_p_t>")
       // .replace(/<script/g, "<s_c_r_i_p_t")
       // .replace(/</g, "&lt;")
       // .replace(/>/g, "&gt;")
-      .replace(/</g, "[[LT]]")
-      .replace(/>/g, "[[GT]]")
+      // .replace(/<script/g, "[[LT]]script")
+      // .replace(/script>/g, "script[[GT]]")
+
+      // .replace(/</g, "[[LT]]")
+      // .replace(/>/g, "[[GT]]")
+      // 这样文件更小
+      .replace(/</g, "《")
+      .replace(/>/g, "》")
+
       .replace(/\\/g, "/")
       .replace(/\t/g, " ")
       .replace(/\r\n/g, "\n")

@@ -1,0 +1,2061 @@
+E:/Project/pocket-chat/vue3/src/views/file-info/components/dependencies.ts
+
+export * from '../type'
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/components/dependencies.ts
+
+export * from '../dependencies'
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/components/index.ts
+
+import UpdateFileDescription from './UpdateFileDescription.vue'
+import UpdateFileFileName from './UpdateFileFileName.vue'
+import UpdateFileIsDeleted from './UpdateFileIsDeleted.vue'
+import UpdateFileKeyword from './UpdateFileKeyword.vue'
+import UserInfoAndLinkButton from './UserInfoAndLinkButton.vue'
+
+export {
+ //
+ UserInfoAndLinkButton,
+ UpdateFileKeyword,
+ UpdateFileIsDeleted,
+ UpdateFileFileName,
+ UpdateFileDescription,
+}
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/components/UpdateFileDescription.vue
+
+《script setup lang="ts"》
+import { computed, ref, watch } from 'vue'
+import type { FileInfoQueryDesuwaType } from './dependencies'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { pbFileUpdateDescriptionApi } from '@/api'
+import { queryKeys, queryRetryPbNetworkError } from '@/queries'
+import { compareDatesSafe, potoMessage } from '@/utils'
+import type { ElInput } from 'element-plus'
+import { useAuthStore, useI18nStore } from '@/stores'
+import { useUserPermissionsDesuwa } from '@/composables'
+
+const props = defineProps《{
+ fileInfoQueryDesuwa: FileInfoQueryDesuwaType
+}》()
+
+const {
+ //
+ filesGetOneQuery,
+ isAuthorCurrent,
+ fileInfoDataWithRealtime,
+ fileInfoCheckSetQueryDataOnSuccessUpdate,
+} = props.fileInfoQueryDesuwa
+
+/**
+ * 是否处于编辑状态
+ */
+const isEditingDescription = ref(false)
+
+/**
+ * 输入框内容
+ */
+const descriptionInputValue = ref('')
+
+/**
+ * 当前文件 description（来自查询结果）
+ */
+const fileDescription = computed(() =》 {
+ return fileInfoDataWithRealtime.value?.description ?? ''
+})
+
+/**
+ * 未编辑状态下：
+ * 输入框内容始终与文件 description 保持同步
+ */
+watch(
+ fileDescription,
+ (newDescription) =》 {
+ if (!isEditingDescription.value) {
+ descriptionInputValue.value = newDescription
+ }
+ },
+ {
+ immediate: true,
+ }
+)
+
+const refElInputAlt = ref《InstanceType《typeof ElInput》 | null》(null)
+
+/**
+ * 进入编辑状态
+ */
+const startEditDescription = () =》 {
+ isEditingDescription.value = true
+ refElInputAlt.value?.focus()
+}
+
+/**
+ * 取消编辑
+ */
+const cancelEditDescription = () =》 {
+ descriptionInputValue.value = fileDescription.value
+ isEditingDescription.value = false
+}
+
+const queryClient = useQueryClient()
+
+const submitEditDescriptionMutation = useMutation({
+ mutationFn: async () =》 {
+ if (fileInfoDataWithRealtime.value == null) {
+ throw new Error('fileInfoDataWithRealtime.value == null')
+ }
+ const pbRes = await pbFileUpdateDescriptionApi(
+ fileInfoDataWithRealtime.value.id,
+ {
+ description: descriptionInputValue.value,
+ }
+ )
+ return pbRes
+ },
+ // ✅ 在网络错误时重试
+ retry: queryRetryPbNetworkError,
+ onSuccess: (data) =》 {
+ fileInfoCheckSetQueryDataOnSuccessUpdate(data)
+ cancelEditDescription()
+ },
+ onError: () =》 {
+ potoMessage({
+ type: 'error',
+ message: i18nStore.t('fileInfoPageUpdateFailedText')(),
+ })
+ },
+})
+
+/**
+ * 提交修改（占位）
+ */
+const submitEditDescription = () =》 {
+ submitEditDescriptionMutation.mutateAsync()
+}
+const isSubmitEditDescriptionRunning = submitEditDescriptionMutation.isPending
+
+// 是否能提交，修改后才能提交
+const canSubmitEditDescription = computed(() =》 {
+ if (descriptionInputValue.value !== fileDescription.value) {
+ return true
+ }
+ return false
+})
+
+const i18nStore = useI18nStore()
+
+const { permissionUploadFile } = useUserPermissionsDesuwa()
+《/script》
+
+《template》
+ 《div》
+ 《div class="my-2 flex items-stretch"》
+ 《!-- 左侧：输入框 --》
+ 《div class="ml-2 flex-1 truncate"》
+ 《!-- 标题 --》
+ 《div class="ml-3 text-[14px] font-bold text-color-text"》
+ 《!-- Description --》
+ {{ i18nStore.t('fileInfoPageDescriptionTitle')() }}
+ 《/div》
+ 《!-- 输入框 --》
+ 《div class="textarea-box"》
+ 《ElInput
+ ref="refElInputAlt"
+ v-model="descriptionInputValue"
+ type="textarea"
+ resize="none"
+ :readonly="!isEditingDescription"
+ :autosize="{ minRows: 2, maxRows: 10 }"
+ :placeholder="
+ isEditingDescription
+ ? undefined
+ : i18nStore.t('fileInfoPageDescriptionPlaceholder')()
+ "
+ 》《/ElInput》
+ 《/div》
+ 《/div》
+
+ 《!-- 右侧：按钮区 --》
+ 《div class="mr-2 flex flex-col justify-end"》
+ 《!-- 未编辑状态 --》
+ 《template v-if="!isEditingDescription"》
+ 《div》
+ 《ElButton
+ circle
+ type="info"
+ :disabled="!isAuthorCurrent || !permissionUploadFile"
+ @click="startEditDescription"
+ 》
+ 《template #icon》
+ 《RiEditLine /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《/template》
+
+ 《!-- 编辑状态 --》
+ 《template v-else》
+ 《div class="flex flex-1 flex-col items-center justify-between"》
+ 《div》
+ 《ElButton circle type="info" @click="cancelEditDescription"》
+ 《template #icon》
+ 《RiCloseFill /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《div》
+ 《ElButton
+ circle
+ type="primary"
+ :disabled="!canSubmitEditDescription"
+ :loading="isSubmitEditDescriptionRunning"
+ @click="submitEditDescription"
+ 》
+ 《template #icon》
+ 《RiCheckFill /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《/div》
+ 《/template》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》
+.textarea-box {
+ :deep() {
+ .el-textarea__inner {
+ border: none;
+ box-shadow: none;
+ background-color: transparent;
+ color: var(--color-text);
+ font-size: 14px;
+ overscroll-behavior: contain;
+ &::placeholder {
+ color: var(--color-text-soft);
+ font-size: 14px;
+ font-style: italic;
+ font-weight: bold;
+ }
+ }
+ }
+}
+《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/components/UpdateFileFileName.vue
+
+《script setup lang="ts"》
+import { computed, ref, watch } from 'vue'
+import type { FileInfoQueryDesuwaType } from './dependencies'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { pbFileUpdateFileNameApi } from '@/api'
+import { queryKeys, queryRetryPbNetworkError } from '@/queries'
+import { compareDatesSafe, potoMessage } from '@/utils'
+import type { ElInput } from 'element-plus'
+import { useAuthStore, useI18nStore } from '@/stores'
+import { useUserPermissionsDesuwa } from '@/composables'
+
+const props = defineProps《{
+ fileInfoQueryDesuwa: FileInfoQueryDesuwaType
+}》()
+
+const {
+ //
+ filesGetOneQuery,
+ isAuthorCurrent,
+ fileInfoDataWithRealtime,
+ fileInfoCheckSetQueryDataOnSuccessUpdate,
+} = props.fileInfoQueryDesuwa
+
+/**
+ * 是否处于编辑状态
+ */
+const isEditingFileName = ref(false)
+
+/**
+ * 输入框内容
+ */
+const fileNameInputValue = ref('')
+
+/**
+ * 当前文件 fileName（来自查询结果）
+ */
+const fileFileName = computed(() =》 {
+ return fileInfoDataWithRealtime.value?.fileName ?? ''
+})
+
+/**
+ * 未编辑状态下：
+ * 输入框内容始终与文件 fileName 保持同步
+ */
+watch(
+ fileFileName,
+ (newFileName) =》 {
+ if (!isEditingFileName.value) {
+ fileNameInputValue.value = newFileName
+ }
+ },
+ {
+ immediate: true,
+ }
+)
+
+const refElInputAlt = ref《InstanceType《typeof ElInput》 | null》(null)
+
+/**
+ * 进入编辑状态
+ */
+const startEditFileName = () =》 {
+ isEditingFileName.value = true
+ refElInputAlt.value?.focus()
+}
+
+/**
+ * 取消编辑
+ */
+const cancelEditFileName = () =》 {
+ fileNameInputValue.value = fileFileName.value
+ isEditingFileName.value = false
+}
+
+const queryClient = useQueryClient()
+
+const submitEditFileNameMutation = useMutation({
+ mutationFn: async () =》 {
+ if (fileInfoDataWithRealtime.value == null) {
+ throw new Error('fileInfoDataWithRealtime.value == null')
+ }
+ const pbRes = await pbFileUpdateFileNameApi(
+ fileInfoDataWithRealtime.value.id,
+ {
+ fileName: fileNameInputValue.value,
+ }
+ )
+ return pbRes
+ },
+ // ✅ 在网络错误时重试
+ retry: queryRetryPbNetworkError,
+ onSuccess: (data) =》 {
+ fileInfoCheckSetQueryDataOnSuccessUpdate(data)
+ cancelEditFileName()
+ },
+ onError: () =》 {
+ potoMessage({
+ type: 'error',
+ message: i18nStore.t('fileInfoPageUpdateFailedText')(),
+ })
+ },
+})
+
+/**
+ * 提交修改（占位）
+ */
+const submitEditFileName = () =》 {
+ submitEditFileNameMutation.mutateAsync()
+}
+const isSubmitEditFileNameRunning = submitEditFileNameMutation.isPending
+
+// 是否能提交，修改后才能提交
+const canSubmitEditFileName = computed(() =》 {
+ if (fileNameInputValue.value !== fileFileName.value) {
+ return true
+ }
+ return false
+})
+
+const i18nStore = useI18nStore()
+
+const { permissionUploadFile } = useUserPermissionsDesuwa()
+《/script》
+
+《template》
+ 《div》
+ 《div class="my-2 flex items-stretch"》
+ 《!-- 左侧：输入框 --》
+ 《div class="ml-2 flex-1 truncate"》
+ 《!-- 标题 --》
+ 《div class="ml-3 text-[14px] font-bold text-color-text"》
+ 《!-- FileName --》
+ {{ i18nStore.t('fileInfoPageFileNameTitle')() }}
+ 《/div》
+ 《!-- 输入框 --》
+ 《div class="textarea-box"》
+ 《ElInput
+ ref="refElInputAlt"
+ v-model="fileNameInputValue"
+ type="textarea"
+ resize="none"
+ :readonly="!isEditingFileName"
+ :autosize="{ minRows: 2, maxRows: 10 }"
+ :placeholder="
+ isEditingFileName
+ ? undefined
+ : i18nStore.t('fileInfoPageFileNamePlaceholder')()
+ "
+ 》《/ElInput》
+ 《/div》
+ 《/div》
+
+ 《!-- 右侧：按钮区 --》
+ 《div class="mr-2 flex flex-col justify-end"》
+ 《!-- 未编辑状态 --》
+ 《template v-if="!isEditingFileName"》
+ 《div》
+ 《ElButton
+ circle
+ type="info"
+ :disabled="!isAuthorCurrent || !permissionUploadFile"
+ @click="startEditFileName"
+ 》
+ 《template #icon》
+ 《RiEditLine /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《/template》
+
+ 《!-- 编辑状态 --》
+ 《template v-else》
+ 《div class="flex flex-1 flex-col items-center justify-between"》
+ 《div》
+ 《ElButton circle type="info" @click="cancelEditFileName"》
+ 《template #icon》
+ 《RiCloseFill /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《div》
+ 《ElButton
+ circle
+ type="primary"
+ :disabled="!canSubmitEditFileName"
+ :loading="isSubmitEditFileNameRunning"
+ @click="submitEditFileName"
+ 》
+ 《template #icon》
+ 《RiCheckFill /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《/div》
+ 《/template》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》
+.textarea-box {
+ :deep() {
+ .el-textarea__inner {
+ border: none;
+ box-shadow: none;
+ background-color: transparent;
+ color: var(--color-text);
+ font-size: 14px;
+ overscroll-behavior: contain;
+ &::placeholder {
+ color: var(--color-text-soft);
+ font-size: 14px;
+ font-style: italic;
+ font-weight: bold;
+ }
+ }
+ }
+}
+《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/components/UpdateFileIsDeleted.vue
+
+《script setup lang="ts"》
+import { useRouteControlDialog, useUserPermissionsDesuwa } from '@/composables'
+import type { FileInfoQueryDesuwaType } from './dependencies'
+import { ContainerDialog } from '@/components'
+import { useI18nStore } from '@/stores'
+import { compareDatesSafe, potoMessage } from '@/utils'
+import { queryKeys, queryRetryPbNetworkError } from '@/queries'
+import { pbFileUpdateIsDeletedApi } from '@/api'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+
+const props = defineProps《{
+ fileInfoQueryDesuwa: FileInfoQueryDesuwaType
+}》()
+
+const {
+ //
+ filesGetOneQuery,
+ fileInfoDataWithRealtime,
+ fileInfoCheckSetQueryDataOnSuccessUpdate,
+} = props.fileInfoQueryDesuwa
+
+const { dialogVisible, dialogOpen, dialogClose } = useRouteControlDialog({
+ /** 控制dialog是否显示的query键, 不同的对话框应使用不同的，且要避免与其他query参数冲突 */
+ // 简单来讲就是如下图地址栏中显示的字符串
+ dialogQueryKey: 'FileDeleteDialog',
+})
+
+const queryClient = useQueryClient()
+
+const submitFileDeleteMutation = useMutation({
+ mutationFn: async () =》 {
+ if (fileInfoDataWithRealtime.value == null) {
+ throw new Error('fileInfoDataWithRealtime.value == null')
+ }
+ const pbRes = await pbFileUpdateIsDeletedApi(
+ fileInfoDataWithRealtime.value.id,
+ {
+ isDeleted: true,
+ }
+ )
+ return pbRes
+ },
+ // ✅ 在网络错误时重试
+ retry: queryRetryPbNetworkError,
+ onSuccess: (data) =》 {
+ dialogClose()
+ // 让文件分页查询invalidate
+ queryClient.invalidateQueries({
+ queryKey: queryKeys.filePageList(),
+ })
+ // 更新query
+ fileInfoCheckSetQueryDataOnSuccessUpdate(data)
+ },
+ onError: () =》 {
+ potoMessage({
+ type: 'error',
+ message: i18nStore.t('fileInfoPageDeleteFailedText')(),
+ })
+ },
+})
+
+const submitFileDelete = () =》 {
+ submitFileDeleteMutation.mutateAsync()
+}
+const isSubmitFileDeleteRunning = submitFileDeleteMutation.isPending
+
+const i18nStore = useI18nStore()
+《/script》
+
+《template》
+ 《div》
+ 《ContainerDialog
+ :dialogVisible="dialogVisible"
+ :dialogCloseFn="dialogClose"
+ 》
+ 《div
+ class="content-box flow-root rounded-[20px] bg-color-background-soft shadow-[0_0_6px_6px] shadow-color-background"
+ 》
+ 《div class="m-[20px]"》
+ 《div class="mb-[10px]"》
+ 《div class="text-center text-[14px] font-bold text-color-text-soft"》
+ 《!-- 确认要删除此文件吗？ --》
+ {{ i18nStore.t('fileInfoPageDeleteConfirmText')() }}
+ 《/div》
+ 《/div》
+ 《div class="flex justify-center"》
+ 《!-- “确认”按钮 --》
+ 《ElButton
+ type="danger"
+ round
+ :loading="isSubmitFileDeleteRunning"
+ size="small"
+ @click="submitFileDelete"
+ 》
+ {{ i18nStore.t('settingButtonConfirm')() }}
+ 《/ElButton》
+ 《!-- “取消”按钮 --》
+ 《ElButton type="info" round size="small" @click="dialogClose"》
+ {{ i18nStore.t('settingButtonCancel')() }}
+ 《/ElButton》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/ContainerDialog》
+ 《div class="my-2 flex items-center"》
+ 《!-- 左侧 --》
+ 《div class="ml-2 flex-1 truncate"》
+ 《!-- 标题 --》
+ 《div class="ml-3 text-[14px] font-bold text-color-text"》
+ 《!-- 删除文件 --》
+ {{ i18nStore.t('fileInfoPageDeleteFileTitle')() }}
+ 《/div》
+ 《/div》
+
+ 《!-- 右侧：按钮区 --》
+ 《div class="mr-2"》
+ 《div》
+ 《ElButton circle type="danger" @click="dialogOpen"》
+ 《template #icon》
+ 《RiDeleteBinLine /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》
+.file-delete-dialog-content-box {
+ box-shadow: 0 0 6px 6px var(--color-background);
+}
+《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/components/UpdateFileKeyword.vue
+
+《script setup lang="ts"》
+import { computed, ref, watch } from 'vue'
+import type { FileInfoQueryDesuwaType } from './dependencies'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { pbFileUpdateKeywordApi } from '@/api'
+import { queryKeys, queryRetryPbNetworkError } from '@/queries'
+import { compareDatesSafe, potoMessage } from '@/utils'
+import type { ElInput } from 'element-plus'
+import { useAuthStore, useI18nStore } from '@/stores'
+import { useUserPermissionsDesuwa } from '@/composables'
+
+const props = defineProps《{
+ fileInfoQueryDesuwa: FileInfoQueryDesuwaType
+}》()
+
+const {
+ //
+ filesGetOneQuery,
+ isAuthorCurrent,
+ fileInfoDataWithRealtime,
+ fileInfoCheckSetQueryDataOnSuccessUpdate,
+} = props.fileInfoQueryDesuwa
+
+/**
+ * 是否处于编辑状态
+ */
+const isEditingKeyword = ref(false)
+
+/**
+ * 输入框内容
+ */
+const keywordInputValue = ref('')
+
+/**
+ * 当前文件 keyword（来自查询结果）
+ */
+const fileKeyword = computed(() =》 {
+ return fileInfoDataWithRealtime.value?.keyword ?? ''
+})
+
+/**
+ * 未编辑状态下：
+ * 输入框内容始终与文件 keyword 保持同步
+ */
+watch(
+ fileKeyword,
+ (newKeyword) =》 {
+ if (!isEditingKeyword.value) {
+ keywordInputValue.value = newKeyword
+ }
+ },
+ {
+ immediate: true,
+ }
+)
+
+const refElInputAlt = ref《InstanceType《typeof ElInput》 | null》(null)
+
+/**
+ * 进入编辑状态
+ */
+const startEditKeyword = () =》 {
+ isEditingKeyword.value = true
+ refElInputAlt.value?.focus()
+}
+
+/**
+ * 取消编辑
+ */
+const cancelEditKeyword = () =》 {
+ keywordInputValue.value = fileKeyword.value
+ isEditingKeyword.value = false
+}
+
+const queryClient = useQueryClient()
+
+const submitEditKeywordMutation = useMutation({
+ mutationFn: async () =》 {
+ if (fileInfoDataWithRealtime.value == null) {
+ throw new Error('fileInfoDataWithRealtime.value == null')
+ }
+ const pbRes = await pbFileUpdateKeywordApi(
+ fileInfoDataWithRealtime.value.id,
+ {
+ keyword: keywordInputValue.value,
+ }
+ )
+ return pbRes
+ },
+ // ✅ 在网络错误时重试
+ retry: queryRetryPbNetworkError,
+ onSuccess: (data) =》 {
+ fileInfoCheckSetQueryDataOnSuccessUpdate(data)
+ cancelEditKeyword()
+ },
+ onError: () =》 {
+ potoMessage({
+ type: 'error',
+ message: i18nStore.t('fileInfoPageUpdateFailedText')(),
+ })
+ },
+})
+
+/**
+ * 提交修改（占位）
+ */
+const submitEditKeyword = () =》 {
+ submitEditKeywordMutation.mutateAsync()
+}
+const isSubmitEditKeywordRunning = submitEditKeywordMutation.isPending
+
+// 是否能提交，修改后才能提交
+const canSubmitEditKeyword = computed(() =》 {
+ if (keywordInputValue.value !== fileKeyword.value) {
+ return true
+ }
+ return false
+})
+
+const i18nStore = useI18nStore()
+
+const { permissionUploadFile } = useUserPermissionsDesuwa()
+《/script》
+
+《template》
+ 《div》
+ 《div class="my-2 flex items-stretch"》
+ 《!-- 左侧：输入框 --》
+ 《div class="ml-2 flex-1 truncate"》
+ 《!-- 标题 --》
+ 《div class="ml-3 text-[14px] font-bold text-color-text"》
+ 《!-- Keyword --》
+ {{ i18nStore.t('fileInfoPageKeywordTitle')() }}
+ 《/div》
+ 《!-- 输入框 --》
+ 《div class="textarea-box"》
+ 《ElInput
+ ref="refElInputAlt"
+ v-model="keywordInputValue"
+ type="textarea"
+ resize="none"
+ :readonly="!isEditingKeyword"
+ :autosize="{ minRows: 2, maxRows: 10 }"
+ :placeholder="
+ isEditingKeyword
+ ? undefined
+ : i18nStore.t('fileInfoPageKeywordPlaceholder')()
+ "
+ 》《/ElInput》
+ 《/div》
+ 《/div》
+
+ 《!-- 右侧：按钮区 --》
+ 《div class="mr-2 flex flex-col justify-end"》
+ 《!-- 未编辑状态 --》
+ 《template v-if="!isEditingKeyword"》
+ 《div》
+ 《ElButton
+ circle
+ type="info"
+ :disabled="!isAuthorCurrent || !permissionUploadFile"
+ @click="startEditKeyword"
+ 》
+ 《template #icon》
+ 《RiEditLine /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《/template》
+
+ 《!-- 编辑状态 --》
+ 《template v-else》
+ 《div class="flex flex-1 flex-col items-center justify-between"》
+ 《div》
+ 《ElButton circle type="info" @click="cancelEditKeyword"》
+ 《template #icon》
+ 《RiCloseFill /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《div》
+ 《ElButton
+ circle
+ type="primary"
+ :disabled="!canSubmitEditKeyword"
+ :loading="isSubmitEditKeywordRunning"
+ @click="submitEditKeyword"
+ 》
+ 《template #icon》
+ 《RiCheckFill /》
+ 《/template》
+ 《/ElButton》
+ 《/div》
+ 《/div》
+ 《/template》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》
+.textarea-box {
+ :deep() {
+ .el-textarea__inner {
+ border: none;
+ box-shadow: none;
+ background-color: transparent;
+ color: var(--color-text);
+ font-size: 14px;
+ overscroll-behavior: contain;
+ &::placeholder {
+ color: var(--color-text-soft);
+ font-size: 14px;
+ font-style: italic;
+ font-weight: bold;
+ }
+ }
+ }
+}
+《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/components/UserInfoAndLinkButton.vue
+
+《script setup lang="ts"》
+import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
+import type { FileInfoQueryDesuwaType } from './dependencies'
+import { computed } from 'vue'
+import { pb } from '@/lib'
+import { potoMessage, potoNotification } from '@/utils'
+import { useClipboard } from '@vueuse/core'
+import { useI18nStore } from '@/stores'
+
+const props = defineProps《{
+ fileInfoQueryDesuwa: FileInfoQueryDesuwaType
+}》()
+
+const {
+ //
+ filesGetOneQuery,
+ fileInfoQueryStatus,
+ fileInfoDataWithRealtime,
+} = props.fileInfoQueryDesuwa
+
+/**
+ * 当前文件记录
+ */
+const fileRecord = computed(() =》 fileInfoDataWithRealtime.value)
+
+/**
+ * 作者（假定已 expand author）
+ */
+const fileAuthor = computed(() =》 fileRecord.value?.expand?.author)
+
+/**
+ * 作者头像 URL
+ */
+const authorAvatarUrl = computed(() =》 {
+ // 无数据（理论上不会渲染到这里，返回默认头像兜底）
+ if (fileInfoDataWithRealtime.value == null) {
+ return appUserDefaultAvatar
+ }
+
+ // expand.author 异常（pb expand / api 配置问题）
+ if (fileAuthor.value == null) {
+ console.error('fileAuthor.value == null')
+ return appUserDefaultAvatar
+ }
+
+ // 无头像
+ if (fileAuthor.value.avatar === '') {
+ return appUserDefaultAvatar
+ }
+
+ // 有头像，返回 PB 文件 URL
+ return pb.files.getURL(fileAuthor.value, fileAuthor.value.avatar, {
+ thumb: fileUserAvatarConfig.thumb200x200,
+ })
+})
+
+/**
+ * 作者名称
+ */
+const authorName = computed(() =》 {
+ if (fileAuthor.value?.name == null || fileAuthor.value?.name === '') {
+ return authorUsername.value
+ }
+ return fileAuthor.value.name
+})
+
+/**
+ * 作者用户名
+ */
+const authorUsername = computed(() =》 {
+ return fileAuthor.value?.username ?? ''
+})
+
+const i18nStore = useI18nStore()
+
+const fileOpenUrl = computed(() =》 {
+ if (fileRecord.value == null) {
+ return null
+ }
+ return pb.files.getURL(fileRecord.value, fileRecord.value.file)
+})
+const fileDownloadUrl = computed(() =》 {
+ if (fileRecord.value == null) {
+ return null
+ }
+ return pb.files.getURL(fileRecord.value, fileRecord.value.file, {
+ download: true,
+ })
+})
+《/script》
+
+《template》
+ 《div》
+ 《div class="ml-[15px] mr-[5px] flex items-center justify-between"》
+ 《!-- 左侧：用户信息 --》
+ 《div class="flex flex-1 items-center truncate"》
+ 《!-- 头像 --》
+ 《div
+ class="h-[44px] w-[44px] shrink-0 rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
+ :style="{
+ backgroundImage: `url('${authorAvatarUrl}')`,
+ backgroundSize: 'cover',
+ backgroundPosition: 'center',
+ }"
+ 》《/div》
+
+ 《!-- 名称 / 用户名 --》
+ 《div class="ml-[10px] flex-1 truncate"》
+ 《div class="truncate font-bold text-color-text"》
+ {{ authorName }}
+ 《/div》
+ 《div class="truncate text-[12px] text-color-text-soft"》
+ @{{ authorUsername }}
+ 《/div》
+ 《/div》
+ 《/div》
+
+ 《!-- 右侧：链接按钮 --》
+ 《div》
+ 《div class="mx-[3px] flex items-center"》
+ 《a
+ v-if="fileDownloadUrl != null"
+ class="mx-[7px] cursor-pointer text-color-text hover:text-el-primary"
+ :href="fileDownloadUrl"
+ download
+ 》
+ 《RiDownloadLine size="24px" /》
+ 《/a》
+ 《a
+ v-if="fileOpenUrl != null"
+ class="mx-[7px] cursor-pointer text-color-text hover:text-el-primary"
+ :href="fileOpenUrl"
+ target="_blank"
+ rel="noopener noreferrer"
+ 》
+ 《RiShareBoxLine size="24px" /》
+ 《/a》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/dependencies.ts
+
+export * from '../dependencies'
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/FileInfoControlPanel.vue
+
+《script setup lang="ts"》
+import { useUserPermissionsDesuwa } from '@/composables'
+import {
+ UpdateFileDescription,
+ UpdateFileFileName,
+ UpdateFileIsDeleted,
+ UpdateFileKeyword,
+ UserInfoAndLinkButton,
+} from './components'
+import type { FileInfoQueryDesuwaType } from './dependencies'
+import { FileContentCard } from '@/components'
+
+const props = defineProps《{
+ fileInfoQueryDesuwa: FileInfoQueryDesuwaType
+}》()
+
+const {
+ //
+ filesGetOneQuery,
+ fileInfoQueryStatus,
+ fileInfoMessageListQuery,
+ isAuthorCurrent,
+ fileInfoDataWithRealtime,
+} = props.fileInfoQueryDesuwa
+
+const { permissionUploadFile } = useUserPermissionsDesuwa()
+《/script》
+
+《template》
+ 《div》
+ 《!-- 用户信息 与 文件链接按钮 --》
+ 《!-- UserInfoAndLinkButton --》
+ 《div》
+ 《UserInfoAndLinkButton
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ 》《/UserInfoAndLinkButton》
+ 《/div》
+ 《!-- 操作面板 --》
+ 《div class="mt-2"》
+ 《div class="overflow-hidden rounded-[24px] bg-color-background-soft"》
+ 《!-- 文件内容卡片 --》
+ 《div》
+ 《div class="mx-[15px] my-[12px] text-color-text"》
+ 《FileContentCard
+ v-if="fileInfoDataWithRealtime != null"
+ :fileData="fileInfoDataWithRealtime"
+ isPrioritizeDisplayingFileType
+ 》《/FileContentCard》
+ 《/div》
+ 《/div》
+ 《!-- 分割线 --》
+ 《div class="border-t-[3px] border-color-background"》《/div》
+ 《!-- 修改文件名 --》
+ 《UpdateFileFileName
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ 》《/UpdateFileFileName》
+ 《!-- 分割线 --》
+ 《div class="border-t-[3px] border-color-background"》《/div》
+ 《!-- 修改描述 --》
+ 《UpdateFileDescription
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ 》《/UpdateFileDescription》
+ 《!-- 分割线 --》
+ 《div class="border-t-[3px] border-color-background"》《/div》
+ 《!-- 修改关键词 --》
+ 《UpdateFileKeyword
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ 》《/UpdateFileKeyword》
+ 《Transition name="fade" mode="out-in"》
+ 《div
+ v-if="
+ fileInfoMessageListQuery.data.value != null &&
+ fileInfoMessageListQuery.data.value.totalItems 《= 0 &&
+ isAuthorCurrent &&
+ permissionUploadFile
+ "
+ 》
+ 《!-- 分割线 --》
+ 《div class="border-t-[3px] border-color-background"》《/div》
+ 《!-- 删除文件 无消息使用此文件时才显示，且需为发送者 --》
+ 《!-- UpdateFileIsDeleted --》
+ 《UpdateFileIsDeleted
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ 》《/UpdateFileIsDeleted》
+ 《/div》
+ 《/Transition》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-control-panel/index.ts
+
+import FileInfoControlPanel from './FileInfoControlPanel.vue'
+
+export {
+ //
+ FileInfoControlPanel,
+}
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-messages-list/components/index.ts
+
+import MessagesListItem from './MessagesListItem.vue'
+
+export {
+ //
+ MessagesListItem,
+}
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-messages-list/components/MessagesListItem.vue
+
+《script setup lang="ts"》
+import type { MessagesResponseWithFileInfoMessageListExpand } from '@/api'
+import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
+import { pb } from '@/lib'
+import { useI18nStore } from '@/stores'
+import { useTimeAgo } from '@vueuse/core'
+import { useMessageLinkProcess } from '@/composables'
+
+const props = defineProps《{
+ messageItem: MessagesResponseWithFileInfoMessageListExpand
+}》()
+
+const messageData = computed(() =》 props.messageItem)
+
+const messageAuthor = computed(() =》 props.messageItem.expand?.author)
+
+const authorAvatarUrl = computed(() =》 {
+ // expand.author 异常（pb expand / api 配置问题）
+ if (messageAuthor.value == null) {
+ console.error('messageAuthor.value == null')
+ return appUserDefaultAvatar
+ }
+
+ // 无头像
+ if (messageAuthor.value.avatar === '') {
+ return appUserDefaultAvatar
+ }
+
+ // 有头像，返回 PB 文件 URL
+ return pb.files.getURL(messageAuthor.value, messageAuthor.value.avatar, {
+ thumb: fileUserAvatarConfig.thumb100x100,
+ })
+})
+
+const i18nStore = useI18nStore()
+
+// 时间
+const timeAgo = useTimeAgo(
+ computed(() =》 messageData.value.created),
+ {
+ // i18n
+ messages: i18nStore.t('useTimeAgoMessages')(),
+ max: 'day',
+ }
+)
+
+const {
+ /** 复制消息链接 */
+ copyMessageLink,
+ /** 消息跳转所需对象 */
+ messageRouterResolveObj,
+} = useMessageLinkProcess({
+ messageData,
+})
+《/script》
+
+《template》
+ 《div》
+ 《!-- 列表项 --》
+ 《div class="mx-[8px] my-[6px]"》
+ 《div class="flex items-center justify-between"》
+ 《!-- 左 用户头像与日期 --》
+ 《div class="flex flex-1 items-center truncate"》
+ 《!-- 头像 --》
+ 《div class="mr-[6px]"》
+ 《div class="flow-root"》
+ 《div class="m-[2px]"》
+ 《div
+ class="h-[24px] w-[24px] rounded-full bg-color-background-mute"
+ :style="{
+ backgroundImage: `url('${authorAvatarUrl}')`,
+ backgroundSize: 'cover',
+ backgroundPosition: 'center',
+ }"
+ 》《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《!-- 日期 --》
+ 《div class="flex-1 truncate"》
+ 《div class="mr-[10px]"》
+ 《div
+ class="select-none truncate text-[14px] font-bold text-color-text"
+ 》
+ {{ timeAgo }}
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《!-- 右 操作图标 --》
+ 《div class="flex items-center"》
+ 《!-- 复制链接 --》
+ 《div
+ class="flow-root cursor-pointer text-color-text hover:text-el-primary"
+ @click="copyMessageLink"
+ 》
+ 《div class="m-[4px]"》
+ 《RiLink size="20px"》《/RiLink》
+ 《/div》
+ 《/div》
+ 《!-- 跳转 --》
+ 《RouterLink
+ v-if="messageRouterResolveObj != null"
+ class="flow-root cursor-pointer text-color-text hover:text-el-primary"
+ :to="messageRouterResolveObj"
+ 》
+ 《div class="m-[4px]"》
+ 《RiArrowRightLine size="20px"》《/RiArrowRightLine》
+ 《/div》
+ 《/RouterLink》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-messages-list/dependencies.ts
+
+export * from '../dependencies'
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-messages-list/FileInfoMessagesList.vue
+
+《script setup lang="ts"》
+import { useI18nStore } from '@/stores'
+import { MessagesListItem } from './components'
+import type { FileInfoQueryDesuwaType } from './dependencies'
+
+const props = defineProps《{
+ fileInfoQueryDesuwa: FileInfoQueryDesuwaType
+}》()
+
+const {
+ //
+ fileInfoMessageListQuery,
+ fileInfoMessageListPageNum,
+ fileInfoMessageListPageSet,
+} = props.fileInfoQueryDesuwa
+
+// 分页控制
+const canGoPreviousPage = computed(() =》 {
+ if (
+ fileInfoMessageListQuery.data.value?.totalPages == null ||
+ fileInfoMessageListQuery.data.value?.totalPages 《= 0
+ ) {
+ return false
+ }
+ if (fileInfoMessageListPageNum.value - 1 《= 0) {
+ return false
+ }
+ return true
+})
+const goPreviousPage = () =》 {
+ if (canGoPreviousPage.value === false) {
+ return
+ }
+ fileInfoMessageListPageSet(fileInfoMessageListPageNum.value - 1)
+}
+const canGoNextPage = computed(() =》 {
+ if (
+ fileInfoMessageListQuery.data.value?.totalPages == null ||
+ fileInfoMessageListQuery.data.value?.totalPages 《= 0
+ ) {
+ return false
+ }
+ if (
+ fileInfoMessageListPageNum.value + 1 》
+ fileInfoMessageListQuery.data.value?.totalPages
+ ) {
+ return false
+ }
+ return true
+})
+const goNextPage = () =》 {
+ if (canGoNextPage.value === false) {
+ return
+ }
+ fileInfoMessageListPageSet(fileInfoMessageListPageNum.value + 1)
+}
+
+const i18nStore = useI18nStore()
+《/script》
+
+《template》
+ 《div v-if="fileInfoMessageListQuery.data.value != null"》
+ 《div class="overflow-hidden rounded-[24px] bg-color-background-soft"》
+ 《!-- 标题栏 --》
+ 《div class="mx-[8px] my-[8px]"》
+ 《div class="flex items-center justify-between"》
+ 《!-- 左 标题 --》
+ 《div class="ml-[12px] flex-1 truncate"》
+ 《div
+ class="select-none truncate pr-1 text-[14px] font-bold text-color-text"
+ 》
+ {{ i18nStore.t('fileInfoPageMessageListTitle')() }}
+ 《/div》
+ 《/div》
+ 《!-- 右 个数 --》
+ 《div》
+ 《div class="flex items-center"》
+ 《div class="select-none text-[14px] font-bold text-color-text"》
+ {{ fileInfoMessageListQuery.data.value.totalItems }}
+ 《/div》
+ 《div class="ml-[0px]"》
+ 《div class="flow-root"》
+ 《div class="m-[4px] text-color-text"》
+ 《RiMessage3Line size="20px"》《/RiMessage3Line》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《!-- 列表 --》
+ 《div class="relative"》
+ 《!-- 消息项 --》
+ 《div
+ v-for="item in fileInfoMessageListQuery.data.value.items"
+ :key="item.id"
+ 》
+ 《!-- 分割线 --》
+ 《div class="border-t-[3px] border-color-background"》《/div》
+ 《MessagesListItem :messageItem="item"》《/MessagesListItem》
+ 《/div》
+ 《!-- 当一页中消息过少时，显示占位高度 --》
+ 《div
+ v-if="
+ fileInfoMessageListQuery.data.value.totalPages 》 1 &&
+ fileInfoMessageListQuery.data.value.items.length 《 2
+ "
+ 》
+ 《!-- 分割线 --》
+ 《div class="border-t-[3px] border-color-background"》《/div》
+ 《div class="flex h-[150px] items-center justify-center"》
+ 《div
+ class="h-[100px] w-[100px] overflow-hidden text-color-background"
+ 》
+ 《!-- class="h-full max-h-[50%] w-full max-w-[50%] object-contain" --》
+ 《RiMessage3Fill size="100px"》《/RiMessage3Fill》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《!-- 加载时的遮罩 --》
+ 《!-- 《Transition name="fade500ms" mode="out-in"》
+ 《div
+ v-if="
+ fileInfoMessageListQuery.isFetching.value === true &&
+ // 有足够空间时才显示
+ fileInfoMessageListQuery.data.value.totalItems 》= 2
+ "
+ class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center bg-color-background-soft"
+ 》
+ 《div class="h-[50px] w-[50px] overflow-hidden text-color-text-soft"》
+ 《RiLoader3Line
+ class="loading-spinner-800ms"
+ size="50px"
+ 》《/RiLoader3Line》
+ 《/div》
+ 《/div》
+ 《/Transition》 --》
+ 《/div》
+ 《!-- 分页栏在需要时才显示 --》
+ 《template v-if="fileInfoMessageListQuery.data.value.totalPages 》 1"》
+ 《!-- 分割线 --》
+ 《div class="border-t-[3px] border-color-background"》《/div》
+ 《!-- 分页栏 --》
+ 《div》
+ 《div class="flex items-stretch"》
+ 《!-- 上一页 --》
+ 《div
+ class="flex items-center"
+ :class="{
+ 'cursor-pointer': canGoPreviousPage,
+ 'cursor-not-allowed': !canGoPreviousPage,
+ }"
+ @click="goPreviousPage"
+ 》
+ 《div class="mx-[10px] my-[10px]"》
+ 《RiArrowLeftWideFill size="24px"》《/RiArrowLeftWideFill》
+ 《/div》
+ 《/div》
+ 《div class="border-l-[3px] border-color-background"》《/div》
+ 《!-- 分页按钮栏 --》
+ 《div class="flex-1 overflow-hidden"》
+ 《div class="page-button-scrollbar flow-root h-full"》
+ 《ElScrollbar
+ height="100%"
+ class=""
+ :viewStyle="{
+ height: '100%',
+ }"
+ 》
+ 《div class="flex h-full w-fit items-stretch"》
+ 《template
+ v-for="item in fileInfoMessageListQuery.data.value
+ .totalPages"
+ :key="item"
+ 》
+ 《div
+ class="flex flex-shrink-0 cursor-pointer items-center transition-colors"
+ :class="{
+ 'bg-el-primary-light-6':
+ fileInfoMessageListPageNum === item,
+ }"
+ @click="fileInfoMessageListPageSet(item)"
+ 》
+ 《div
+ class="mx-[10px] my-[10px] min-w-[24px] select-none text-center text-[16px] font-bold text-color-text"
+ 》
+ {{ item }}
+ 《/div》
+ 《/div》
+ 《div class="border-l-[3px] border-color-background"》《/div》
+ 《/template》
+ 《!-- 没有更多了 --》
+ 《div class="flex flex-shrink-0 items-center"》
+ 《div
+ class="mx-[24px] my-[10px] select-none text-center text-[14px] font-bold italic text-color-text-soft"
+ 》
+ {{ i18nStore.t('filePagePaginationBarNoMoreText')() }}
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/ElScrollbar》
+ 《/div》
+ 《/div》
+ 《div class="border-l-[3px] border-color-background"》《/div》
+ 《!-- 下一页 --》
+ 《div
+ class="flex items-center"
+ :class="{
+ 'cursor-pointer': canGoNextPage,
+ 'cursor-not-allowed': !canGoNextPage,
+ }"
+ @click="goNextPage"
+ 》
+ 《div class="mx-[10px] my-[10px]"》
+ 《RiArrowRightWideFill size="24px"》《/RiArrowRightWideFill》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/template》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/file-info-messages-list/index.ts
+
+import FileInfoMessagesList from './FileInfoMessagesList.vue'
+
+export {
+ //
+ FileInfoMessagesList,
+}
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/FileInfoPageTopBar.vue
+
+《script setup lang="ts"》
+import { ChatTopBarMoreMenuItem } from '@/components'
+import { useRouterHistoryTool } from '@/composables'
+import { routerDict } from '@/config'
+import { onClickOutside } from '@vueuse/core'
+import { useWatchSourceToHoldTimeAndStep } from '@/utils'
+import { useI18nStore } from '@/stores'
+import type { FileInfoQueryDesuwaType } from './dependencies'
+
+const props = defineProps《{
+ pageTitle: string
+ fileInfoQueryDesuwa: FileInfoQueryDesuwaType
+}》()
+
+const { fileQueryRefresh, isFileQueryRefreshRunning } =
+ props.fileInfoQueryDesuwa
+
+// 让加载动画至少显示1秒（转一圈），且转的圈数为整数
+const { sourceHaveHold: isFileQueryRefreshRunningForAni } =
+ useWatchSourceToHoldTimeAndStep({
+ source: computed(() =》 isFileQueryRefreshRunning.value),
+ holdMs: 1000,
+ stepMs: 1000,
+ })
+
+const isShowMoreMenu = ref(false)
+const openMoreMenu = () =》 {
+ isShowMoreMenu.value = true
+}
+const closeMoreMenu = () =》 {
+ isShowMoreMenu.value = false
+}
+const toggleShowMoreMenu = () =》 {
+ isShowMoreMenu.value = !isShowMoreMenu.value
+}
+
+// 当菜单展开时，点击菜单外部可以关闭菜单
+const targetMoreMenu = useTemplateRef《HTMLElement》('targetMoreMenu')
+const targetMoreMenuToggleShowButton = useTemplateRef《HTMLElement》(
+ 'targetMoreMenuToggleShowButton'
+)
+onClickOutside(targetMoreMenu, (event) =》 {
+ // console.log(event)
+ // 菜单未打开，直接返回
+ if (targetMoreMenu == null || isShowMoreMenu.value === false) {
+ return
+ }
+ // 点击正好是在菜单开关按钮上，直接返回
+ if (
+ targetMoreMenuToggleShowButton.value != null &&
+ targetMoreMenuToggleShowButton.value?.contains(event.target as Node)
+ ) {
+ return
+ }
+ closeMoreMenu()
+})
+
+const { routerBackSafe } = useRouterHistoryTool()
+
+const chatTopBarBack = () =》 {
+ routerBackSafe({
+ fallbackTo: routerDict.ChatHome.path,
+ })
+}
+
+const i18nStore = useI18nStore()
+《/script》
+
+《template》
+ 《div class="relative"》
+ 《!-- 展开菜单 --》
+ 《Transition name="fade-down-up"》
+ 《div
+ v-if="isShowMoreMenu"
+ ref="targetMoreMenu"
+ class="more-menu absolute top-0 z-[2] bg-color-background-soft"
+ 》
+ 《!-- 垫片 --》
+ 《div class="h-[50px]"》《/div》
+ 《!-- 聊天顶栏菜单项 插槽 --》
+ 《slot name="chatTopBarMoreMenu"》《/slot》
+ 《!-- 菜单项 刷新 --》
+ 《ChatTopBarMoreMenuItem
+ :isRunning="isFileQueryRefreshRunningForAni"
+ :isRunnable="true"
+ @click="fileQueryRefresh"
+ 》
+ 《template #icon》
+ 《RiRestartLine
+ size="18px"
+ :class="{
+ 'loading-spinner-1s': isFileQueryRefreshRunningForAni,
+ }"
+ 》《/RiRestartLine》
+ 《/template》
+ 《template #text》
+ {{ i18nStore.t('fileInfoPageFileQueryRefreshText')() }}
+ 《/template》
+ 《/ChatTopBarMoreMenuItem》
+ 《!-- 收起 --》
+ 《div
+ class="more-menu-close-button flow-root cursor-pointer select-none hover:bg-el-primary-light-4"
+ @click="closeMoreMenu"
+ 》
+ 《div class="button-box flex items-center justify-center"》
+ 《RiArrowUpWideLine size="20px"》《/RiArrowUpWideLine》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/Transition》
+ 《!-- bar-box 补丁，为解决firefox中盒子边缘与外阴影的缝隙问题 --》
+ 《div
+ class="pointer-events-none absolute bottom-[-0.5px] left-[-0.5px] right-[-0.5px] top-0 z-[4] rounded-b-[24px] border-2 border-color-background-soft"
+ 》《/div》
+ 《div class="top-bar-box relative z-[3] flow-root bg-color-background-soft"》
+ 《div class="flex items-center"》
+ 《!-- 返回 --》
+ 《div
+ class="flex h-[40px] w-[48px] cursor-pointer items-center justify-center"
+ @click="chatTopBarBack"
+ 》
+ 《RiArrowLeftSFill》《/RiArrowLeftSFill》
+ 《/div》
+ 《!-- 标题 --》
+ 《div class="flex-1 truncate"》
+ 《div class="truncate text-[15px] font-bold text-color-text"》
+ {{ pageTitle }}
+ 《/div》
+ 《/div》
+ 《!-- 更多 --》
+ 《div
+ ref="targetMoreMenuToggleShowButton"
+ class="more-menu-toggle-show-button flex h-[40px] w-[48px] cursor-pointer items-center justify-center"
+ :class="{
+ 'is-show-more-menu': isShowMoreMenu,
+ }"
+ @click="toggleShowMoreMenu"
+ 》
+ 《RiMore2Fill class="more-menu-icon"》《/RiMore2Fill》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》
+.top-bar-box {
+ border-radius: 0 0 24px 24px;
+ box-shadow: 0 0 6px 6px var(--color-background);
+}
+.more-menu {
+ border-radius: 0 0 24px 24px;
+ box-shadow: 0 0 6px 6px var(--color-background);
+ right: 24px;
+ max-width: calc(100% - (2 * 24px));
+ max-height: calc(100dvh - 100px);
+ overflow-y: auto;
+ overflow-x: hidden;
+}
+.more-menu-toggle-show-button {
+ .more-menu-icon {
+ transition: all 300ms;
+ transform: rotate(0);
+ }
+ &.is-show-more-menu {
+ .more-menu-icon {
+ transform: rotate(90deg);
+ }
+ }
+}
+.more-menu-close-button {
+ .button-box {
+ height: 24px;
+ }
+}
+《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/components/index.ts
+
+import FileInfoPageTopBar from './FileInfoPageTopBar.vue'
+
+export {
+ //
+ FileInfoPageTopBar,
+}
+
+export * from './file-info-control-panel'
+export * from './file-info-messages-list'
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/composables/dependencies.ts
+
+export * from '../type'
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/composables/index.ts
+
+export * from './info-query'
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/composables/info-query.ts
+
+import {
+ queryKeys,
+ useFileInfoMessageListQuery,
+ useFilesGetOneQuery,
+} from '@/queries'
+import type { FileInfoRouteParamsType } from './dependencies'
+import { useQueryClient } from '@tanstack/vue-query'
+import { useAuthStore, useRealtimeFilesStore } from '@/stores'
+import type { FilesResponseWithBaseExpand } from '@/api'
+import { compareDatesSafe } from '@/utils'
+
+export const useFileInfoQueryDesuwa = (data: {
+ fileInfoRouteParams: FileInfoRouteParamsType
+}) =》 {
+ const {
+ //
+ fileInfoRouteParams,
+ } = data
+
+ const fileId = computed(() =》 fileInfoRouteParams.value.id)
+
+ const filesGetOneQuery = useFilesGetOneQuery({
+ fileId,
+ })
+
+ const realtimeFilesStore = useRealtimeFilesStore()
+
+ // 经过实时优化的文件数据，会使用较新的数据
+ const fileInfoDataWithRealtime = computed(() =》 {
+ if (fileId.value == null) {
+ return null
+ }
+ const fromQuery = filesGetOneQuery.data.value
+ const fromRealtime = realtimeFilesStore.updateListFindLatestById(
+ fileId.value
+ )
+ // 两者都有 → 比较 updated
+ if (fromQuery != null && fromRealtime != null) {
+ if (fromRealtime.updated 》 fromQuery.updated) {
+ return fromRealtime
+ } else {
+ return fromQuery
+ }
+ }
+ // 只有 query 有
+ if (fromQuery != null) {
+ return fromQuery
+ }
+ // 只有 realtime 有
+ if (fromRealtime != null) {
+ return fromRealtime
+ }
+ // 两者都不存在
+ return null
+ })
+
+ const fileInfoQueryStatus = computed(() =》 {
+ // 有内容
+ if (fileInfoDataWithRealtime.value != null) {
+ // 特殊情况已删除
+ if (fileInfoDataWithRealtime.value.isDeleted === true) {
+ return 'isDeleted'
+ }
+ return 'content' as const
+ }
+ // 加载中
+ if (
+ fileInfoDataWithRealtime.value == null &&
+ filesGetOneQuery.isFetching.value === true
+ ) {
+ return 'loading' as const
+ }
+ // 无内容（文件id不存在）
+ return 'none' as const
+ })
+
+ const fileInfoMessageListPageNum = ref(1)
+
+ const fileInfoMessageListQuery = useFileInfoMessageListQuery({
+ pageNum: computed(() =》 fileInfoMessageListPageNum.value),
+ fileId,
+ })
+
+ // 查询页数设置
+ const fileInfoMessageListPageSet = (val: number) =》 {
+ fileInfoMessageListPageNum.value = val
+ }
+
+ const queryClient = useQueryClient()
+
+ // 是否正在刷新
+ const isFileQueryRefreshRunning = ref(false)
+ // 查询刷新
+ const fileQueryRefresh = async () =》 {
+ if (isFileQueryRefreshRunning.value) return
+ isFileQueryRefreshRunning.value = true
+
+ try {
+ // 页面重置
+ // fileInfoMessageListPageNum.value = 1
+
+ await Promise.all([
+ queryClient.invalidateQueries({
+ queryKey: queryKeys.filesGetOne(fileId.value),
+ }),
+ queryClient.invalidateQueries({
+ queryKey: queryKeys.fileInfoMessageList(fileId.value),
+ }),
+ ])
+ } finally {
+ isFileQueryRefreshRunning.value = false
+ }
+ }
+
+ const authStore = useAuthStore()
+
+ // 当前是否为发送者
+ const isAuthorCurrent = computed(() =》 {
+ if (
+ fileInfoDataWithRealtime.value == null ||
+ authStore.isValid === false ||
+ authStore.record?.id == null
+ ) {
+ return false
+ }
+ if (fileInfoDataWithRealtime.value.author === authStore.record.id) {
+ return true
+ }
+ return false
+ })
+
+ /**
+ * 用于文件信息修改成功后，根据返回的数据检查并设置setQueryData
+ * 在 onSuccess 中使用
+ */
+ const fileInfoCheckSetQueryDataOnSuccessUpdate = (
+ data: FilesResponseWithBaseExpand
+ ) =》 {
+ // 更新query
+ // 更新前，应确认data.update时间为最新的，以此方式避免两次很近的请求导致问题
+ if (
+ filesGetOneQuery.data.value != null &&
+ // data.updated 》 filesGetOneQuery.data.value.updated
+ compareDatesSafe(data.updated, filesGetOneQuery.data.value.updated) === 1
+ ) {
+ // 更新query缓存
+ queryClient.setQueryData(
+ queryKeys.filesGetOne(filesGetOneQuery.data.value.id),
+ // 确保类型正确
+ data satisfies NonNullable《typeof filesGetOneQuery.data.value》
+ )
+ }
+ }
+
+ return {
+ //
+ filesGetOneQuery,
+ fileInfoDataWithRealtime,
+ fileInfoQueryStatus,
+ fileInfoMessageListQuery,
+ fileInfoMessageListPageNum,
+ fileInfoMessageListPageSet,
+ fileQueryRefresh,
+ isFileQueryRefreshRunning,
+ isAuthorCurrent,
+ fileInfoCheckSetQueryDataOnSuccessUpdate,
+ }
+}
+
+export type FileInfoQueryDesuwaType = ReturnType《typeof useFileInfoQueryDesuwa》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/FileInfoPage.vue
+
+《script setup lang="ts"》
+// /* eslint vue/no-undef-components: "warn" */
+import { useI18nStore } from '@/stores'
+import {
+ FileInfoControlPanel,
+ FileInfoPageTopBar,
+ FileInfoMessagesList,
+} from './components'
+import { useRoute, useRouter } from 'vue-router'
+import { routerDict } from '@/config'
+import { useFileInfoQueryDesuwa } from './composables'
+import {
+ useWatchSourceToHoldTime,
+ useWatchSourceToHoldTimeAndStep,
+} from '@/utils'
+
+export type FileInfoRouteParamsType = typeof fileInfoRouteParams
+
+const i18nStore = useI18nStore()
+
+useSeoMeta({
+ title: computed(() =》 i18nStore.t('pageFileInfo')()),
+})
+
+const route = useRoute()
+const fileInfoRouteParams = computed(() =》 {
+ const paramRawId = route.params[routerDict.FileInfoPage.paramsKey.id]
+ const id = (() =》 {
+ if (typeof paramRawId === 'string') {
+ return paramRawId
+ }
+ return null
+ })()
+ return {
+ id: id,
+ }
+})
+
+const fileInfoQueryDesuwa = useFileInfoQueryDesuwa({
+ fileInfoRouteParams,
+})
+const {
+ // 当前查询状态 "content" | "loading" | "none"
+ fileInfoQueryStatus,
+ filesGetOneQuery,
+ fileInfoMessageListQuery,
+ fileInfoDataWithRealtime,
+} = fileInfoQueryDesuwa
+
+const isFetching = computed(() =》 {
+ return (
+ filesGetOneQuery.isFetching.value ||
+ fileInfoMessageListQuery.isFetching.value
+ )
+})
+// 让加载动画至少显示300ms
+const { sourceHaveHold: isFetchingForAni } = useWatchSourceToHoldTime({
+ source: isFetching,
+ holdMs: 500,
+})
+
+const router = useRouter()
+
+// 清除路由中的查询参数，避免页面初始化时对话框就打开
+const newQuery = { ...route.query }
+delete newQuery['FileDeleteDialog']
+router.replace({
+ path: route.path,
+ query: newQuery,
+})
+《/script》
+
+《template》
+ 《div》
+ 《!-- 边距控制 --》
+ 《div class="mx-[8px]"》
+ 《div
+ class="mx-auto"
+ :style="{
+ maxWidth: '500px',
+ }"
+ 》
+ 《div class="relative"》
+ 《!-- 顶栏 --》
+ 《div class="sticky top-0 z-[1] flow-root"》
+ 《!-- 文件详情页顶栏 --》
+ 《FileInfoPageTopBar
+ :pageTitle="i18nStore.t('pageFileInfo')()"
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ 》《/FileInfoPageTopBar》
+ 《/div》
+ 《!-- 内容 --》
+ 《div v-if="fileInfoQueryStatus === 'content'"》
+ 《!-- 文件显示组件 --》
+ 《!-- 《div class="mt-4"》
+ 《FileInfoFileViewer
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ :fileScreenViewerDesuwa="fileScreenViewerDesuwa"
+ 》《/FileInfoFileViewer》
+ 《/div》 --》
+ 《!-- 文件详情显示、操作面板 --》
+ 《div class="mt-4"》
+ 《FileInfoControlPanel
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ 》《/FileInfoControlPanel》
+ 《/div》
+ 《!-- 使用此文件的消息 --》
+ 《Transition name="fade" mode="out-in"》
+ 《div
+ v-if="
+ fileInfoMessageListQuery.data.value != null &&
+ fileInfoMessageListQuery.data.value.totalItems 》 0
+ "
+ class="mt-4"
+ 》
+ 《!-- FileInfoMessagesList --》
+ 《FileInfoMessagesList
+ :fileInfoQueryDesuwa="fileInfoQueryDesuwa"
+ 》《/FileInfoMessagesList》
+ 《/div》
+ 《/Transition》
+ 《!-- 刷新时的占位指示，同时充当底部高度垫片 --》
+ 《div class="my-4"》
+ 《div class="flex h-[40px] items-center justify-center"》
+ 《Transition name="fade" mode="out-in"》
+ 《div
+ v-show="isFetchingForAni"
+ class="h-[40px] w-[40px] overflow-hidden text-color-text-soft"
+ 》
+ 《RiLoader3Line
+ class="loading-spinner-800ms"
+ size="40px"
+ 》《/RiLoader3Line》
+ 《/div》
+ 《/Transition》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《!-- 加载状态 --》
+ 《div v-else-if="fileInfoQueryStatus === 'loading'"》
+ 《div class="flex h-[400px] items-center justify-center"》
+ 《div
+ class="h-[50px] w-[50px] overflow-hidden text-color-text-soft"
+ 》
+ 《RiLoader3Line
+ class="loading-spinner-800ms"
+ size="50px"
+ 》《/RiLoader3Line》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《!-- 文件不存在 --》
+ 《!-- 《div v-else-if="fileInfoQueryStatus === 'none'"》 --》
+ 《!-- 《div v-else-if="fileInfoQueryStatus === 'isDeleted'"》 --》
+ 《div v-else》
+ 《div class="flex h-[400px] items-center justify-center"》
+ 《div
+ class="h-[100px] w-[100px] overflow-hidden text-color-background-soft"
+ 》
+ 《!-- class="h-full max-h-[50%] w-full max-w-[50%] object-contain" --》
+ 《RiMessage3Fill size="100px"》《/RiMessage3Fill》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+ 《/div》
+《/template》
+
+《style lang="scss" scoped》《/style》
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/index.ts
+
+import FileInfoPage from './FileInfoPage.vue'
+
+export { FileInfoPage }
+
+
+
+E:/Project/pocket-chat/vue3/src/views/file-info/type.d.ts
+
+export type * from './FileInfoPage.vue'
+export type * from './composables'
+
+
+
