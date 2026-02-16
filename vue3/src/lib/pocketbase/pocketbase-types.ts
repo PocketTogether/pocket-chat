@@ -16,6 +16,8 @@ export enum Collections {
 	Images = "images",
 	Messages = "messages",
 	Users = "users",
+	UsersNotViewingMarks = "usersNotViewingMarks",
+	UsersPresencesStatus = "usersPresencesStatus",
 }
 
 // Alias types for improved usability
@@ -142,7 +144,7 @@ export type ImagesRecord = {
 	updated?: IsoDateString
 }
 
-export type MessagesRecord = {
+export type MessagesRecord<TmentionMap = unknown> = {
 	author: RecordIdString
 	content?: string
 	created?: IsoDateString
@@ -150,6 +152,8 @@ export type MessagesRecord = {
 	id: string
 	images?: RecordIdString[]
 	isDeleted?: boolean
+	mentionMap?: null | TmentionMap
+	mentionedUsers?: RecordIdString[]
 	replyMessage?: RecordIdString
 	updated?: IsoDateString
 }
@@ -191,6 +195,22 @@ export type UsersRecord = {
 	verified?: boolean
 }
 
+export type UsersNotViewingMarksRecord = {
+	author: RecordIdString
+	created?: IsoDateString
+	id: string
+	updated?: IsoDateString
+}
+
+export type UsersPresencesStatusRecord = {
+	author: RecordIdString
+	created?: IsoDateString
+	id: string
+	isNotViewing?: boolean
+	isTyping?: boolean
+	updated?: IsoDateString
+}
+
 // Response types include system fields and match responses from the PocketBase API
 export type AuthoriginsResponse<Texpand = unknown> = Required<AuthoriginsRecord> & BaseSystemFields<Texpand>
 export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRecord> & BaseSystemFields<Texpand>
@@ -200,8 +220,10 @@ export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> &
 export type ConfigResponse<Tvalue = unknown, Texpand = unknown> = Required<ConfigRecord<Tvalue>> & BaseSystemFields<Texpand>
 export type FilesResponse<Texpand = unknown> = Required<FilesRecord> & BaseSystemFields<Texpand>
 export type ImagesResponse<Texpand = unknown> = Required<ImagesRecord> & BaseSystemFields<Texpand>
-export type MessagesResponse<Texpand = unknown> = Required<MessagesRecord> & BaseSystemFields<Texpand>
+export type MessagesResponse<TmentionMap = unknown, Texpand = unknown> = Required<MessagesRecord<TmentionMap>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
+export type UsersNotViewingMarksResponse<Texpand = unknown> = Required<UsersNotViewingMarksRecord> & BaseSystemFields<Texpand>
+export type UsersPresencesStatusResponse<Texpand = unknown> = Required<UsersPresencesStatusRecord> & BaseSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
@@ -216,6 +238,8 @@ export type CollectionRecords = {
 	images: ImagesRecord
 	messages: MessagesRecord
 	users: UsersRecord
+	usersNotViewingMarks: UsersNotViewingMarksRecord
+	usersPresencesStatus: UsersPresencesStatusRecord
 }
 
 export type CollectionResponses = {
@@ -229,6 +253,8 @@ export type CollectionResponses = {
 	images: ImagesResponse
 	messages: MessagesResponse
 	users: UsersResponse
+	usersNotViewingMarks: UsersNotViewingMarksResponse
+	usersPresencesStatus: UsersPresencesStatusResponse
 }
 
 // Type for usage with type asserted PocketBase instance
@@ -245,4 +271,6 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: 'images'): RecordService<ImagesResponse>
 	collection(idOrName: 'messages'): RecordService<MessagesResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
+	collection(idOrName: 'usersNotViewingMarks'): RecordService<UsersNotViewingMarksResponse>
+	collection(idOrName: 'usersPresencesStatus'): RecordService<UsersPresencesStatusResponse>
 }
