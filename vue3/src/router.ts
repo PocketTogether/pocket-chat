@@ -10,6 +10,8 @@ import {
   ImageSelectPage,
   LayoutSimple,
   LoginPage,
+  UserInfoPage,
+  UserListPage,
 } from './views'
 import {
   usePlaceholderDataPbCollectionConfigStore,
@@ -54,6 +56,14 @@ const router = createRouter({
         {
           ...routerDict.FileInfoPage,
           component: FileInfoPage,
+        },
+        {
+          ...routerDict.UserListPage,
+          component: UserListPage,
+        },
+        {
+          ...routerDict.UserInfoPage,
+          component: UserInfoPage,
         },
       ],
     },
