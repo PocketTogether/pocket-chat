@@ -1,4 +1,4 @@
-import { usersInfoMessageListApiPerPageNumConfig } from '@/config'
+import { userInfoMessageListApiPerPageNumConfig } from '@/config'
 import {
   Collections,
   pb,
@@ -104,7 +104,7 @@ export const pbMessagesUserInfoMessageListApi = async (data: {
     .collection(Collections.Messages)
     .getList<MessagesResponseWithUserInfoMessageListExpand>(
       pageNum,
-      usersInfoMessageListApiPerPageNumConfig,
+      userInfoMessageListApiPerPageNumConfig,
       {
         sort,
         filter,

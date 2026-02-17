@@ -1,14 +1,14 @@
 import { Collections, pb, type UsersRecord } from '@/lib'
 import type { Group, KeyValueMirror } from '@/types'
 import { usersBaseExpand, type UsersResponseWithBaseExpand } from './base'
-import { usersPageListApiPerPageNumConfig } from '@/config'
+import { userPageListApiPerPageNumConfig } from '@/config'
 import { fetchWithTimeoutPreferred } from '@/utils'
 
-export type UsersPageSortModeType = 'joined_at_desc' | 'joined_at_asc'
+export type UserPageSortModeType = 'joined_at_desc' | 'joined_at_asc'
 
 /** 🧠 类型安全地构造 sort 字符串 */
-export const usersPageSortBuildFn = (data: {
-  sortMode: UsersPageSortModeType
+export const userPageSortBuildFn = (data: {
+  sortMode: UserPageSortModeType
 }) => {
   const { sortMode } = data
 
@@ -33,7 +33,7 @@ export const usersPageSortBuildFn = (data: {
 }
 
 /** 🧠 类型安全地构造 filter 字符串（严格遵守 strict-boolean-expressions） */
-export const usersPageFilterBuildFn = (data: { search?: string | null }) => {
+export const userPageFilterBuildFn = (data: { search?: string | null }) => {
   const recordKeys = {
     username: 'username',
     name: 'name',
@@ -78,22 +78,22 @@ export const usersPageFilterBuildFn = (data: { search?: string | null }) => {
 }
 
 /** 用户分页查询 */
-export const pbUsersPageListApi = async (
+export const pbUserPageListApi = async (
   page: number,
   data: {
-    sortMode: UsersPageSortModeType
+    sortMode: UserPageSortModeType
     search?: string | null
   }
 ) => {
-  const sort = usersPageSortBuildFn(data)
-  const filter = usersPageFilterBuildFn(data)
+  const sort = userPageSortBuildFn(data)
+  const filter = userPageFilterBuildFn(data)
 
   // pocketbase jsSDK
   const pbRes = await pb
     .collection(Collections.Users)
     .getList<UsersResponseWithBaseExpand>(
       page,
-      usersPageListApiPerPageNumConfig,
+      userPageListApiPerPageNumConfig,
       {
         expand: usersBaseExpand,
         sort,
