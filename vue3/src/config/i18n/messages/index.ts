@@ -13,6 +13,7 @@ import { i18nMessagesRoomPart } from './room'
 import { i18nMessagesSettingPart } from './setting'
 import { i18nMessagesTagsPart } from './tags'
 import { i18nMessagesUploadPart } from './upload'
+import { i18nMessagesUserPart } from './user'
 
 export type I18nMessagesSatisfiesType = Record<
   string,
@@ -53,6 +54,8 @@ export const i18nMessages = {
   ...i18nMessagesPermissionPart,
   // 文件页相关部分
   ...i18nMessagesFilePart,
+  // 用户页相关部分
+  ...i18nMessagesUserPart,
 } as const satisfies I18nMessagesSatisfiesType
 
 // 通过类型体操，获取i18nMessages键的类型
