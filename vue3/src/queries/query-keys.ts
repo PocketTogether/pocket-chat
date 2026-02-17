@@ -1,4 +1,7 @@
-import type { PMLRCApiParameters0DataPageParamNonNullable } from '@/api'
+import type {
+  PMLRCApiParameters0DataPageParamNonNullable,
+  UserPageSortModeType,
+} from '@/api'
 import type { Ref } from 'vue'
 
 export const queryKeys = {
@@ -38,7 +41,6 @@ export const queryKeys = {
       ...definedOrEmpty(pageNum),
       ...definedOrEmpty(customStrId),
     ] as const
-    // return ['imagePageList', pageNum, authorId, searchContent] as const
   },
 
   /** useImagesGetOneQuery */
@@ -74,7 +76,6 @@ export const queryKeys = {
       ...definedOrEmpty(pageNum),
       ...definedOrEmpty(customStrId),
     ] as const
-    // return ['filePageList', pageNum, authorId, searchContent] as const
   },
 
   /** useFilesGetOneQuery */
@@ -91,6 +92,41 @@ export const queryKeys = {
     return [
       'fileInfoMessageList',
       ...definedOrEmpty(fileId),
+      ...definedOrEmpty(pageNum),
+    ] as const
+  },
+
+  /** useUserPageListQuery */
+  userPageList: (
+    sortMode?: UserPageSortModeType | null,
+    searchContent?: string | null,
+    pageNum?: number | null,
+    /** 可自定义的充当唯一标识的字符串 */
+    customStrId?: string | null
+  ) => {
+    return [
+      'userPageList',
+      ...definedOrEmpty(sortMode),
+      ...definedOrEmpty(searchContent),
+      ...definedOrEmpty(pageNum),
+      ...definedOrEmpty(customStrId),
+    ] as const
+  },
+
+  /** useUsersGetOneQuery */
+  usersGetOne: (userId?: string | null) => {
+    return [
+      //
+      'usersGetOne',
+      ...definedOrEmpty(userId),
+    ] as const
+  },
+
+  /** useUserInfoMessageListQuery */
+  userInfoMessageList: (userId?: string | null, pageNum?: number | null) => {
+    return [
+      'userInfoMessageList',
+      ...definedOrEmpty(userId),
       ...definedOrEmpty(pageNum),
     ] as const
   },
