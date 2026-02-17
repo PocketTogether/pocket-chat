@@ -100,4 +100,20 @@ export const i18nMessagesPagePart = {
     'ko-KR': () => '프로필' as const,
     'ru-RU': () => 'Профиль' as const,
   },
+  pageUserList: {
+    'en-US': () => 'Members' as const,
+    'zh-CN': () => '成员' as const,
+    'zh-TW': () => '成員' as const,
+    'ja-JP': () => 'メンバー' as const,
+    'ko-KR': () => '멤버' as const,
+    'ru-RU': () => 'Участники' as const,
+  },
+  pageUserInfo: {
+    'en-US': () => 'Member Details' as const,
+    'zh-CN': () => '成员详情' as const,
+    'zh-TW': () => '成員詳情' as const,
+    'ja-JP': () => 'メンバー詳細' as const,
+    'ko-KR': () => '멤버 상세정보' as const,
+    'ru-RU': () => 'Информация об участнике' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType

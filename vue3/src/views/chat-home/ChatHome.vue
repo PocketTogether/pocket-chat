@@ -73,13 +73,12 @@ const isDev = import.meta.env.DEV
         <!-- 插槽 -->
         <template #chatTopBarMoreMenu>
           <!-- 测试批量添加消息，开发时才显示 -->
-          <ChatTopBarMoreMenuItem v-if="isDev" @click="testPbSendMessage">
-            <!-- <ChatTopBarMoreMenuItem @click="testPbSendMessage"> -->
+          <!-- <ChatTopBarMoreMenuItem v-if="isDev" @click="testPbSendMessage">
             <template #icon>
               <RiFlaskLine size="18px"></RiFlaskLine>
             </template>
             <template #text> 测试批量添加消息 </template>
-          </ChatTopBarMoreMenuItem>
+          </ChatTopBarMoreMenuItem> -->
 
           <!-- 转到设置，已登录时才显示 -->
           <ChatTopBarMoreMenuItem
@@ -90,6 +89,16 @@ const isDev = import.meta.env.DEV
               <RiSettingsLine size="18px"></RiSettingsLine>
             </template>
             <template #text> {{ i18nStore.t('pageSetting')() }} </template>
+          </ChatTopBarMoreMenuItem>
+
+          <!-- 成员 -->
+          <ChatTopBarMoreMenuItem
+            @click="$router.push(routerDict.UserListPage.path)"
+          >
+            <template #icon>
+              <RiGroupLine size="18px"></RiGroupLine>
+            </template>
+            <template #text> {{ i18nStore.t('pageUserList')() }} </template>
           </ChatTopBarMoreMenuItem>
         </template>
       </ChatCol>
