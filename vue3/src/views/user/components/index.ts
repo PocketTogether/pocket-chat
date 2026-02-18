@@ -6,3 +6,5 @@ export {
   UserListPageTopBar,
   UserListPageControlPanel,
 }
+
+export * from './user-list-page-user-list'

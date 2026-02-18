@@ -59,15 +59,12 @@ const searchInputContentClear = () => {
                 <div
                   class="select-none truncate text-center text-[16px] font-bold text-color-text"
                 >
-                  {{ '降序排序' }}
+                  {{ i18nStore.t('userPageSortDescText')() }}
                 </div>
                 <div
-                  class="select-none truncate text-center text-[11px] font-bold text-color-text"
+                  class="select-none truncate text-center text-[10px] text-color-text"
                 >
-                  {{
-                    // i18nStore.t('userPageAllUserText')()
-                    '加入时间'
-                  }}
+                  {{ i18nStore.t('userPageSortFieldJoinedAtText')() }}
                 </div>
               </div>
             </div>
@@ -86,15 +83,12 @@ const searchInputContentClear = () => {
                 <div
                   class="select-none truncate text-center text-[16px] font-bold text-color-text"
                 >
-                  {{ '升序排序' }}
+                  {{ i18nStore.t('userPageSortAscText')() }}
                 </div>
                 <div
-                  class="select-none truncate text-center text-[11px] font-bold text-color-text"
+                  class="select-none truncate text-center text-[10px] text-color-text"
                 >
-                  {{
-                    // i18nStore.t('userPageMyUserText')()
-                    '加入时间'
-                  }}
+                  {{ i18nStore.t('userPageSortFieldJoinedAtText')() }}
                 </div>
               </div>
             </div>

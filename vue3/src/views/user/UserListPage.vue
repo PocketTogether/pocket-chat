@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { useI18nStore } from '@/stores'
 import { useUserQueryModeDesuwa } from './composables'
-import { UserListPageControlPanel, UserListPageTopBar } from './components'
+import {
+  UserListPageControlPanel,
+  UserListPageTopBar,
+  UserListPageUserList,
+} from './components'
 
 const i18nStore = useI18nStore()
 
@@ -41,7 +45,9 @@ const userQueryModeDesuwa = useUserQueryModeDesuwa()
           <div class="border-t-[3px] border-color-background"></div>
           <!-- 用户列表 -->
           <div>
-            <!--  -->
+            <UserListPageUserList
+              :userQueryModeDesuwa="userQueryModeDesuwa"
+            ></UserListPageUserList>
           </div>
         </div>
       </div>
