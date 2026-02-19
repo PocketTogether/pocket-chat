@@ -217,10 +217,10 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
-export type ConfigResponse<Tvalue = unknown, Texpand = unknown> = Required<ConfigRecord<Tvalue>> & BaseSystemFields<Texpand>
+export type ConfigResponse<Texpand = unknown, Tvalue = unknown> = Required<ConfigRecord<Tvalue>> & BaseSystemFields<Texpand>
 export type FilesResponse<Texpand = unknown> = Required<FilesRecord> & BaseSystemFields<Texpand>
 export type ImagesResponse<Texpand = unknown> = Required<ImagesRecord> & BaseSystemFields<Texpand>
-export type MessagesResponse<TmentionMap = unknown, Texpand = unknown> = Required<MessagesRecord<TmentionMap>> & BaseSystemFields<Texpand>
+export type MessagesResponse<Texpand = unknown, TmentionMap = unknown> = Required<MessagesRecord<TmentionMap>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 export type UsersNotViewingMarksResponse<Texpand = unknown> = Required<UsersNotViewingMarksRecord> & BaseSystemFields<Texpand>
 export type UsersPresencesStatusResponse<Texpand = unknown> = Required<UsersPresencesStatusRecord> & BaseSystemFields<Texpand>
