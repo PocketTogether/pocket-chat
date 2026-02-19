@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { UsersResponseWithBaseExpand } from '@/api'
+import { useRouterHistoryTool } from '@/composables'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import { RiGlobalLine } from '@remixicon/vue'
@@ -40,11 +41,23 @@ const authorName = computed(() => {
 const authorUsername = computed(() => {
   return userAuthor.value.username
 })
+
+const {
+  // 跳转至用户详情页的方法
+  routerGoUserInfoPage,
+} = useRouterHistoryTool()
+
+const goUserInfoPage = () => {
+  routerGoUserInfoPage({
+    userId: props.userData.id,
+    presetUserGetOneData: props.userData,
+  })
+}
 </script>
 
 <template>
   <div>
-    <div class="flow-root cursor-pointer select-none">
+    <div class="flow-root cursor-pointer select-none" @click="goUserInfoPage">
       <div class="mx-[16px] my-[6px]">
         <div class="flex items-center justify-between">
           <!-- 左侧：用户信息 -->
