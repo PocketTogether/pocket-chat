@@ -66,6 +66,14 @@ export const i18nMessagesUserPart = {
     'ko-KR': () => '새로고침' as const,
     'ru-RU': () => 'Обновить' as const,
   },
+  userInfoPageMessageListTitle: {
+    'en-US': () => 'Messages' as const,
+    'zh-CN': () => '消息' as const,
+    'zh-TW': () => '訊息' as const,
+    'ja-JP': () => 'メッセージ' as const,
+    'ko-KR': () => '메시지' as const,
+    'ru-RU': () => 'Сообщения' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType
 
 /*
