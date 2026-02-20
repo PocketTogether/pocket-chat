@@ -1,8 +1,21 @@
 import type { UserPageSortModeType } from '@/api'
 import { queryKeys, useUserPageListQuery } from '@/queries'
 import { useQueryClient } from '@tanstack/vue-query'
+import type { UserListPagePageRecoverDataDesuwaType } from './dependencies'
 
-export const useUserQueryModeDesuwa = () => {
+export const useUserQueryModeDesuwa = (data: {
+  userListPagePageRecoverDataDesuwa: UserListPagePageRecoverDataDesuwaType
+}) => {
+  const {
+    //
+    userListPagePageRecoverDataDesuwa,
+  } = data
+
+  const {
+    // 页面恢复数据
+    userListPagePageRecoverData,
+  } = userListPagePageRecoverDataDesuwa
+
   // 查询排序模式
   const userQuerySortMode = ref<UserPageSortModeType>('joined_at_desc')
 
@@ -12,10 +25,14 @@ export const useUserQueryModeDesuwa = () => {
   // 查询页数
   const userQueryPage = ref(1)
 
-  // TODO 初始化、页面数据恢复
+  // 初始化、页面数据恢复
+  if (userListPagePageRecoverData != null) {
+    userQuerySortMode.value = userListPagePageRecoverData.data.userQuerySortMode
+    userQuerySearch.value = userListPagePageRecoverData.data.userQuerySearch
+    userQueryPage.value = userListPagePageRecoverData.data.userQueryPage
+  }
 
   // 查询排序模式切换
-
   // 切换至 joined_at_desc
   const userQuerySortModeSetToJoinedAtDesc = () => {
     userQuerySortMode.value = 'joined_at_desc'

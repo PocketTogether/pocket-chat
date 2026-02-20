@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useI18nStore } from '@/stores'
-import { useUserQueryModeDesuwa } from './composables'
+import {
+  useUserListPagePageRecoverDataDesuwa,
+  useUserListPagePageRecoverDataSetOnLeave,
+  useUserListPagePageRecoverScrollTop,
+  useUserQueryModeDesuwa,
+} from './composables'
 import {
   UserListPageControlPanel,
   UserListPageTopBar,
@@ -13,7 +18,28 @@ useSeoMeta({
   title: computed(() => i18nStore.t('pageUserList')()),
 })
 
-const userQueryModeDesuwa = useUserQueryModeDesuwa()
+// 页面恢复数据获取
+const userListPagePageRecoverDataDesuwa = useUserListPagePageRecoverDataDesuwa()
+
+const userQueryModeDesuwa = useUserQueryModeDesuwa({
+  userListPagePageRecoverDataDesuwa,
+})
+
+// 页面恢复 滚动恢复
+useUserListPagePageRecoverScrollTop({
+  userListPagePageRecoverDataDesuwa,
+})
+
+const refUserListPageUserList = ref<InstanceType<
+  typeof UserListPageUserList
+> | null>(null)
+export type RefUserListPageUserListType = typeof refUserListPageUserList
+
+// 页面恢复数据收集
+useUserListPagePageRecoverDataSetOnLeave({
+  userQueryModeDesuwa,
+  refUserListPageUserList,
+})
 </script>
 
 <template>
@@ -46,7 +72,11 @@ const userQueryModeDesuwa = useUserQueryModeDesuwa()
           <!-- 用户列表 -->
           <div>
             <UserListPageUserList
+              ref="refUserListPageUserList"
               :userQueryModeDesuwa="userQueryModeDesuwa"
+              :userListPagePageRecoverDataDesuwa="
+                userListPagePageRecoverDataDesuwa
+              "
             ></UserListPageUserList>
           </div>
         </div>

@@ -6,6 +6,7 @@ import {
   useRecoverChatColModule,
   useRecoverFileSelectPageModule,
   useRecoverImageSelectPageModule,
+  useRecoverUserListPageModule,
 } from './modules'
 
 type Route = ReturnType<typeof useRoute>
@@ -70,6 +71,12 @@ export const useRouterHistoryStore = defineStore(
       currentUuid,
     })
     const { pageRecoverDataForFileSelectPage } = recoverFileSelectPageModule
+
+    // 【页面恢复数据 UserListPage 】用于 UserListPage 的页面恢复数据
+    const recoverUserListPageModule = useRecoverUserListPageModule({
+      currentUuid,
+    })
+    const { pageRecoverDataForUserListPage } = recoverUserListPageModule
 
     // 【页面恢复数据】END
 
@@ -148,6 +155,15 @@ export const useRouterHistoryStore = defineStore(
             }
             return false
           })
+        // 【页面恢复数据清理 UserListPage 】
+        pageRecoverDataForUserListPage.value =
+          pageRecoverDataForUserListPage.value.filter((i) => {
+            const find = stack.value.find((item) => item.uuid === i.uuid)
+            if (find != null) {
+              return true
+            }
+            return false
+          })
       }
 
       const routorHistoryUuid = history.state?.routorHistoryUuid
@@ -191,6 +207,7 @@ export const useRouterHistoryStore = defineStore(
       ...recoverChatColModule,
       ...recoverImageSelectPageModule,
       ...recoverFileSelectPageModule,
+      ...recoverUserListPageModule,
     }
   }
 )

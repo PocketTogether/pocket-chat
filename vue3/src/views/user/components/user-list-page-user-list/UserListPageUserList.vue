@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { useUserPageListQuery } from '@/queries'
-import type { UserQueryModeDesuwaType } from './dependencies'
+import type {
+  UserListPagePageRecoverDataDesuwaType,
+  UserQueryModeDesuwaType,
+} from './dependencies'
 import { useElementSize, useWindowSize } from '@vueuse/core'
 import { UserListItem, PaginationBar } from './components'
 
 const props = defineProps<{
   userQueryModeDesuwa: UserQueryModeDesuwaType
-  // userSelectPagePageRecoverDataDesuwa: UserSelectPagePageRecoverDataDesuwaType
+  userListPagePageRecoverDataDesuwa: UserListPagePageRecoverDataDesuwaType
 }>()
 
 const {
@@ -18,10 +21,9 @@ const {
   userPageListQuery,
 } = props.userQueryModeDesuwa
 
-// const { userSelectPagePageRecoverData } =
-//   props.userSelectPagePageRecoverDataDesuwa
+const { userListPagePageRecoverData } = props.userListPagePageRecoverDataDesuwa
 
-// console.log('userSelectPagePageRecoverData', userSelectPagePageRecoverData)
+// console.log('userListPagePageRecoverData', userListPagePageRecoverData)
 
 const windowsSize = useWindowSize()
 
@@ -29,9 +31,9 @@ const refLayoutBox = ref<HTMLElement | null>(null)
 const sizeLayoutBox = useElementSize(refLayoutBox)
 
 const layoutBoxWidth = computed(() => {
-  // if (sizeLayoutBox.width.value <= 0) {
-  //   return userSelectPagePageRecoverData?.data.layoutBoxWidth ?? 0
-  // }
+  if (sizeLayoutBox.width.value <= 0) {
+    return userListPagePageRecoverData?.data.layoutBoxWidth ?? 0
+  }
   return sizeLayoutBox.width.value
 })
 
@@ -62,7 +64,16 @@ const transBoxHeightByDefault = () => {
   const pageBar = 48
   // 边框、分割线
   const b = 3
-  return windowsSize.height.value - (m + pageBar + b)
+  // 顶栏
+  const t = 40
+  // 操作面板
+  const c = 112
+
+  const boxH = windowsSize.height.value - (t + m + c + b + pageBar + b)
+  if (boxH < 400) {
+    return 400
+  }
+  return boxH
 }
 // 过渡盒子的高度
 const transBoxHeight = computed(() => {
@@ -72,14 +83,14 @@ const transBoxHeight = computed(() => {
   if (transBoxHeightByCache.value > 10) {
     return transBoxHeightByCache.value
   }
-  // const transBoxHeightByPageRecoverData =
-  //   userSelectPagePageRecoverData?.data.transBoxHeight
-  // if (
-  //   transBoxHeightByPageRecoverData != null &&
-  //   transBoxHeightByPageRecoverData > 10
-  // ) {
-  //   return transBoxHeightByPageRecoverData
-  // }
+  const transBoxHeightByPageRecoverData =
+    userListPagePageRecoverData?.data.transBoxHeight
+  if (
+    transBoxHeightByPageRecoverData != null &&
+    transBoxHeightByPageRecoverData > 10
+  ) {
+    return transBoxHeightByPageRecoverData
+  }
   return transBoxHeightByDefault()
 })
 
