@@ -4,7 +4,11 @@ import { useI18nStore } from '@/stores'
 import { useWatchSourceToHoldTime } from '@/utils'
 import { useRoute } from 'vue-router'
 import { useUserInfoQueryDesuwa } from './composables'
-import { UserInfoMessagesList, UserInfoPageTopBar } from './components'
+import {
+  UserInfoContentCard,
+  UserInfoMessagesList,
+  UserInfoPageTopBar,
+} from './components'
 
 const i18nStore = useI18nStore()
 
@@ -75,8 +79,9 @@ const { sourceHaveHold: isFetchingForAni } = useWatchSourceToHoldTime({
           <div v-if="userInfoQueryStatus === 'content'">
             <!-- 用户详情显示详情显示、操作面板 -->
             <div class="mt-4">
-              <!-- TODO UserInfoContentCard -->
-              <div class="h-[400px] bg-red-950"></div>
+              <UserInfoContentCard
+                :userInfoQueryDesuwa="userInfoQueryDesuwa"
+              ></UserInfoContentCard>
             </div>
             <!-- 使用此文件的消息 -->
             <Transition name="fade" mode="out-in">

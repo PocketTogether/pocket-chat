@@ -50,6 +50,7 @@ declare module 'vue' {
     RiFlaskLine: typeof import('@remixicon/vue')['RiFlaskLine']
     RiFolderLine: typeof import('@remixicon/vue')['RiFolderLine']
     RiFolderUploadLine: typeof import('@remixicon/vue')['RiFolderUploadLine']
+    RiGlobalLine: typeof import('@remixicon/vue')['RiGlobalLine']
     RiGroupLine: typeof import('@remixicon/vue')['RiGroupLine']
     RiImageAddLine: typeof import('@remixicon/vue')['RiImageAddLine']
     RiImageLine: typeof import('@remixicon/vue')['RiImageLine']

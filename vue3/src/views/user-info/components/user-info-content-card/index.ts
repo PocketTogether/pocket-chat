@@ -1,6 +1,6 @@
-// import FileInfoControlPanel from './FileInfoControlPanel.vue'
+import UserInfoContentCard from './UserInfoContentCard.vue'
 
-// export {
-//   //
-//   FileInfoControlPanel,
-// }
+export {
+  //
+  UserInfoContentCard,
+}

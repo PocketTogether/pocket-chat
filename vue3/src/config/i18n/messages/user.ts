@@ -74,6 +74,33 @@ export const i18nMessagesUserPart = {
     'ko-KR': () => '메시지' as const,
     'ru-RU': () => 'Сообщения' as const,
   },
+
+  userInfoPageUserContentBioTitle: {
+    'en-US': () => 'Bio' as const,
+    'zh-CN': () => '简介' as const,
+    'zh-TW': () => '簡介' as const,
+    'ja-JP': () => '自己紹介' as const,
+    'ko-KR': () => '소개' as const,
+    'ru-RU': () => 'О себе' as const,
+  },
+
+  userInfoPageUserContentJoinedAtTitle: {
+    'en-US': () => 'Joined' as const,
+    'zh-CN': () => '加入时间' as const,
+    'zh-TW': () => '加入時間' as const,
+    'ja-JP': () => '参加日' as const,
+    'ko-KR': () => '가입일' as const,
+    'ru-RU': () => 'Дата регистрации' as const,
+  },
+
+  userInfoPageUserContentLastOnlineTitle: {
+    'en-US': () => 'Last online' as const,
+    'zh-CN': () => '上次在线' as const,
+    'zh-TW': () => '上次上線' as const,
+    'ja-JP': () => '最終オンライン' as const,
+    'ko-KR': () => '마지막 온라인' as const,
+    'ru-RU': () => 'Последний онлайн' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType
 
 /*

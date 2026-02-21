@@ -85,7 +85,9 @@ const goUserInfoPage = () => {
 
           <!-- 右侧：状态 -->
           <div class="">
-            <div class="ml-[3px] flex items-center text-color-text-soft">
+            <div
+              class="ml-[3px] flex select-none items-center text-color-text-soft"
+            >
               <!-- 状态文字 -->
               <div class="mr-[4px]">
                 <div class="text-[13px] font-bold">离线</div>
