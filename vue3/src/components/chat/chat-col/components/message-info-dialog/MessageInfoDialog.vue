@@ -157,16 +157,10 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
                 <!-- 名称 用户名 -->
                 <div class="flex-1 truncate">
                   <div class="ml-[10px]">
-                    <div
-                      class="cursor-pointer truncate font-bold text-color-text"
-                      @click="goUserInfoPage"
-                    >
+                    <div class="truncate font-bold text-color-text">
                       {{ messageUserName }}
                     </div>
-                    <div
-                      class="cursor-pointer truncate text-[12px] text-color-text-soft"
-                      @click="goUserInfoPage"
-                    >
+                    <div class="truncate text-[12px] text-color-text-soft">
                       @{{ messageUserUsername }}
                     </div>
                   </div>

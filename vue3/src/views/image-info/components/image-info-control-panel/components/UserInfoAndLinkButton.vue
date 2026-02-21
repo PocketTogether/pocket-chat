@@ -178,16 +178,10 @@ const imageDownloadUrl = computed(() => {
 
         <!-- 名称 / 用户名 -->
         <div class="ml-[10px] flex-1 truncate">
-          <div
-            class="cursor-pointer truncate font-bold text-color-text"
-            @click="goUserInfoPage"
-          >
+          <div class="truncate font-bold text-color-text">
             {{ authorName }}
           </div>
-          <div
-            class="cursor-pointer truncate text-[12px] text-color-text-soft"
-            @click="goUserInfoPage"
-          >
+          <div class="truncate text-[12px] text-color-text-soft">
             @{{ authorUsername }}
           </div>
         </div>
