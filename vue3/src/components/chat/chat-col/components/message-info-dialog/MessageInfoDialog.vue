@@ -54,6 +54,7 @@ const {
   messageUserUsername,
   messageReplyMessageUserAvatarUrl,
   isMessageSendByCurrentUser,
+  currentMessageUserData,
 } = useMessageDispaly({
   props,
 })
@@ -92,6 +93,8 @@ const authStore = useAuthStore()
 const {
   // 跳转至图片详情页的方法
   routerGoImageInfoPage,
+  // 跳转至用户详情页的方法
+  routerGoUserInfoPage,
 } = useRouterHistoryTool()
 
 const goImageInfoPage = (data: {
@@ -102,6 +105,16 @@ const goImageInfoPage = (data: {
   // await new Promise((resolve) => setTimeout(resolve, 200))
   // await nextTick()
   routerGoImageInfoPage(data)
+}
+
+const goUserInfoPage = () => {
+  if (currentMessageUserData.value == null) {
+    return
+  }
+  routerGoUserInfoPage({
+    userId: currentMessageUserData.value.id,
+    presetUserGetOneData: currentMessageUserData.value,
+  })
 }
 
 const { permissionSendMessage } = useUserPermissionsDesuwa()
@@ -133,20 +146,27 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
               <div class="flex items-center">
                 <!-- 头像 -->
                 <div
-                  class="h-[44px] w-[44px] rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
+                  class="h-[44px] w-[44px] cursor-pointer rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
                   :style="{
                     backgroundImage: `url('${messageUserAvatarUrl}')`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }"
+                  @click="goUserInfoPage"
                 ></div>
                 <!-- 名称 用户名 -->
                 <div class="flex-1 truncate">
                   <div class="ml-[10px]">
-                    <div class="truncate font-bold text-color-text">
+                    <div
+                      class="cursor-pointer truncate font-bold text-color-text"
+                      @click="goUserInfoPage"
+                    >
                       {{ messageUserName }}
                     </div>
-                    <div class="truncate text-[12px] text-color-text-soft">
+                    <div
+                      class="cursor-pointer truncate text-[12px] text-color-text-soft"
+                      @click="goUserInfoPage"
+                    >
                       @{{ messageUserUsername }}
                     </div>
                   </div>

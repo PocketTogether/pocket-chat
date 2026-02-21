@@ -5,6 +5,8 @@ import { useI18nStore } from '@/stores'
 import { useRouterHistoryTool } from '@/composables'
 import { routerDict } from '@/config'
 import { useWindowSize } from '@vueuse/core'
+import { pb } from '@/lib'
+import { useProfileQuery } from '@/queries'
 
 const i18nStore = useI18nStore()
 
@@ -12,7 +14,23 @@ useSeoMeta({
   title: computed(() => i18nStore.t('pageSetting')()),
 })
 
-const { routerBackSafe } = useRouterHistoryTool()
+const {
+  routerBackSafe,
+  // 跳转至用户详情页的方法
+  routerGoUserInfoPage,
+} = useRouterHistoryTool()
+
+const profileQuery = useProfileQuery()
+
+const goUserInfoPage = () => {
+  if (pb.authStore.record?.id == null) {
+    return
+  }
+  routerGoUserInfoPage({
+    userId: pb.authStore.record.id,
+    presetUserGetOneData: profileQuery.data.value,
+  })
+}
 
 const chatTopBarBack = () => {
   routerBackSafe({
@@ -72,12 +90,19 @@ const showChatWidthLargerTrueWidthSmallerFalse = computed(() => {
                 </div>
               </div>
               <!-- 垫片，为了让标题居中 -->
-              <div class="h-[40px] w-[48px]"></div>
+              <!-- <div class="h-[40px] w-[48px]"></div> -->
+              <!-- 跳转至个人页 -->
+              <div
+                class="flex h-[40px] w-[48px] cursor-pointer items-center justify-center"
+                @click="goUserInfoPage"
+              >
+                <RiUserLine size="20px"></RiUserLine>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="mt-[20px]">
+      <div class="mt-[24px]">
         <SettingProfile></SettingProfile>
       </div>
       <div class="mb-10 mt-4">

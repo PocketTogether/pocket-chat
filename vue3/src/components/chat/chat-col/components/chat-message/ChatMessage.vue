@@ -34,6 +34,7 @@ import {
   imageCalcMaxWidthByRatioUtil,
   pbImageDataChooseByLargest,
 } from '@/utils'
+import { useRouterHistoryTool } from '@/composables'
 
 const props = defineProps<{
   /** 消息数据 */
@@ -208,6 +209,18 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
     }
   }
 )
+
+const {
+  // 跳转至用户详情页的方法
+  routerGoUserInfoPage,
+} = useRouterHistoryTool()
+
+const goUserInfoPage = () => {
+  routerGoUserInfoPage({
+    userId: currentMessageData.value.author,
+    presetUserGetOneData: currentMessageData.value.expand?.author,
+  })
+}
 </script>
 
 <template>
@@ -238,12 +251,13 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
                 // 不与下一条消息一起显示时，才显示头像和名称
                 isMessagesDispalyTogetherNext === false
               "
-              class="h-[40px] w-full rounded-full bg-color-background-soft"
+              class="h-[40px] w-full cursor-pointer rounded-full bg-color-background-soft"
               :style="{
                 backgroundImage: `url('${messageUserAvatarUrl}')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }"
+              @click="goUserInfoPage"
             ></div>
           </div>
         </div>
@@ -574,7 +588,10 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
         }"
       >
         <!-- 用户名 -->
-        <div class="max-w-[50%] truncate text-[12px] font-bold text-color-text">
+        <div
+          class="max-w-[50%] cursor-pointer truncate text-[12px] font-bold text-color-text"
+          @click="goUserInfoPage"
+        >
           {{ messageUserName }}
         </div>
         <!-- 分隔 -->
