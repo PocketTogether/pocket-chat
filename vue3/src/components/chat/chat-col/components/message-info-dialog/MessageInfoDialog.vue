@@ -9,6 +9,7 @@ import {
   IGVSoltHoverSlideInfoGo,
   ImageGroupViewer,
   TextWithLink,
+  TextWithLinkForMessage,
 } from '@/components'
 import {
   useRouteControlDialog,
@@ -346,10 +347,10 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
                   v-else
                   class="wrap-long-text mx-[15px] text-[16px] text-color-text"
                 >
-                  <TextWithLink
-                    :data="chatRoomMessagesGetOneQuery.data.value.content"
+                  <TextWithLinkForMessage
+                    :messageData="chatRoomMessagesGetOneQuery.data.value"
                     aTwcss="text-el-primary hover:underline"
-                  ></TextWithLink>
+                  ></TextWithLinkForMessage>
                 </div>
                 <!-- 时间 -->
                 <div class="mx-[15px] mt-[5px] flex items-center justify-end">

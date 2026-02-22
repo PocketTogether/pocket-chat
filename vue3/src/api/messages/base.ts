@@ -33,6 +33,7 @@ type MessagesRecordExpand = {
   replyMessage?: MessagesResponseWidthExpandReplyMessage
   images?: MessagesResponseWidthExpandImages[]
   file?: MessagesResponseWidthExpandFile
+  mentionedUsers?: UsersResponse[]
 }
 
 type MessagesRecordExpandReplyMessage = {
@@ -71,6 +72,7 @@ export const messagesExpand = (() => {
     replyMessage: 'replyMessage',
     images: 'images',
     file: 'file',
+    mentionedUsers: 'mentionedUsers',
   } as const satisfies Group<
     // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
     Partial<KeyValueMirror<keyof MessagesRecord>>
@@ -114,6 +116,6 @@ export const messagesExpand = (() => {
   const rkrm = recordKeysReplyMessage
   const rki = recordKeysImages
   const rkf = recordKeysFile
-  return `${rk.author},${rk.replyMessage}.${rkrm.author},${rk.images}.${rki.author},${rk.file}.${rkf.author}` as const
-  // type const = "author,replyMessage.author,images.author,file.author"
+  return `${rk.author},${rk.mentionedUsers},${rk.replyMessage}.${rkrm.author},${rk.images}.${rki.author},${rk.file}.${rkf.author}` as const
+  // type const = "author,mentionedUsers,replyMessage.author,images.author,file.author"
 })()

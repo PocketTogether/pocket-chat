@@ -1,8 +1,16 @@
-import { pbMessagesEditChatApi, pbMessagesSendChatApi } from '@/api'
+import {
+  pbMessagesEditChatApi,
+  pbMessagesSendChatApi,
+  pbUsersGetByUsernameApi,
+} from '@/api'
 import { pb } from '@/lib'
 import { queryRetryPbNetworkError } from '@/queries'
 import { useI18nStore, useRealtimeMessagesStore } from '@/stores'
-import { potoMessage, watchUntilSourceCondition } from '@/utils'
+import {
+  executeAsyncTaskWithRetryStrategy,
+  potoMessage,
+  watchUntilSourceCondition,
+} from '@/utils'
 import { useMutation } from '@tanstack/vue-query'
 import type { ChatInputBarPropsType } from './dependencies'
 import type { ChatInputBarDispalyType } from './chat-dispaly'
@@ -10,6 +18,9 @@ import type { ChatInputBarDataType } from './chat-data'
 import {
   appMessageSendSound,
   chatMessageControlRealtimeWaitTimeoutMsConfig,
+  userMessageMentionRegexBulidFn,
+  userMessageMentionRegexUsernameIndexNum,
+  type PbMessagesMentionMapType,
 } from '@/config'
 import { useSound } from '@vueuse/sound'
 
@@ -57,6 +68,106 @@ export const useChatInputBarControl = (
     )
   }
 
+  // 【260222】
+  // 要一个函数，暂编号为 FN260222162228 （要帮我命名），
+  // 参数是 content （字符串）
+  // 将返回 mentionedUsers?: string[]; 和 mentionMap?: PbMessagesMentionMapType;
+  // 从 content 中处理字符串，正则匹配 (^|\s)(@([a-zA-Z0-9_]{1,32}))($|\s)
+  // 得到所有的 $3 之类的，字符串数组，去重，这即是用户名数组
+  // 根据此数组的每一项 {
+  //   用pbUsersGetByUsernameApi获取用户数据（主要是要id），其能重试
+  // }
+
+  /**
+   * 【260222】从消息内容中提取 @username，并解析为 PocketBase 所需的
+   * mentionedUsers 与 mentionMap。
+   *
+   * 功能说明：
+   * - 使用正则匹配消息文本中的所有 @username（支持多行）
+   * - 去重（使用 Set）
+   * - 并发调用 pbUsersGetByUsernameApi 查询用户记录
+   * - 每个查询都通过 executeAsyncTaskWithRetryStrategy 自动重试网络错误
+   * - 使用 Promise.allSettled，确保部分失败不会影响整体
+   * - 自动构造：
+   *   - mentionedUsers: string[]（userId 数组，用于 PB 关系字段）
+   *   - mentionMap: Record<username, userId>（用于 JSON 字段）
+   *
+   * 设计原则：
+   * - 正则只负责“文本层”提取，不做业务判断
+   * - 用户查询使用 executeAsyncTaskWithRetryStrategy（纯 TS、框架无关）
+   * - 并发执行所有用户查询，提高性能
+   * - 使用 Promise.allSettled，保证健壮性（部分失败不影响整体）
+   *
+   * @param content 消息文本内容
+   * @returns { mentionedUsers?: string[], mentionMap?: PbMessagesMentionMapType }
+   */
+  const extractMentionRelationsFromContent = async (
+    content: string
+  ): Promise<{
+    mentionedUsers?: string[]
+    mentionMap?: PbMessagesMentionMapType
+  }> => {
+    const mentionRegex = userMessageMentionRegexBulidFn()
+
+    const usernamesSet = new Set<string>()
+
+    // 匹配 @username
+    const matches = content.matchAll(mentionRegex)
+
+    for (const match of matches) {
+      const username = match[userMessageMentionRegexUsernameIndexNum]
+      if (username != null) {
+        usernamesSet.add(username)
+      }
+    }
+
+    // 无 @username → 返回空对象
+    if (usernamesSet.size === 0) {
+      return {}
+    }
+
+    // 将 Set 转为数组，避免多次展开
+    const usernames = [...usernamesSet]
+
+    // 并发查询所有 username
+    const results = await Promise.allSettled(
+      usernames.map((username) => {
+        return executeAsyncTaskWithRetryStrategy(
+          async () => {
+            return pbUsersGetByUsernameApi(username)
+          },
+          {
+            shouldRetry: queryRetryPbNetworkError,
+          }
+        )
+      })
+    )
+
+    const mentionedUsers: string[] = []
+    const mentionMap: PbMessagesMentionMapType = {}
+
+    // 处理查询结果
+    results.forEach((res, index) => {
+      if (res.status === 'fulfilled' && res.value?.id != null) {
+        const username = usernames[index]
+        const userId = res.value.id
+
+        mentionedUsers.push(userId)
+        mentionMap[username] = userId
+      }
+    })
+
+    // 若全部失败 → 返回空对象
+    if (mentionedUsers.length === 0) {
+      return {}
+    }
+
+    return {
+      mentionedUsers,
+      mentionMap,
+    }
+  }
+
   const i18nStore = useI18nStore()
 
   const realtimeMessagesStore = useRealtimeMessagesStore()
@@ -71,6 +182,10 @@ export const useChatInputBarControl = (
         )
       }
 
+      // 【260222】调用 FN260222162228 取得 mentionedUsers mentionMap
+      const { mentionedUsers, mentionMap } =
+        await extractMentionRelationsFromContent(chatInputContent.value)
+
       // 通过 pocketbase SDK 请求
       const pbRes = await pbMessagesSendChatApi({
         content: chatInputContent.value,
@@ -83,6 +198,9 @@ export const useChatInputBarControl = (
           }
           return null
         })(),
+        // 【260222】传入
+        mentionedUsers,
+        mentionMap,
       })
       // console.log(pbRes)
       return pbRes
@@ -187,6 +305,10 @@ export const useChatInputBarControl = (
         throw new Error('chatEditMessage.value == null')
       }
 
+      // 【260222】调用 FN260222162228 取得 mentionedUsers mentionMap
+      const { mentionedUsers, mentionMap } =
+        await extractMentionRelationsFromContent(chatInputContent.value)
+
       // 通过 pocketbase SDK 请求
       const pbRes = await pbMessagesEditChatApi({
         chatEditMessageId: chatEditMessage.value.id,
@@ -199,6 +321,9 @@ export const useChatInputBarControl = (
           }
           return null
         })(),
+        // 【260222】传入
+        mentionedUsers,
+        mentionMap,
       })
       // console.log(pbRes)
       return pbRes
