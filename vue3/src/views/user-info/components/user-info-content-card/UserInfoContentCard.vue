@@ -16,11 +16,19 @@ const { userInfoDataWithRealtime } = props.userInfoQueryDesuwa
 const user = computed(() => userInfoDataWithRealtime.value)
 
 /** 头像 URL（无头像 → 默认） */
-const avatarUrl = computed(() => {
+const avatarUrl200 = computed(() => {
   if (user.value == null) return appUserDefaultAvatar
   if (user.value.avatar === '') return appUserDefaultAvatar
   return pb.files.getURL(user.value, user.value.avatar, {
     thumb: fileUserAvatarConfig.thumb200x200,
+  })
+})
+
+const avatarUrl400 = computed(() => {
+  if (user.value == null) return appUserDefaultAvatar
+  if (user.value.avatar === '') return appUserDefaultAvatar
+  return pb.files.getURL(user.value, user.value.avatar, {
+    thumb: fileUserAvatarConfig.thumb400x400,
   })
 })
 
@@ -117,13 +125,23 @@ const joinedAt = useTimeAgo(
     <div class="relative">
       <div class="absolute bottom-[10px] left-[16px]">
         <div
-          class="h-[70px] w-[70px] shrink-0 rounded-full border-[3px] border-color-background bg-color-background"
+          class="h-[70px] w-[70px] rounded-full border-[3px] border-color-background bg-color-background"
           :style="{
-            backgroundImage: `url('${avatarUrl}')`,
+            backgroundImage: `url('${avatarUrl200}')`,
+            // backgroundImage: `url('${avatarUrl400}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }"
-        ></div>
+        >
+          <div
+            class="h-full w-full rounded-full"
+            :style="{
+              backgroundImage: `url('${avatarUrl400}')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }"
+          ></div>
+        </div>
       </div>
     </div>
 
