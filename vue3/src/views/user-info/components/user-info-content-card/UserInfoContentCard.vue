@@ -117,7 +117,7 @@ const joinedAt = useTimeAgo(
     <div class="relative">
       <div class="absolute bottom-[10px] left-[16px]">
         <div
-          class="h-[70px] w-[70px] shrink-0 rounded-full border-[3px] border-color-background bg-color-background"
+          class="h-[70px] w-[70px] shrink-0 rounded-full border-[3px] border-color-background bg-color-background-soft"
           :style="{
             backgroundImage: `url('${avatarUrl}')`,
             backgroundSize: 'cover',

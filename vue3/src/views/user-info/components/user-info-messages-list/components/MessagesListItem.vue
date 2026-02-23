@@ -86,16 +86,20 @@ const {
           </div>
           <!-- 消息 -->
           <div class="flex-1 truncate">
-            <div class="mr-[10px]">
-              <div
-                class="select-none truncate text-[14px] font-bold text-color-text"
-              >
-                {{ messageContentText }}
-                <span
-                  class="ml-[5px] text-[11px] font-normal italic text-color-text-soft"
+            <div class="mr-[8px] flex items-center justify-between">
+              <div class="flex-1 truncate">
+                <div
+                  class="select-none truncate text-[14px] font-bold text-color-text"
+                >
+                  {{ messageContentText }}
+                </div>
+              </div>
+              <div class="ml-[5px]">
+                <div
+                  class="select-none text-[11px] font-normal italic text-color-text-soft"
                 >
                   {{ timeAgo }}
-                </span>
+                </div>
               </div>
             </div>
           </div>

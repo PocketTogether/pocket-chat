@@ -71,7 +71,7 @@ const searchInputContentClear = () => {
           </div>
           <div class="border-l-[3px] border-color-background"></div>
           <!-- 右 升序 -->
-          <div class="flex-1">
+          <div class="flex-1 truncate">
             <div
               class="flow-root cursor-pointer transition-colors"
               :class="{
