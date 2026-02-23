@@ -69,4 +69,8 @@ export const routerDict = {
       paramsKey,
     }
   })(),
+  SearchPage: {
+    path: '/search',
+    name: 'SearchPage',
+  },
 } as const satisfies Record<string, RouterItem>

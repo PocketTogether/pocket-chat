@@ -49,7 +49,7 @@ const isFetching = computed(() => {
     userInfoMessageListQuery.isFetching.value
   )
 })
-// 让加载动画至少显示300ms
+// 让加载动画至少显示500ms
 const { sourceHaveHold: isFetchingForAni } = useWatchSourceToHoldTime({
   source: isFetching,
   holdMs: 500,

@@ -10,6 +10,7 @@ import {
   ImageSelectPage,
   LayoutSimple,
   LoginPage,
+  SearchPage,
   UserInfoPage,
   UserListPage,
 } from './views'
@@ -64,6 +65,10 @@ const router = createRouter({
         {
           ...routerDict.UserInfoPage,
           component: UserInfoPage,
+        },
+        {
+          ...routerDict.SearchPage,
+          component: SearchPage,
         },
       ],
     },

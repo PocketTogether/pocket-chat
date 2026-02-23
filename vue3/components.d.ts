@@ -78,6 +78,8 @@ declare module 'vue' {
     RiRestartLine: typeof import('@remixicon/vue')['RiRestartLine']
     RiSearchLine: typeof import('@remixicon/vue')['RiSearchLine']
     RiSendPlane2Fill: typeof import('@remixicon/vue')['RiSendPlane2Fill']
+    RiSeoLine: typeof import('@remixicon/vue')['RiSeoLine']
+    RiSeoLineLine: typeof import('@remixicon/vue')['RiSeoLineLine']
     RiSettingsLine: typeof import('@remixicon/vue')['RiSettingsLine']
     RiShareBoxLine: typeof import('@remixicon/vue')['RiShareBoxLine']
     RiStopCircleFill: typeof import('@remixicon/vue')['RiStopCircleFill']

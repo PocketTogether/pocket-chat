@@ -116,4 +116,12 @@ export const i18nMessagesPagePart = {
     'ko-KR': () => '멤버 상세정보' as const,
     'ru-RU': () => 'Информация об участнике' as const,
   },
+  pageSearch: {
+    'en-US': () => 'Search' as const,
+    'zh-CN': () => '搜索' as const,
+    'zh-TW': () => '搜尋' as const,
+    'ja-JP': () => '検索' as const,
+    'ko-KR': () => '검색' as const,
+    'ru-RU': () => 'Поиск' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType

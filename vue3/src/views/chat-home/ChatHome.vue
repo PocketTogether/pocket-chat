@@ -100,6 +100,20 @@ const isDev = import.meta.env.DEV
             </template>
             <template #text> {{ i18nStore.t('pageUserList')() }} </template>
           </ChatTopBarMoreMenuItem>
+
+          <!-- 搜索 -->
+          <ChatTopBarMoreMenuItem
+            @click="$router.push(routerDict.SearchPage.path)"
+          >
+            <template #icon>
+              <!-- 微调 -->
+              <RiSearchLine
+                size="18px"
+                class="translate-y-[1px]"
+              ></RiSearchLine>
+            </template>
+            <template #text> {{ i18nStore.t('pageSearch')() }} </template>
+          </ChatTopBarMoreMenuItem>
         </template>
       </ChatCol>
     </div>

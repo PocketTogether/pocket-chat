@@ -128,7 +128,7 @@ export const useUsersGetOneQueryForCache = (data: {
   return query
 }
 
-/** 查询使用某个文件的消息列表，分页 */
+/** 查询某个用户的消息列表，分页 */
 export const useUserInfoMessageListQuery = (data: {
   /** 页数 */
   pageNum: ComputedRef<number | null>

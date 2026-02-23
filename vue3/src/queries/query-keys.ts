@@ -1,5 +1,6 @@
 import type {
   PMLRCApiParameters0DataPageParamNonNullable,
+  SearchPageSortModeType,
   UserPageSortModeType,
 } from '@/api'
 import type { Ref } from 'vue'
@@ -128,6 +129,23 @@ export const queryKeys = {
       'userInfoMessageList',
       ...definedOrEmpty(userId),
       ...definedOrEmpty(pageNum),
+    ] as const
+  },
+
+  /** useSearchPageMessageListQuery */
+  searchPageMessageList: (
+    sortMode?: SearchPageSortModeType | null,
+    searchContent?: string | null,
+    pageNum?: number | null,
+    /** 可自定义的充当唯一标识的字符串 */
+    customStrId?: string | null
+  ) => {
+    return [
+      'searchPageMessageList',
+      ...definedOrEmpty(sortMode),
+      ...definedOrEmpty(searchContent),
+      ...definedOrEmpty(pageNum),
+      ...definedOrEmpty(customStrId),
     ] as const
   },
 
