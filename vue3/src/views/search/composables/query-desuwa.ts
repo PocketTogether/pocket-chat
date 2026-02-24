@@ -1,20 +1,20 @@
 import type { SearchPageSortModeType } from '@/api'
 import { queryKeys, useSearchPageMessageListQuery } from '@/queries'
 import { useQueryClient } from '@tanstack/vue-query'
-// import type { SearchMessageListPagePageRecoverDataDesuwaType } from './dependencies'
+import type { SearchPagePageRecoverDataDesuwaType } from './page-recover'
 
 export const useSearchMessageQueryDesuwa = (data: {
-  // searchmessageListPagePageRecoverDataDesuwa: SearchMessageListPagePageRecoverDataDesuwaType
+  searchPagePageRecoverDataDesuwa: SearchPagePageRecoverDataDesuwaType
 }) => {
   const {
     //
-    // searchmessageListPagePageRecoverDataDesuwa,
+    searchPagePageRecoverDataDesuwa,
   } = data
 
-  // const {
-  //   // 页面恢复数据
-  //   searchmessageListPagePageRecoverData,
-  // } = searchmessageListPagePageRecoverDataDesuwa
+  const {
+    // 页面恢复数据
+    searchPagePageRecoverData,
+  } = searchPagePageRecoverDataDesuwa
 
   // 查询排序模式
   const searchmessageQuerySortMode = ref<SearchPageSortModeType>('created_desc')
@@ -25,12 +25,15 @@ export const useSearchMessageQueryDesuwa = (data: {
   // 查询页数
   const searchmessageQueryPage = ref(1)
 
-  // // 初始化、页面数据恢复
-  // if (searchmessageListPagePageRecoverData != null) {
-  //   searchmessageQuerySortMode.value = searchmessageListPagePageRecoverData.data.searchmessageQuerySortMode
-  //   searchmessageQuerySearch.value = searchmessageListPagePageRecoverData.data.searchmessageQuerySearch
-  //   searchmessageQueryPage.value = searchmessageListPagePageRecoverData.data.searchmessageQueryPage
-  // }
+  // 初始化、页面数据恢复
+  if (searchPagePageRecoverData != null) {
+    searchmessageQuerySortMode.value =
+      searchPagePageRecoverData.data.searchmessageQuerySortMode
+    searchmessageQuerySearch.value =
+      searchPagePageRecoverData.data.searchmessageQuerySearch
+    searchmessageQueryPage.value =
+      searchPagePageRecoverData.data.searchmessageQueryPage
+  }
 
   // 查询排序模式切换
   // 切换至 created_desc

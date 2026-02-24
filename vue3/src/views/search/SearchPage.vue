@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useI18nStore } from '@/stores'
-import { useSearchMessageQueryDesuwa } from './composables'
+import {
+  useSearchMessageQueryDesuwa,
+  useSearchPagePageRecoverDataDesuwa,
+  useSearchPagePageRecoverDataSetOnLeave,
+  useSearchPagePageRecoverScrollTop,
+} from './composables'
 import {
   SearchPageControlPanel,
   SearchPageMessagesList,
@@ -15,16 +20,23 @@ useSeoMeta({
 })
 
 // 页面恢复数据获取
+const searchPagePageRecoverDataDesuwa = useSearchPagePageRecoverDataDesuwa()
 
 // QueryDesuwa 这一块
 const searchMessageQueryDesuwa = useSearchMessageQueryDesuwa({
-  // searchPagePageRecoverDataDesuwa,
+  searchPagePageRecoverDataDesuwa,
 })
 const { searchmessagePageListQuery } = searchMessageQueryDesuwa
 
 // 页面恢复 滚动恢复
+useSearchPagePageRecoverScrollTop({
+  searchPagePageRecoverDataDesuwa,
+})
 
 // 页面恢复数据收集
+useSearchPagePageRecoverDataSetOnLeave({
+  searchMessageQueryDesuwa,
+})
 
 const isFetching = computed(() => {
   return searchmessagePageListQuery.isFetching.value
