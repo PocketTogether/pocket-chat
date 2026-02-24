@@ -58,10 +58,10 @@ onClickOutside(targetMoreMenu, (event) => {
   closeMoreMenu()
 })
 
-const { routerBackSafe } = useRouterHistoryTool()
+const { routerBackSafeWithThrottleToAntiCombo } = useRouterHistoryTool()
 
 const chatTopBarBack = () => {
-  routerBackSafe({
+  routerBackSafeWithThrottleToAntiCombo({
     fallbackTo: routerDict.ChatHome.path,
   })
 }

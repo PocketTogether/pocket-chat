@@ -12,6 +12,7 @@ import type {
 import { queryKeys } from '@/queries'
 import { useRouterHistoryStore } from '@/stores'
 import { useQueryClient } from '@tanstack/vue-query'
+import { throttle } from 'lodash-es'
 import { useRouter, type RouteLocationRaw } from 'vue-router'
 
 /**
@@ -37,6 +38,36 @@ export const useRouterHistoryTool = () => {
     }
     router.back()
   }
+
+  // // 帮我写一个新方法 routerBackSafeWithThrottleToAntiCombo
+  // // 目的是达到防连击的效果，建议使用 lodash-es
+  // // 其中会调用 routerBackSafe
+  // // 要有注释、要有jsdoc
+  // const routerBackSafeWithThrottleToAntiCombo = (data: {
+  //   /** 失败时跳转到的页面，类型和router.push的参数一样，默认为 '/' */
+  //   fallbackTo?: RouteLocationRaw
+  // }) => {
+  //   const { fallbackTo = '/' } = data
+  //   //
+  // }
+
+  /**
+   * 防连击版本的 routerBackSafe ，建议都用这个
+   *
+   * - 使用 throttle 限制在一定时间内只能触发一次
+   * - 避免用户连续点击导致重复跳转
+   * - 内部仍然调用 routerBackSafe，保持逻辑一致
+   *
+   * @param data 与 routerBackSafe 相同的参数
+   */
+  const routerBackSafeWithThrottleToAntiCombo = throttle(
+    routerBackSafe,
+    2000, // 这么多毫秒内只允许触发一次，可根据需要调整
+    {
+      leading: true, // 第一次立即触发
+      trailing: false, // 禁止尾部触发，避免“延迟执行”导致体验怪异
+    }
+  )
 
   const queryClient = useQueryClient()
 
@@ -246,6 +277,7 @@ export const useRouterHistoryTool = () => {
 
   return {
     routerBackSafe,
+    routerBackSafeWithThrottleToAntiCombo,
     routerGoImageInfoPage,
     routerGoFileInfoPage,
     routerGoUserInfoPage,

@@ -21,7 +21,7 @@ const {
 
 const selectionFileStore = useSelectionFileStore()
 
-const { routerBackSafe } = useRouterHistoryTool()
+const { routerBackSafeWithThrottleToAntiCombo } = useRouterHistoryTool()
 
 const authStore = useAuthStore()
 
@@ -56,7 +56,7 @@ const fileSelectSubmit = () => {
       queryKey: queryKeys.fileInfoMessageList(i.id),
     })
   })
-  routerBackSafe({
+  routerBackSafeWithThrottleToAntiCombo({
     fallbackTo: routerDict.ChatHome.path,
   })
 }

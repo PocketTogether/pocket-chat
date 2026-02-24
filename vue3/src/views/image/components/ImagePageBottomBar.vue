@@ -21,7 +21,7 @@ const {
 
 const selectionImageStore = useSelectionImageStore()
 
-const { routerBackSafe } = useRouterHistoryTool()
+const { routerBackSafeWithThrottleToAntiCombo } = useRouterHistoryTool()
 
 const authStore = useAuthStore()
 
@@ -56,7 +56,7 @@ const imageSelectSubmit = () => {
       queryKey: queryKeys.imageInfoMessageList(i.id),
     })
   })
-  routerBackSafe({
+  routerBackSafeWithThrottleToAntiCombo({
     fallbackTo: routerDict.ChatHome.path,
   })
 }

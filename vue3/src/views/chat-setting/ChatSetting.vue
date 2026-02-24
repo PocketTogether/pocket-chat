@@ -15,7 +15,7 @@ useSeoMeta({
 })
 
 const {
-  routerBackSafe,
+  routerBackSafeWithThrottleToAntiCombo,
   // 跳转至用户详情页的方法
   routerGoUserInfoPage,
 } = useRouterHistoryTool()
@@ -33,7 +33,7 @@ const goUserInfoPage = () => {
 }
 
 const chatTopBarBack = () => {
-  routerBackSafe({
+  routerBackSafeWithThrottleToAntiCombo({
     fallbackTo: routerDict.ChatHome.path,
   })
 }

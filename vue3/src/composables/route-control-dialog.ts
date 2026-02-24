@@ -14,7 +14,7 @@ export const useRouteControlDialog = (data: {
 
   const route = useRoute()
   const router = useRouter()
-  const { routerBackSafe } = useRouterHistoryTool()
+  const { routerBackSafeWithThrottleToAntiCombo } = useRouterHistoryTool()
 
   const dialogVisible = computed(() => {
     if (route.query[dialogQueryKey] != null) {
@@ -43,7 +43,7 @@ export const useRouteControlDialog = (data: {
     if (dialogVisible.value === false) {
       return
     }
-    routerBackSafe({
+    routerBackSafeWithThrottleToAntiCombo({
       fallbackTo: {
         path: route.path,
         query: {

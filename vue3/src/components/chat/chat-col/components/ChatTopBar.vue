@@ -69,10 +69,10 @@ const chatRoomMessagesRestartFnWithDisableOnAni = () => {
 const i18nStore = useI18nStore()
 
 const router = useRouter()
-const { routerBackSafe } = useRouterHistoryTool()
+const { routerBackSafeWithThrottleToAntiCombo } = useRouterHistoryTool()
 
 const chatTopBarBack = () => {
-  routerBackSafe({
+  routerBackSafeWithThrottleToAntiCombo({
     fallbackTo: routerDict.ChatHome.path,
   })
 }
