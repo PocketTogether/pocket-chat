@@ -490,18 +490,34 @@ const goUserInfoPage = () => {
                     >
                       <!-- 消息是否为自己发送，背景色会不一样，所以链接的颜色也不一样 -->
                       <!-- 还需要判断为已删除背景色的情况 -->
+                      <!-- 【260227】TextWithLinkForMessage需加key以避免消息变化时出问题 -->
                       <TextWithLinkForMessage
                         v-if="isCurrentMessageRealtimeUpdatedIsDeleted"
+                        :key="
+                          'isCurrentMessageRealtimeUpdatedIsDeleted' +
+                          currentMessageData.id +
+                          currentMessageData.updated
+                        "
                         :messageData="currentMessageData"
                         aTwcss="text-el-danger-dark-3 hover:underline"
                       ></TextWithLinkForMessage>
                       <TextWithLinkForMessage
                         v-else-if="isMessageCurrentUser"
+                        :key="
+                          'isMessageCurrentUser' +
+                          currentMessageData.id +
+                          currentMessageData.updated
+                        "
                         :messageData="currentMessageData"
                         aTwcss="text-el-primary-dark-3 hover:underline"
                       ></TextWithLinkForMessage>
                       <TextWithLinkForMessage
                         v-else
+                        :key="
+                          'normal' +
+                          currentMessageData.id +
+                          currentMessageData.updated
+                        "
                         :messageData="currentMessageData"
                         aTwcss="text-el-primary hover:underline"
                       >

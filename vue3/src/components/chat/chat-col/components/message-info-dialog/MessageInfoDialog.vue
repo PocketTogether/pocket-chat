@@ -347,7 +347,12 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
                   v-else
                   class="wrap-long-text mx-[15px] text-[16px] text-color-text"
                 >
+                  <!-- 【260227】TextWithLinkForMessage需加key以避免消息变化时出问题 -->
                   <TextWithLinkForMessage
+                    :key="
+                      chatRoomMessagesGetOneQuery.data.value.id +
+                      chatRoomMessagesGetOneQuery.data.value.updated
+                    "
                     :messageData="chatRoomMessagesGetOneQuery.data.value"
                     aTwcss="text-el-primary hover:underline"
                   ></TextWithLinkForMessage>

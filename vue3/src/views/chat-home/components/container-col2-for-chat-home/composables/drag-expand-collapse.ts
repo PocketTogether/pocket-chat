@@ -42,7 +42,6 @@ export const useCc2fchDragExpandCollapseDesuwa = (data: {
 
   const FIXED_TOTAL =
     FIXED_LEFT_MARGIN + LEFT_EXTRA + FIXED_DRAG_AND_BUTTON + FIXED_RIGHT_MARGIN
-  // = 32 + 10 + 18 + 32 = 92
 
   const finalWidth = computed(() => {
     // 限制最大窗口宽度
