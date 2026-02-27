@@ -48,7 +48,7 @@ const showChatWidthLargerTrueWidthSmallerFalse = computed(() => {
     <div v-else>
       <div
         :class="{
-          'mx-[40px]': showChatWidthLargerTrueWidthSmallerFalse,
+          'mx-[32px]': showChatWidthLargerTrueWidthSmallerFalse,
           'mx-[8px]': !showChatWidthLargerTrueWidthSmallerFalse,
         }"
       >

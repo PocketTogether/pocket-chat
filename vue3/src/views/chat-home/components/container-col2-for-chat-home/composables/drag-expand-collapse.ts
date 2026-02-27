@@ -35,10 +35,10 @@ export const useCc2fchDragExpandCollapseDesuwa = (data: {
   const MIN_LEFT = 360
   const MIN_RIGHT = 400
 
-  const FIXED_LEFT_MARGIN = 40
+  const FIXED_LEFT_MARGIN = 32
   const LEFT_EXTRA = 10 // 左栏内部额外宽度
-  const FIXED_DRAG_AND_BUTTON = 30
-  const FIXED_RIGHT_MARGIN = 40
+  const FIXED_DRAG_AND_BUTTON = 22
+  const FIXED_RIGHT_MARGIN = 32
 
   const FIXED_TOTAL =
     FIXED_LEFT_MARGIN + LEFT_EXTRA + FIXED_DRAG_AND_BUTTON + FIXED_RIGHT_MARGIN
