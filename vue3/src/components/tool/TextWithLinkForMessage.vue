@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import {
   chatLinkContentMaxLength,
   pbMessagesMentionMapSchema,
+  routerDict,
+  searchPageRouterQueryParametersKeyConfig,
   userMessageMentionRegexAtUsernameIndexNum,
   userMessageMentionRegexBulidFn,
   userMessageMentionRegexUsernameIndexNum,
@@ -10,6 +12,7 @@ import {
 import type { UsersResponse } from '@/lib'
 import type { MessagesResponseWidthExpand } from '@/api'
 import { useRouterHistoryTool } from '@/composables'
+import type { RouteLocationRaw } from 'vue-router'
 
 const props = defineProps<{
   // 字符串数据
@@ -17,74 +20,6 @@ const props = defineProps<{
   // a标签的样式
   aTwcss?: string
 }>()
-
-// messageData 是像这样的
-// {
-//   "id": "test",
-//   "content": "啊啊啊啊啊 @haruki @alice",
-//   "mentionedUsers": [
-//     "abc123",
-//     "xyz789"
-//   ],
-//   "mentionMap"（在ts里类型是unknow）: {
-//     "haruki": "abc123",
-//     "alice": "xyz789"
-//   },
-//   "created": "2022-01-01 10:00:00.123Z",
-//   "updated": "2022-01-01 10:00:00.123Z"
-//   "expand"?: {
-//     "mentionedUsers"?: [
-//       {
-//         "id": "abc123",
-//         "username": "haruki"
-//         // ...
-//       },
-//       {
-//         "id": "xyz789",
-//         "username": "alice"
-//         // ...
-//       }
-//     ]
-//   }
-//   // ...
-// }
-
-// MessagesResponseWidthExpand 比 MessagesResponse 多的 就是 expand
-// {
-//   expand?: {
-//     mentionedUsers?: UsersResponse[]
-//   }
-// }
-
-// "mentionMap"（在ts里类型是unknow）需校验，已准备
-// import { pbMessagesMentionMapSchema } from '@/config'
-// /**
-//  * PocketBase `messages` 集合中 JSON 字段 `mentionMap` 的 Zod 校验 Schema。
-//  *
-//  * 用途：
-//  * - 记录消息文本中出现的 @username 与其对应的稳定 userId 的映射关系。
-//  * - 解决用户名可被用户修改的问题，确保消息在任何时间点都能正确指向被提及的用户。
-//  *
-//  * 数据结构说明：
-//  * - 键（key）：消息内容中实际出现的用户名（username 字符串）。
-//  * - 值（value）：该用户名当时对应的稳定 userId（来自 `users` 集合）。
-//  *
-//  * 示例：
-//  * {
-//  *   "haruki": "abc123",
-//  *   "alice": "xyz789"
-//  * }
-//  *
-//  * 备注：
-//  * - 与关系字段 `mentionedUsers` 配合使用：
-//  *   - `mentionMap` 负责“文本层”的 username → userId 映射。
-//  *   - `mentionedUsers` 负责“关系层”的 userId → 用户记录引用。
-//  * - 两者共同确保 @mention 的解析在未来依然稳定可靠。
-//  */
-// export const pbMessagesMentionMapSchema = z.record(
-//   z.string(), // username
-//   z.string() // userId
-// )
 
 const messageContent = computed<string>(() => props.messageData.content)
 
@@ -123,60 +58,105 @@ interface PostContentMentionPart {
   userId: string
   userData?: UsersResponse
 }
+interface PostContentHashtagPart {
+  type: 'hashtag'
+  content: string // "#关键词" 这种字符串，点击后会跳转至搜索页
+  messageHashtagSearchRouterResolveObj: RouteLocationRaw
+}
 
 type PostContentPart =
   | PostContentTextPart
   | PostContentLinkPart
   | PostContentMentionPart
+  | PostContentHashtagPart
 
-// /**
-//  * 构建一个用于匹配用户消息中 @username 的正则表达式。
-//  *
-//  * 每次调用都会返回一个全新的 RegExp 实例，避免 `g` 标志导致的 lastIndex 状态污染。
-//  *
-//  * 匹配规则：
-//  * - 前置边界：字符串开头或空白字符（会被匹配并包含在 match[0] 中）
-//  * - `@` 符号
-//  * - 用户名：由 1–32 位字母、数字或下划线组成
-//  * - 后置边界：字符串结尾或空白字符（通过先行断言匹配，不会被消费）
-//  *
-//  * 使用了 `g` 和 `m` 标志：
-//  * - `g`：允许通过 `exec()` 进行多次迭代匹配
-//  * - `m`：使 `^` 和 `$` 在多行文本中按行匹配
-//  *
-//  * 注意：不吃后空格、会吃前空格，处理时注意判断并修正index
-//  * - 由于前置分组 `(^|\\s)` 会消费空格，`match.index` 指向的是前置空格的位置。
-//  * - 如果需要获得精确的 '@' 位置，可通过以下方式修正：
-//  *     const correctedIndex = match.index + (match[0].length - match[2].length)
-//  *
-//  * 捕获组说明：
-//  * - match[2]：完整的 @username（如 "@haruki"）
-//  * - match[3]：username 本体（如 "haruki"）
-//  *
-//  * @returns {RegExp} 一个新的、无状态的 RegExp 实例
-//  */
-// //
-// export const userMessageMentionRegexBulidFn = (): RegExp =>
-//   /(^|\s)(@([a-zA-Z0-9_]{1,32}))(?=$|\s)/gm
+// // type: 'hashtag' 关键词搜索#这一块
+// const textToPostContentPartForHashtag = (text: string): PostContentPart[] => {
+//   // 匹配 #关键词
+//   const hashtagRegex = /(^|\s)(#(\S+))(?=$|\s)/gm
 
-// const textToPostContentPartForMention = (text: string): PostContentPart[] => {
-//   // 匹配 @username 并处理
-//   // 根据 username 在 mentionMap 找，如果找不到也可在 expand?.mentionedUsers? 里找
-//   // 找不到，本个就是 type: 'text'
-//   // 找得到，本个就是 type: 'mention'
-//   // userId 是id
-//   // userData 是expand?.mentionedUsers?里的item
-//   // content 注意是 `@${username}`
+//   // AITODO 模仿别的textToPostContentPartFor实现
 
-//   // // 匹配 @usernae 并处理
-//   // const mentionRegex = userMessageMentionRegexBulidFn()
-//   // const matches = xxxxxxText.matchAll(mentionRegex)
-//   // for (const match of matches) {
-//   // // ...
-//   // }
+//   // AITODO
+//   // 这是处理出messageSearchRouterResolveObj的示例
+//   const keywordContent = '这是处理出messageSearchRouterResolveObj的示例' // 注意前面不带#
+//   const messageSearchRouterResolveObj = (() => {
+//     const { search: keySearch } = searchPageRouterQueryParametersKeyConfig
+//     return {
+//       name: routerDict.SearchPage.name,
+//       query: {
+//         [keySearch]: keywordContent,
+//       },
+//     } satisfies RouteLocationRaw
+//   })()
 // }
+
+// type: 'hashtag' 关键词搜索#这一块
+const textToPostContentPartForHashtag = (text: string): PostContentPart[] => {
+  const parts: PostContentPart[] = []
+
+  const hashtagRegex = /(^|\s)(#(\S+))(?=$|\s)/gm
+
+  let lastIndex = 0
+
+  const matches = text.matchAll(hashtagRegex)
+
+  for (const match of matches) {
+    const fullMatch = match[0]
+    const hashtagText = match[2] // "#关键词"
+    const keyword = match[3] // "关键词"
+
+    const matchIndex = match.index
+    if (matchIndex == null) continue
+
+    // 修正 index（跳过前置空格）
+    const correctedIndex = matchIndex + (fullMatch.length - hashtagText.length)
+
+    // 1️⃣ 前面的普通文本
+    if (correctedIndex > lastIndex) {
+      parts.push({
+        type: 'text',
+        content: text.slice(lastIndex, correctedIndex),
+      })
+    }
+
+    // 2️⃣ 构建 router 对象
+    const messageHashtagSearchRouterResolveObj = (() => {
+      const { search: keySearch } = searchPageRouterQueryParametersKeyConfig
+
+      return {
+        name: routerDict.SearchPage.name,
+        query: {
+          [keySearch]: keyword,
+        },
+      } satisfies RouteLocationRaw
+    })()
+
+    // 3️⃣ push hashtag
+    parts.push({
+      type: 'hashtag',
+      content: hashtagText,
+      messageHashtagSearchRouterResolveObj,
+    })
+
+    lastIndex = correctedIndex + hashtagText.length
+  }
+
+  // 4️⃣ 剩余文本
+  if (lastIndex < text.length) {
+    parts.push({
+      type: 'text',
+      content: text.slice(lastIndex),
+    })
+  }
+
+  return parts
+}
+
+// type: 'mention' 用户@这一块
 const textToPostContentPartForMention = (text: string): PostContentPart[] => {
   const parts: PostContentPart[] = []
+  // /(^|\s)(@([a-zA-Z0-9_]{1,32}))(?=$|\s)/gm
   const mentionRegex = userMessageMentionRegexBulidFn()
 
   let lastIndex = 0
@@ -244,6 +224,7 @@ const textToPostContentPartForMention = (text: string): PostContentPart[] => {
   return parts
 }
 
+// type: 'link' 链接这一块
 const textToPostContentPartForLink = (text: string): PostContentPart[] => {
   const parts: PostContentPart[] = [] // 用于存储解析后的部分
   const regex = /(https?:\/\/[^\s]+)/g // 匹配链接的正则表达式
@@ -295,29 +276,102 @@ const textToPostContentPartForLink = (text: string): PostContentPart[] => {
 }
 
 // const textToPostContentPart = (text: string): PostContentPart[] => {
-//   // 先 textToPostContentPartForMention 处理，得到 结果1
-//   // 再处理 结果1 中的 type: 'text' PostContentTextPart 的 content: string
-//   // content 给 textToPostContentPartForLink
-// }
-const textToPostContentPart = (text: string): PostContentPart[] => {
-  const mentionParts = textToPostContentPartForMention(text)
-  const finalParts: PostContentPart[] = []
+//   // 先 textToPostContentPartForMention 处理，得到 预处理结果1
 
-  for (const part of mentionParts) {
+//   // 再处理 预处理结果1 中的 type: 'text' PostContentTextPart 的 content: string
+//   // content 给 textToPostContentPartForHashtag 处理得到 预处理结果2
+
+//   // 再处理 预处理结果2 中的 type: 'text' PostContentTextPart 的 content: string
+//   // content 给 textToPostContentPartForLink 处理得到 最终结果
+// }
+
+/**
+ * 对 PostContentPart 数组中的所有 `text` 类型片段执行一次转换。
+ *
+ * 该函数是文本解析 pipeline 的基础工具，用于实现「阶段式解析」：
+ *
+ * - 仅对 type === 'text' 的部分进行处理
+ * - 已解析出的 token（mention / hashtag / link 等）不会被再次解析
+ * - 保证前一阶段的解析结果具有不可变性（token immutability）
+ *
+ * 工作流程：
+ * 1. 遍历现有 parts
+ * 2. 遇到非 text 类型 → 原样保留
+ * 3. 遇到 text → 交给 transformer 重新拆分
+ * 4. 合并为新的 parts 数组
+ *
+ * 该设计允许多个解析阶段串联形成 tokenizer pipeline，例如：
+ *
+ *   text → mention → hashtag → link
+ *
+ * @param parts 当前解析阶段的内容片段数组
+ * @param transformer 文本转换函数，将 string 拆分为新的 PostContentPart[]
+ *
+ * @returns 新的 PostContentPart 数组（不可变转换结果）
+ */
+const transformTextParts = (
+  parts: PostContentPart[],
+  transformer: (text: string) => PostContentPart[]
+): PostContentPart[] => {
+  const result: PostContentPart[] = []
+
+  for (const part of parts) {
     if (part.type !== 'text') {
-      // mention 或 link（未来可能扩展）直接推入
-      finalParts.push(part)
+      result.push(part)
       continue
     }
 
-    // 对纯文本部分做 link 解析
-    const linkParts = textToPostContentPartForLink(part.content)
-    for (const lp of linkParts) {
-      finalParts.push(lp)
-    }
+    result.push(...transformer(part.content))
   }
 
-  return finalParts
+  return result
+}
+
+/**
+ * 将原始消息文本解析为可渲染的 PostContentPart 列表。
+ *
+ * 解析采用「多阶段 tokenizer pipeline」：
+ *
+ *   Raw Text
+ *      ↓
+ *   mention 解析
+ *      ↓
+ *   hashtag 解析
+ *      ↓
+ *   link 解析
+ *      ↓
+ *   Final Parts
+ *
+ * 每个阶段仅处理 `text` 类型片段，
+ * 已识别 token 在后续阶段保持稳定，不会被重复解析。
+ *
+ * 解析顺序具有语义优先级：
+ *
+ *   1. mention (@user)   — 最高优先级
+ *   2. hashtag (#topic)
+ *   3. link (URL)        — 最低优先级
+ *
+ * @param text 原始消息文本
+ * @returns 按顺序排列的内容片段数组，用于 Vue 渲染
+ */
+const textToPostContentPart = (text: string): PostContentPart[] => {
+  let parts: PostContentPart[] = [
+    {
+      type: 'text',
+      content: text,
+    },
+  ]
+
+  // Stage 1 — @mention
+  parts = transformTextParts(parts, textToPostContentPartForMention)
+
+  // Stage 2 — #hashtag
+  parts = transformTextParts(parts, textToPostContentPartForHashtag)
+
+  // Stage 3 — URL link
+  parts = transformTextParts(parts, textToPostContentPartForLink)
+
+  return parts
 }
 
 const contentParts = computed((): PostContentPart[] => {
@@ -346,6 +400,15 @@ const {
         >
           {{ part.content }}
         </span>
+      </template>
+      <template v-else-if="part.type === 'hashtag'">
+        <RouterLink
+          :key="index"
+          :class="aTwcss"
+          :to="part.messageHashtagSearchRouterResolveObj"
+        >
+          {{ part.content }}
+        </RouterLink>
       </template>
       <template v-else-if="part.type === 'link'">
         <a
