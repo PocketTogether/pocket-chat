@@ -19,7 +19,7 @@ const STORE_VERSION = 'v1'
 export const useChatHomeColLayoutStore = defineStore(
   `pocket-together-chat-home-col-layout-${STORE_VERSION}`,
   () => {
-    const isExpanded = ref(true) // 左栏是否展开
+    const isExpanded = ref(false) // 左栏是否展开
     const isExpandedSet = (val: boolean) => {
       isExpanded.value = val
     }
