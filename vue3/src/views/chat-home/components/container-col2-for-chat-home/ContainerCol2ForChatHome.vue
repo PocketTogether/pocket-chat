@@ -93,7 +93,7 @@ defineExpose({
                 <!-- 拖拽线这一块 -->
                 <div class="w-[20px]">
                   <div
-                    class="col-collapse-button-and-drag-line h-full cursor-col-resize select-none"
+                    class="col-collapse-button-and-drag-line h-full cursor-ew-resize select-none"
                     draggable="false"
                     :class="{ 'is-dragging': dragging }"
                     @pointerdown="onDragStart"
