@@ -402,7 +402,9 @@
         "indexes": [
             "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
             "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''",
-            "CREATE UNIQUE INDEX `idx_1fdbvxxIaT` ON `users` (`username`)"
+            "CREATE UNIQUE INDEX `idx_1fdbvxxIaT` ON `users` (`username`)",
+            "CREATE INDEX `idx_ZVfkPUJG9Z` ON `users` (`created`)",
+            "CREATE INDEX `idx_tCqATPBWyD` ON `users` (`updated`)"
         ],
         "system": false,
         "authRule": "",
@@ -1091,7 +1093,11 @@
                 "type": "autodate"
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE INDEX `idx_oQL2XaBBBV` ON `files` (`author`)",
+            "CREATE INDEX `idx_znjiiQYNvh` ON `files` (`created`)",
+            "CREATE INDEX `idx_pztAxKGtSi` ON `files` (`updated`)"
+        ],
         "system": false
     },
     {
@@ -1405,7 +1411,11 @@
                 "type": "autodate"
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE INDEX `idx_lq3ggmke7m` ON `images` (`author`)",
+            "CREATE INDEX `idx_21mpENhWUk` ON `images` (`created`)",
+            "CREATE INDEX `idx_IjuwXU8Pwx` ON `images` (`updated`)"
+        ],
         "system": false
     },
     {
@@ -1551,7 +1561,15 @@
                 "type": "autodate"
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE INDEX `idx_EvGVtTLFw0` ON `messages` (`author`)",
+            "CREATE INDEX `idx_0HywW3Oa80` ON `messages` (`replyMessage`)",
+            "CREATE INDEX `idx_JWlR4e2P9J` ON `messages` (`images`)",
+            "CREATE INDEX `idx_6t47i1IN7l` ON `messages` (`file`)",
+            "CREATE INDEX `idx_sStLG437oQ` ON `messages` (`mentionedUsers`)",
+            "CREATE INDEX `idx_bRy1vmOOPn` ON `messages` (`created`)",
+            "CREATE INDEX `idx_2Wn4zSR3iY` ON `messages` (`updated`)"
+        ],
         "system": false
     },
     {
@@ -1600,19 +1618,12 @@
                 "presentable": false,
                 "system": false,
                 "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE INDEX `idx_X5iw7XYOKP` ON `usersNotViewingMarks` (`author`)",
+            "CREATE INDEX `idx_D0NJG8AyBW` ON `usersNotViewingMarks` (`created`)"
+        ],
         "system": false
     },
     {
@@ -1679,19 +1690,12 @@
                 "presentable": false,
                 "system": false,
                 "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE INDEX `idx_0YLKYveHTm` ON `usersPresencesStatus` (`author`)",
+            "CREATE INDEX `idx_jLcjZzoGzc` ON `usersPresencesStatus` (`created`)"
+        ],
         "system": false
     }
 ]

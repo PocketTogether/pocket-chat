@@ -199,7 +199,6 @@ export type UsersNotViewingMarksRecord = {
 	author: RecordIdString
 	created?: IsoDateString
 	id: string
-	updated?: IsoDateString
 }
 
 export type UsersPresencesStatusRecord = {
@@ -208,7 +207,6 @@ export type UsersPresencesStatusRecord = {
 	id: string
 	isNotViewing?: boolean
 	isTyping?: boolean
-	updated?: IsoDateString
 }
 
 // Response types include system fields and match responses from the PocketBase API
