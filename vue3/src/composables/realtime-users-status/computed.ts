@@ -1,4 +1,5 @@
 import type { UsersPresencesStatusResponseWithBaseExpand } from '@/api'
+import { usersStatusComputedRealtimeCheckIsOnlineThresholdMs } from '@/config'
 import type { UsersResponse } from '@/lib'
 import { useUsersPresencesStatusInitGetListQuery } from '@/queries'
 import {
@@ -152,7 +153,10 @@ export const useRealtimeUsersStatusComputed = () => {
 
   const checkIsOnlineByStatusIsoDate = (statusIsoDate: string) => {
     const ts = new Date(statusIsoDate).getTime()
-    return nowRefTimestamp.value - ts <= 100_000
+    return (
+      nowRefTimestamp.value - ts <=
+      usersStatusComputedRealtimeCheckIsOnlineThresholdMs
+    )
   }
 
   /**

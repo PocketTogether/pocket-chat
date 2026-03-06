@@ -184,6 +184,7 @@ export const pbUsersNotViewingMarksCreateApiBySendBeacon = () => {
 
   // sendBeacon 返回 boolean，表示是否成功排队发送
   const ok = navigator.sendBeacon(url, body)
+  // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
 
   return ok
 }
