@@ -1,9 +1,7 @@
-import type { UsersPresencesStatusResponseWithBaseExpand } from '@/api'
 import { usersStatusComputedRealtimeCheckIsOnlineThresholdMs } from '@/config'
-import type { UsersNotViewingMarksResponse } from '@/lib'
 import {
-  useUsersNotViewingMarksInitGetListQuery,
-  useUsersPresencesStatusInitGetListQuery,
+  useUsersNotViewingMarksInitGetListWithMapByUserProcessQuery,
+  useUsersPresencesStatusInitGetListWithMapByUserProcessQuery,
 } from '@/queries'
 import {
   useRealtimeUsersNotViewingMarksStore,
@@ -22,60 +20,17 @@ export const useRealtimeUsersStatusComputed = () => {
   const realtimeUsersNotViewingMarksStore =
     useRealtimeUsersNotViewingMarksStore()
 
-  // userPresencesStatus前500条查询，初始的一些用户的状态
-  const usersPresencesStatusInitGetListQuery =
-    useUsersPresencesStatusInitGetListQuery()
-  // usersNotViewingMarks前500条查询，初始的一些NotViewingMarks
-  const usersNotViewingMarksInitGetListQuery =
-    useUsersNotViewingMarksInitGetListQuery()
+  const {
+    /** 初始的一些用户的状态 latest map */
+    usersPresencesStatusInitLatestMapByUser,
+    /** 初始的一些用户的状态 earliest map */
+    usersPresencesStatusInitEarliestMapByUser,
+  } = useUsersPresencesStatusInitGetListWithMapByUserProcessQuery()
 
-  /** 初始的一些用户的状态 处理为 latest map */
-  const usersPresencesStatusInitLatestMapByUser = computed<
-    ReadonlyMap<string, UsersPresencesStatusResponseWithBaseExpand>
-  >(() => {
-    const map = new Map<string, UsersPresencesStatusResponseWithBaseExpand>()
-    const list = usersPresencesStatusInitGetListQuery.data.value?.items ?? []
-    for (const item of list) {
-      const userId = item.author
-      const prev = map.get(userId)
-      if (prev == null || item.created > prev.created) {
-        map.set(userId, item)
-      }
-    }
-    return map
-  })
-
-  /** 初始的一些用户的状态 处理为 earliest map */
-  const usersPresencesStatusInitEarliestMapByUser = computed<
-    ReadonlyMap<string, UsersPresencesStatusResponseWithBaseExpand>
-  >(() => {
-    const map = new Map<string, UsersPresencesStatusResponseWithBaseExpand>()
-    const list = usersPresencesStatusInitGetListQuery.data.value?.items ?? []
-    for (const item of list) {
-      const userId = item.author
-      const prev = map.get(userId)
-      if (prev == null || item.created < prev.created) {
-        map.set(userId, item)
-      }
-    }
-    return map
-  })
-
-  /** 初始的一些NotViewingMarks 处理为 latest map */
-  const usersNotViewingMarksInitLatestMapByUser = computed<
-    ReadonlyMap<string, UsersNotViewingMarksResponse>
-  >(() => {
-    const map = new Map<string, UsersNotViewingMarksResponse>()
-    const list = usersNotViewingMarksInitGetListQuery.data.value?.items ?? []
-    for (const item of list) {
-      const userId = item.author
-      const prev = map.get(userId)
-      if (prev == null || item.created > prev.created) {
-        map.set(userId, item)
-      }
-    }
-    return map
-  })
+  const {
+    /** 初始的一些NotViewingMarks latest map */
+    usersNotViewingMarksInitLatestMapByUser,
+  } = useUsersNotViewingMarksInitGetListWithMapByUserProcessQuery()
 
   /** 每秒更新一次的响应式时间戳 */
   const nowRefTimestamp = useTimestamp({

@@ -140,6 +140,28 @@ export const queryKeys = {
   usersNotViewingMarksInitGetList: () =>
     ['usersNotViewingMarksInitGetList'] as const,
 
+  /** useUsersPresencesStatusInitGetListWithMapByUserProcessQuery */
+  usersPresencesStatusInitGetListWithMapByUserProcess: (
+    /** 依赖别的查询中的数据，就需那个query的dependQueryUuid（thisTimeQueryUuid） */
+    dependQueryUuid?: string | null
+  ) => {
+    return [
+      'usersPresencesStatusInitGetListWithMapByUserProcess',
+      ...definedOrEmpty(dependQueryUuid),
+    ] as const
+  },
+
+  /** useUsersNotViewingMarksInitGetListWithMapByUserProcessQuery */
+  usersNotViewingMarksInitGetListWithMapByUserProcess: (
+    /** 依赖别的查询中的数据，就需那个query的dependQueryUuid（thisTimeQueryUuid） */
+    dependQueryUuid?: string | null
+  ) => {
+    return [
+      'usersNotViewingMarksInitGetListWithMapByUserProcess',
+      ...definedOrEmpty(dependQueryUuid),
+    ] as const
+  },
+
   /** useSearchPageMessageListQuery */
   searchPageMessageList: (
     sortMode?: SearchPageSortModeType | null,
