@@ -136,6 +136,10 @@ export const queryKeys = {
   usersPresencesStatusInitGetList: () =>
     ['usersPresencesStatusInitGetList'] as const,
 
+  /** useUsersNotViewingMarksInitGetListQuery */
+  usersNotViewingMarksInitGetList: () =>
+    ['usersNotViewingMarksInitGetList'] as const,
+
   /** useSearchPageMessageListQuery */
   searchPageMessageList: (
     sortMode?: SearchPageSortModeType | null,

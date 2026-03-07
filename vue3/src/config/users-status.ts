@@ -5,6 +5,12 @@
 export const usersPresencesStatusInitGetListApiPerPageNumConfig = 500 as const
 
 /**
+ * pbUsersNotViewingMarksInitGetListApi
+ * usersNotViewingMarks查询前500条
+ */
+export const usersNotViewingMarksInitGetListApiPerPageNumConfig = 500 as const
+
+/**
  * 用户在线状态判断的时间阈值（毫秒）。
  *
  * 若用户最近一次状态更新时间与当前时间的差值
@@ -54,3 +60,19 @@ export const usersStatusSelfPresenceSendCooldownThresholdMs = 2_000 as const
  * 从而控制 Presence 检查与发送的频率（当前为每 5 秒一次）。
  */
 export const usersStatusSelfPresenceLoopIntervalThresholdMs = 5_000 as const
+
+/** 封装代表用户各种实时状态的key */
+export const usersStatusItemPresenceStatusKeyConfig = {
+  // 离线
+  offline: 'offline',
+  // 在线
+  online: 'online',
+  // 输入中
+  typing: 'typing',
+  // 闲置
+  not_viewing: 'not_viewing',
+} as const
+
+/** usersStatusItemPresenceStatusKeyConfig 类型体操得到联合类型 */
+export type UsersStatusItemPresenceStatusKeyUnionType =
+  (typeof usersStatusItemPresenceStatusKeyConfig)[keyof typeof usersStatusItemPresenceStatusKeyConfig]

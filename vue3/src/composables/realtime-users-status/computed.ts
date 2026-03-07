@@ -1,8 +1,15 @@
 import type { UsersPresencesStatusResponseWithBaseExpand } from '@/api'
-import { usersStatusComputedRealtimeCheckIsOnlineThresholdMs } from '@/config'
-import type { UsersResponse } from '@/lib'
-import { useUsersPresencesStatusInitGetListQuery } from '@/queries'
 import {
+  usersStatusComputedRealtimeCheckIsOnlineThresholdMs,
+  usersStatusItemPresenceStatusKeyConfig,
+} from '@/config'
+import type { UsersNotViewingMarksResponse, UsersResponse } from '@/lib'
+import {
+  useUsersNotViewingMarksInitGetListQuery,
+  useUsersPresencesStatusInitGetListQuery,
+} from '@/queries'
+import {
+  useI18nStore,
   useRealtimeUsersNotViewingMarksStore,
   useRealtimeUsersPresencesStatusStore,
 } from '@/stores'
@@ -22,6 +29,9 @@ export const useRealtimeUsersStatusComputed = () => {
   // userPresencesStatus前500条查询，初始的一些用户的状态
   const usersPresencesStatusInitGetListQuery =
     useUsersPresencesStatusInitGetListQuery()
+  // usersNotViewingMarks前500条查询，初始的一些NotViewingMarks
+  const usersNotViewingMarksInitGetListQuery =
+    useUsersNotViewingMarksInitGetListQuery()
 
   /** 初始的一些用户的状态 处理为 latest map */
   const usersPresencesStatusInitLatestMapByUser = computed<
@@ -32,7 +42,7 @@ export const useRealtimeUsersStatusComputed = () => {
     for (const item of list) {
       const userId = item.author
       const prev = map.get(userId)
-      if (!prev || item.created > prev.created) {
+      if (prev == null || item.created > prev.created) {
         map.set(userId, item)
       }
     }
@@ -48,7 +58,23 @@ export const useRealtimeUsersStatusComputed = () => {
     for (const item of list) {
       const userId = item.author
       const prev = map.get(userId)
-      if (!prev || item.created < prev.created) {
+      if (prev == null || item.created < prev.created) {
+        map.set(userId, item)
+      }
+    }
+    return map
+  })
+
+  /** 初始的一些NotViewingMarks 处理为 latest map */
+  const usersNotViewingMarksInitLatestMapByUser = computed<
+    ReadonlyMap<string, UsersNotViewingMarksResponse>
+  >(() => {
+    const map = new Map<string, UsersNotViewingMarksResponse>()
+    const list = usersNotViewingMarksInitGetListQuery.data.value?.items ?? []
+    for (const item of list) {
+      const userId = item.author
+      const prev = map.get(userId)
+      if (prev == null || item.created > prev.created) {
         map.set(userId, item)
       }
     }
@@ -77,6 +103,10 @@ export const useRealtimeUsersStatusComputed = () => {
     const initLatestPresence =
       usersPresencesStatusInitLatestMapByUser.value.get(userId)
 
+    // 初始化查询得到的最新 not-viewing-marks 状态（订阅启动前的历史数据）
+    const initLatestNotViewingMark =
+      usersNotViewingMarksInitLatestMapByUser.value.get(userId)
+
     /**
      * base 状态：
      * - 优先使用实时最新 presence 状态（用户状态集合 userPresencesStatus）
@@ -97,11 +127,21 @@ export const useRealtimeUsersStatusComputed = () => {
       return null
     }
 
+    const baseLatestNotViewingMark = (() => {
+      if (latestNotViewingMark != null) {
+        return latestNotViewingMark
+      }
+      if (initLatestNotViewingMark != null) {
+        return latestNotViewingMark
+      }
+      return null
+    })()
+
     /**
      * isNotViewing
-     * - latestNotViewingMark
+     * - baseLatestNotViewingMark
      *   如果 UsersNotViewingMarks 的个记录的创建时间更大，那就指的是用户是屏幕正在不显示状态
-     * - basePresence（latestPresence或initLatestPresence）
+     * - basePresence
      *   如果 UsersPresencesStatus 的个记录的创建时间更大，那就以其内容为准
      */
     /**
@@ -130,16 +170,16 @@ export const useRealtimeUsersStatusComputed = () => {
      * - 用户状态集合的正常轮询更新
      */
     const isNotViewing = (() => {
-      // 情况 1：存在 latestNotViewingMark ，与 basePresence 进行比较
-      if (latestNotViewingMark != null) {
-        // latestNotViewingMark.created 更大，则判定为 isNotViewing=true
-        if (latestNotViewingMark.created > basePresence.created) {
+      // 情况 1：存在 baseLatestNotViewingMark ，与 basePresence 进行比较
+      if (baseLatestNotViewingMark != null) {
+        // baseLatestNotViewingMark.created 更大，则判定为 isNotViewing=true
+        if (baseLatestNotViewingMark.created > basePresence.created) {
           return true
         }
         // 否则以 basePresence 内容为准
         return basePresence.isNotViewing
       }
-      // 情况 2：不存在 latestNotViewingMark ，即只有 basePresence
+      // 情况 2：不存在 baseLatestNotViewingMark ，即只有 basePresence
       // 直接使用 basePresence.isNotViewing
       return basePresence.isNotViewing
     })()
@@ -403,7 +443,7 @@ export const useRealtimeUsersStatusComputedForUserRealtimeStatus = (data: {
    * - O(1)，只处理单个用户
    * - nowRefTimestamp 更新时，只重新计算这个用户的在线状态
    */
-  const statusByUserIdWithIsOnline = computed(() => {
+  const userRealtimeStatusWithIsOnline = computed(() => {
     if (userRealtimeStatus.value == null) {
       return null
     }
@@ -415,10 +455,69 @@ export const useRealtimeUsersStatusComputedForUserRealtimeStatus = (data: {
       isOnline,
     }
   })
+  // userRealtimeStatusWithIsOnline的类型是这样的
+  // const userRealtimeStatusWithIsOnline: globalThis.ComputedRef<{
+  //   isOnline: boolean;
+  //   isNotViewing: boolean;
+  //   isTyping: boolean;
+  //   statusIsoDate: string;
+  // } | null>
+  // 优先级依次
+  // null 即是离线
+  // isOnline=false 是离线
+  // isNotViewing=true 是闲置
+  // isTyping=true 是输入中
+  // …… 是在线
+
+  const i18nStore = useI18nStore()
+
+  const userRealtimeStatusForShow = computed(() => {
+    const data = userRealtimeStatusWithIsOnline.value
+
+    // 1. null → 离线
+    // 2. isOnline = false → 离线
+    if (data == null || !data.isOnline) {
+      return {
+        key: usersStatusItemPresenceStatusKeyConfig.offline,
+        color: 'var(--color-text-soft)',
+        text: i18nStore.t('usersStatusText_offline')(),
+      } as const
+    }
+
+    // 3. isNotViewing = true → 闲置
+    if (data.isNotViewing) {
+      return {
+        key: usersStatusItemPresenceStatusKeyConfig.not_viewing,
+        color: 'var(--poto-color-amber-sand)',
+        text: i18nStore.t('usersStatusText_not_viewing')(),
+      } as const
+    }
+
+    // 4. isTyping = true → 输入中
+    if (data.isTyping) {
+      return {
+        key: usersStatusItemPresenceStatusKeyConfig.typing,
+        color: 'var(--poto-color-mist-blue)',
+        text: i18nStore.t('usersStatusText_typing')(),
+      } as const
+    }
+
+    // 5. 其他 → 在线
+    return {
+      key: usersStatusItemPresenceStatusKeyConfig.online,
+      color: 'var(--poto-color-moss-green)',
+      text: i18nStore.t('usersStatusText_online')(),
+    } as const
+  })
 
   return {
     //
     userRealtimeStatus,
-    statusByUserIdWithIsOnline,
+    userRealtimeStatusWithIsOnline,
+    userRealtimeStatusForShow,
   }
 }
+
+export type RealtimeUsersStatusComputedForUserRealtimeStatusType = ReturnType<
+  typeof useRealtimeUsersStatusComputedForUserRealtimeStatus
+>

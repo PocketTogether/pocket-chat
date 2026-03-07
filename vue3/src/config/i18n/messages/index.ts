@@ -15,6 +15,7 @@ import { i18nMessagesSettingPart } from './setting'
 import { i18nMessagesTagsPart } from './tags'
 import { i18nMessagesUploadPart } from './upload'
 import { i18nMessagesUserPart } from './user'
+import { i18nMessagesUsersStatusPart } from './users-status'
 
 export type I18nMessagesSatisfiesType = Record<
   string,
@@ -59,6 +60,8 @@ export const i18nMessages = {
   ...i18nMessagesUserPart,
   // 搜索相关部分
   ...i18nMessagesSearchPart,
+  // 用户实时状态相关部分
+  ...i18nMessagesUsersStatusPart,
 } as const satisfies I18nMessagesSatisfiesType
 
 // 通过类型体操，获取i18nMessages键的类型

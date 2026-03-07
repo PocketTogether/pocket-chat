@@ -1,14 +1,15 @@
 import {
   pocketbaseConfig,
+  usersNotViewingMarksInitGetListApiPerPageNumConfig,
   usersPresencesStatusInitGetListApiPerPageNumConfig,
 } from '@/config'
 import {
   Collections,
   pb,
   type Create,
+  type UsersNotViewingMarksRecord,
   type UsersNotViewingMarksResponse,
   type UsersPresencesStatusRecord,
-  type UsersPresencesStatusResponse,
 } from '@/lib'
 import { fetchWithTimeoutPreferred, urlJoinUtil } from '@/utils'
 import type { RecordSubscription } from 'pocketbase'
@@ -42,6 +43,38 @@ export const pbUsersPresencesStatusInitGetListApi = async () => {
       {
         expand: usersPresencesStatusBaseExpand,
         sort: usersPresencesStatusInitGetListSort,
+        // filter, 不需要
+        skipTotal: true,
+        fetch: fetchWithTimeoutPreferred,
+      }
+    )
+  return pbRes
+}
+
+/** 🧠 类型安全地构造 sort 字符串 */
+const usersNotViewingMarksInitGetListSort = (() => {
+  const recordKeys = {
+    created: 'created',
+    id: 'id',
+  } as const satisfies Group<
+    // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
+    Partial<KeyValueMirror<keyof UsersNotViewingMarksRecord>>
+  >
+
+  return `-${recordKeys.created},${recordKeys.id}` as const
+  // type const = "-created,id"
+})()
+
+// usersNotViewingMarks 查询前500条函数
+export const pbUsersNotViewingMarksInitGetListApi = async () => {
+  const pbRes = await pb
+    .collection(Collections.UsersNotViewingMarks)
+    .getList<UsersNotViewingMarksResponse>(
+      1,
+      usersNotViewingMarksInitGetListApiPerPageNumConfig,
+      {
+        // expand, 不需要
+        sort: usersNotViewingMarksInitGetListSort,
         // filter, 不需要
         skipTotal: true,
         fetch: fetchWithTimeoutPreferred,

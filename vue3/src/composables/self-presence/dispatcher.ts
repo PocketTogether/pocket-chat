@@ -37,6 +37,38 @@ export const useSelfPresenceDispatcher = () => {
     return document.visibilityState !== 'visible'
   }
 
+  /**
+   * 判断系统在当前状态下是否会将最近一次发送的 presence
+   * 视为 isNotViewing = true。
+   *
+   * 判定规则：
+   * - 若尚未发送过 presence（timestamp 或 payload 为空），则不会被视为 NotViewing。
+   * - 若从未发送过 NotViewing 标记，则不会被视为 NotViewing。
+   * - 若 lastNotViewingTs < lastPresenceTs，则 presence 是最新状态，
+   *   只有当 lastPayload.isNotViewing === true 时才会被视为 NotViewing。
+   * - 若 lastNotViewingTs >= lastPresenceTs，则 NotViewing 标记更加新，
+   *   系统会认为 isNotViewing = true。
+   */
+  const willBeConsideredNotViewing = () => {
+    const lastNotViewingTs = selfPresenceStore.lastNotViewingMarksSentTimestamp
+    const lastPresenceTs = selfPresenceStore.lastPresenceSentTimestamp
+    const lastPayload = selfPresenceStore.lastPresenceSentPayload
+
+    // 尚未发送过 presence，则不会被认为是 NotViewing
+    if (lastPresenceTs == null || lastPayload == null) return false
+
+    // 从未发送过 NotViewing 标记，则不会被认为是 NotViewing
+    if (lastNotViewingTs == null) return false
+
+    // 如果 NotViewing 标记比 presence 更旧，则 presence 是最新状态
+    if (lastNotViewingTs < lastPresenceTs) {
+      return lastPayload.isNotViewing === true
+    }
+
+    // 否则 lastNotViewingTs >= lastPresenceTs，NotViewing 标记加更新
+    return true
+  }
+
   /** -----------------------------
    * Presence 发送判断
    * ----------------------------- */
@@ -51,7 +83,10 @@ export const useSelfPresenceDispatcher = () => {
     if (lastPayload == null) return true
 
     if (lastPayload.isTyping !== isTyping) return true
-    if (lastPayload.isNotViewing !== isNotViewing) return true
+
+    // if (lastPayload.isNotViewing !== isNotViewing) return true
+    // 【260307】要考虑到 NotViewingMarks
+    if (willBeConsideredNotViewing() !== isNotViewing) return true
 
     return false
   }
@@ -143,24 +178,11 @@ export const useSelfPresenceDispatcher = () => {
   // （lastPresenceSentPayload 的 isNotViewing 为 false）才能发送
   // 即已经会被判定为isNotViewing=ture时就不必发送了
   const checkNeedSendNotViewingMarksByPresence = () => {
-    const lastNotViewingTs = selfPresenceStore.lastNotViewingMarksSentTimestamp
-    const lastPresenceTs = selfPresenceStore.lastPresenceSentTimestamp
-    const lastPayload = selfPresenceStore.lastPresenceSentPayload
+    // 如果系统已经会认为 isNotViewing=true，则无需发送
+    if (willBeConsideredNotViewing()) return false
 
-    // lastPresenceTs == null 即尚未发送状态记录，不必发送
-    if (lastPresenceTs == null) return false
-    if (lastPayload == null) return false
-
-    // lastNotViewingTs == null 即尚未发送过NotViewing标记，可发送
-    if (lastNotViewingTs == null) return true
-
-    // 已经会被判定为 isNotViewing=ture 时就不必发送了
-    // 即未被判定为 isNotViewing=ture 时才需要发送
-    if (lastNotViewingTs < lastPresenceTs) {
-      if (lastPayload.isNotViewing === false) return true
-    }
-
-    return false
+    // 否则需要发送
+    return true
   }
 
   /** -----------------------------
