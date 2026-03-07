@@ -36,6 +36,8 @@ export const useSelfPresenceTypingReporter = () => {
    * --------------------------------
    * 1. 设置 isTypingMark = false
    * 2. 立即调用 sendPresenceIfNeedAndCanSend
+   *
+   * 在消息编辑提交、消息编辑提交时也会调用
    */
   const reportTypingOnMessageSend = async () => {
     selfPresenceStore.isTypingMarkSet(false)
@@ -53,3 +55,7 @@ export const useSelfPresenceTypingReporter = () => {
     reportTypingOnMessageSend,
   }
 }
+
+export type selfPresenceTypingReporterType = ReturnType<
+  typeof useSelfPresenceTypingReporter
+>

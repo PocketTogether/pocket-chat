@@ -19,6 +19,7 @@ import {
   fileTypeResolveIconContentUtil,
   pbImageDataChooseBySmallestWithUrl,
 } from '@/utils'
+import { useSelfPresenceTypingReporter } from '@/composables'
 
 const props = defineProps<{
   /** 房间id，空字符串为全局聊天 */
@@ -43,6 +44,13 @@ const props = defineProps<{
 export type ChatInputBarPropsType = typeof props
 
 const i18nStore = useI18nStore()
+
+// 【260307】用户当前实时输入状态这一块
+const selfPresenceTypingReporter = useSelfPresenceTypingReporter()
+const {
+  //
+  reportTypingOnInput,
+} = selfPresenceTypingReporter
 
 // 封装 聊天输入栏数据逻辑
 // useChatInputBarData
@@ -84,6 +92,7 @@ const {
 // useChatInputBarControl
 const chatInputBarControl = useChatInputBarControl({
   props,
+  selfPresenceTypingReporter,
   ...chatInputBarData,
   ...chatInputBarDispaly,
 })
@@ -457,6 +466,7 @@ const autosizeElInput = computed(() => {
                       @keydown.alt.enter.exact.prevent="
                         handleChatInputKeydownEnter
                       "
+                      @input="reportTypingOnInput"
                     />
                   </div>
                 </div>

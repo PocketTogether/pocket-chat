@@ -23,6 +23,7 @@ import {
   type PbMessagesMentionMapType,
 } from '@/config'
 import { useSound } from '@vueuse/sound'
+import type { selfPresenceTypingReporterType } from '@/composables'
 
 // 封装 聊天输入栏的操作逻辑
 // useChatInputBarControl
@@ -30,6 +31,7 @@ export const useChatInputBarControl = (
   data: {
     //
     props: ChatInputBarPropsType
+    selfPresenceTypingReporter: selfPresenceTypingReporterType
   } & ChatInputBarDataType &
     ChatInputBarDispalyType
 ) => {
@@ -46,7 +48,13 @@ export const useChatInputBarControl = (
     messageEditSubmitRunning,
     chatInputBarFunctionChoose,
     chatMessageIsRealtimeTimeoutSet,
+    selfPresenceTypingReporter,
   } = data
+
+  const {
+    //
+    reportTypingOnMessageSend,
+  } = selfPresenceTypingReporter
 
   // 取消回复消息
   const chatReplyMessageCancel = () => {
@@ -243,6 +251,10 @@ export const useChatInputBarControl = (
     if (messageSendSubmitRunning.value === true) {
       return
     }
+
+    // 【260307】提交时即代表已结束输入
+    reportTypingOnMessageSend()
+
     messageSendSubmitRunning.value = true
     try {
       const resData = await messageSendMutation.mutateAsync()
@@ -357,6 +369,10 @@ export const useChatInputBarControl = (
     if (messageEditSubmitRunning.value === true) {
       return
     }
+
+    // 【260307】提交时即代表已结束输入
+    reportTypingOnMessageSend()
+
     messageEditSubmitRunning.value = true
     try {
       const resData = await messageEditMutation.mutateAsync()
@@ -404,6 +420,9 @@ export const useChatInputBarControl = (
   // 消息编辑取消
   const messageEditCancel = () => {
     chatEditMessageSet(null)
+
+    // 【260307】取消时即代表已结束输入
+    reportTypingOnMessageSend()
   }
 
   // 输入栏回车的处理

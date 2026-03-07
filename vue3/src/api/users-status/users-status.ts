@@ -43,6 +43,7 @@ export const pbUsersPresencesStatusInitGetListApi = async () => {
         expand: usersPresencesStatusBaseExpand,
         sort: usersPresencesStatusInitGetListSort,
         // filter, 不需要
+        skipTotal: true,
         fetch: fetchWithTimeoutPreferred,
       }
     )
