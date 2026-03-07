@@ -1,4 +1,4 @@
-import { usersStatusItemPresenceStatusKeyConfig } from '@/config'
+import { usersStatusItemPresenceStatusKeyConfig } from '@/config/users-status'
 import type { I18nMessagesSatisfiesType } from '.'
 
 const usipskc = usersStatusItemPresenceStatusKeyConfig
