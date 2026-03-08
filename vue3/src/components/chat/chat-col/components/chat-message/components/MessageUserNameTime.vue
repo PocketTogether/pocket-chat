@@ -2,6 +2,7 @@
 import { useRealtimeUsersStatusComputedForUserRealtimeStatus } from '@/composables'
 import type { MessageDisplayDesuwaType } from './dependencies'
 import { UserRealtimeStatusToIcon } from '@/components/user'
+import { usersStatusItemPresenceStatusKeyConfig } from '@/config'
 
 const props = defineProps<{
   messageDisplayDesuwa: MessageDisplayDesuwaType
@@ -22,6 +23,15 @@ const realtimeUsersStatusComputedForUserRealtimeStatus =
   })
 const { userRealtimeStatusForShow } =
   realtimeUsersStatusComputedForUserRealtimeStatus
+
+const usipskc = usersStatusItemPresenceStatusKeyConfig
+
+const colorForUserItem = computed(() => {
+  if (userRealtimeStatusForShow.value.key === usipskc.offline) {
+    return 'var(--color-text)'
+  }
+  return userRealtimeStatusForShow.value.color
+})
 </script>
 
 <template>
@@ -37,7 +47,7 @@ const { userRealtimeStatusForShow } =
       <div
         class="max-w-[50%] cursor-pointer truncate text-[12px] font-bold transition-colors"
         :style="{
-          color: userRealtimeStatusForShow.color,
+          color: colorForUserItem,
         }"
         @click="goUserInfoPage"
       >
@@ -48,7 +58,7 @@ const { userRealtimeStatusForShow } =
         <div
           class="mx-[5px] cursor-pointer transition-colors"
           :style="{
-            color: userRealtimeStatusForShow.color,
+            color: colorForUserItem,
           }"
           @click="goUserInfoPage"
         >
