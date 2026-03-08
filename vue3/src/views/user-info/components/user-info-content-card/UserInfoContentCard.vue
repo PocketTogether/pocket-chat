@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { TextWithLink } from '@/components'
+import { TextWithLink, UserRealtimeStatusToIcon } from '@/components'
 import type { UserInfoQueryDesuwaType } from './dependencies'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import { useI18nStore } from '@/stores'
 import { useTimeAgo } from '@vueuse/core'
+import { useRealtimeUsersStatusComputedForUserRealtimeStatus } from '@/composables'
 
 const props = defineProps<{
   userInfoQueryDesuwa: UserInfoQueryDesuwaType
@@ -64,6 +65,13 @@ const joinedAt = useTimeAgo(
 //     max: 'day',
 //   }
 // )
+
+const realtimeUsersStatusComputedForUserRealtimeStatus =
+  useRealtimeUsersStatusComputedForUserRealtimeStatus({
+    userId: computed(() => user.value?.id),
+  })
+const { userRealtimeStatusForShow } =
+  realtimeUsersStatusComputedForUserRealtimeStatus
 </script>
 
 <template>
@@ -94,17 +102,33 @@ const joinedAt = useTimeAgo(
             <!-- 右侧：状态 -->
             <div class="">
               <div
-                class="ml-[4px] flex select-none items-center text-color-text-soft"
+                class="ml-[4px] flex select-none items-center transition-colors"
+                :style="{
+                  color: userRealtimeStatusForShow.color,
+                }"
               >
                 <!-- 状态文字 -->
-                <div class="mr-[4px]">
-                  <div class="text-[13px] font-bold">离线</div>
+                <div class="mr-[8px]">
+                  <Transition mode="out-in" name="fade200ms">
+                    <div :key="userRealtimeStatusForShow.key">
+                      <div class="text-[13px] font-bold">
+                        {{ userRealtimeStatusForShow.text }}
+                      </div>
+                    </div>
+                  </Transition>
                 </div>
                 <!-- 状态图标 -->
                 <div>
-                  <div>
-                    <RiGlobalLine size="22px"></RiGlobalLine>
-                  </div>
+                  <Transition mode="out-in" name="fade-pop">
+                    <div :key="userRealtimeStatusForShow.key">
+                      <UserRealtimeStatusToIcon
+                        :realtimeUsersStatusComputedForUserRealtimeStatus="
+                          realtimeUsersStatusComputedForUserRealtimeStatus
+                        "
+                        size="22px"
+                      ></UserRealtimeStatusToIcon>
+                    </div>
+                  </Transition>
                 </div>
               </div>
             </div>

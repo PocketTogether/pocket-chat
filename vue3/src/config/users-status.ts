@@ -26,10 +26,8 @@ export const usersStatusComputedRealtimeCheckIsOnlineThresholdMs =
  *
  * 若最近一次输入标记的时间与当前时间差值
  * 小于等于该阈值，则视为仍处于输入状态。
- *
- * 5_000 即 5 秒
  */
-export const usersStatusSelfPresenceTypingActiveThresholdMs = 5_000 as const
+export const usersStatusSelfPresenceTypingActiveThresholdMs = 3_000 as const
 
 /**
  * 本地用户保持在线状态时的心跳发送阈值（毫秒）。
@@ -37,9 +35,8 @@ export const usersStatusSelfPresenceTypingActiveThresholdMs = 5_000 as const
  * 若上次发送在线状态的时间与当前时间差值
  * 大于等于该阈值，则需要再次发送在线状态。
  *
- * 50_000 即 50 秒
  */
-export const usersStatusSelfPresenceKeepOnlineSendThresholdMs = 50_000 as const
+export const usersStatusSelfPresenceKeepOnlineSendThresholdMs = 48_000 as const
 
 /**
  * 本地用户在线状态发送的冷却时间阈值（毫秒）。
@@ -47,9 +44,8 @@ export const usersStatusSelfPresenceKeepOnlineSendThresholdMs = 50_000 as const
  * 若距离上次发送在线状态的时间小于该阈值，
  * 则视为处于冷却期，不允许再次发送。
  *
- * 2_000 即 2 秒
  */
-export const usersStatusSelfPresenceSendCooldownThresholdMs = 2_000 as const
+export const usersStatusSelfPresenceSendCooldownThresholdMs = 1_000 as const
 
 /**
  * `useSelfPresenceLoopAndViewingHook` 中 Presence 循环的固定等待间隔（毫秒）。
@@ -57,9 +53,9 @@ export const usersStatusSelfPresenceSendCooldownThresholdMs = 2_000 as const
  * 在 `presenceloopFn` 的无限循环中，每次调用
  * `selfPresenceDispatcher.sendPresenceIfNeedAndCanSend()` 之后，
  * 会通过 `setTimeout` 使用此间隔进行延迟，
- * 从而控制 Presence 检查与发送的频率（当前为每 5 秒一次）。
+ * 从而控制 Presence 检查与发送的频率（当前为每 4 秒一次）。
  */
-export const usersStatusSelfPresenceLoopIntervalThresholdMs = 5_000 as const
+export const usersStatusSelfPresenceLoopIntervalThresholdMs = 4_000 as const
 
 /** 封装代表用户各种实时状态的key */
 export const usersStatusItemPresenceStatusKeyConfig = {

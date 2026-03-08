@@ -36,6 +36,7 @@ import {
   pbImageDataChooseByLargest,
 } from '@/utils'
 import { useRouterHistoryTool } from '@/composables'
+import { MessageUserNameTime } from './components'
 
 const props = defineProps<{
   /** 消息数据 */
@@ -88,6 +89,13 @@ const {
 
 // 封装 消息的显示逻辑
 // useMessageDisplay
+const messageDisplayDesuwa = useMessageDisplay({
+  props,
+  currentMessageData,
+})
+
+export type MessageDisplayDesuwaType = typeof messageDisplayDesuwa
+
 const {
   isMessageCurrentUser,
   isMessagesDispalyTogetherNext,
@@ -99,10 +107,7 @@ const {
   messageUserName,
   timeAgo,
   messageReplyMessageUserAvatarUrl,
-} = useMessageDisplay({
-  props,
-  currentMessageData,
-})
+} = messageDisplayDesuwa
 
 // 封装 消息的操作逻辑
 // useMessageControl
@@ -598,27 +603,11 @@ const goUserInfoPage = () => {
           // 不与下一条消息一起显示时，才显示头像和名称
           isMessagesDispalyTogetherNext === false
         "
-        class="mb-3 flex select-none items-center"
-        :class="{
-          // 消息为当前用户发送，flex-row-reverse使其靠右显示
-          'flex-row-reverse': isMessageCurrentUser,
-        }"
       >
-        <!-- 用户名 -->
-        <div
-          class="max-w-[50%] cursor-pointer truncate text-[12px] font-bold text-color-text"
-          @click="goUserInfoPage"
-        >
-          {{ messageUserName }}
-        </div>
-        <!-- 分隔 -->
-        <div class="mx-[8px]">
-          <RiCircleFill size="4px" class="text-color-text-soft"></RiCircleFill>
-        </div>
-        <!-- 时间 -->
-        <div class="truncate text-[12px] text-color-text-soft">
-          {{ timeAgo }}
-        </div>
+        <MessageUserNameTime
+          :goUserInfoPage="goUserInfoPage"
+          :messageDisplayDesuwa="messageDisplayDesuwa"
+        ></MessageUserNameTime>
       </div>
     </div>
   </div>

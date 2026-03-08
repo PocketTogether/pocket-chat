@@ -37,7 +37,8 @@ export const useSelfPresenceTypingReporter = () => {
    * 1. 设置 isTypingMark = false
    * 2. 立即调用 sendPresenceIfNeedAndCanSend
    *
-   * 在消息编辑提交、消息编辑提交时也会调用
+   * 在消息编辑取消、消息编辑提交时也会调用
+   *
    */
   const reportTypingOnMessageSend = async () => {
     selfPresenceStore.isTypingMarkSet(false)
@@ -49,10 +50,22 @@ export const useSelfPresenceTypingReporter = () => {
     }
   }
 
+  /** 输入栏失焦时会调用 */
+  const reportTypingOnBlur = async () => {
+    selfPresenceStore.isTypingMarkSet(false)
+
+    try {
+      await selfPresenceDispatcher.sendPresenceIfNeedAndCanSend()
+    } catch (err) {
+      console.error('reportTypingOnBlur sendPresence error:', err)
+    }
+  }
+
   return {
     //
     reportTypingOnInput,
     reportTypingOnMessageSend,
+    reportTypingOnBlur,
   }
 }
 

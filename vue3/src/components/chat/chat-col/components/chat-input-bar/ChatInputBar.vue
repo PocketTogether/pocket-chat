@@ -50,6 +50,7 @@ const selfPresenceTypingReporter = useSelfPresenceTypingReporter()
 const {
   //
   reportTypingOnInput,
+  reportTypingOnBlur,
 } = selfPresenceTypingReporter
 
 // 封装 聊天输入栏数据逻辑
@@ -200,8 +201,29 @@ const autosizeElInput = computed(() => {
       <div class="my-2 flex items-stretch">
         <!-- 左栏 -->
         <div class="ml-2 mr-1 flow-root flex-1 truncate">
+          <!--
+            【260308】遇到了问题，奇怪的是在双列布局下才有这个问题，在单列时没有。
+            暂时通过 不使用v-if而是用v-show解决了
+            具体问题描述：
+
+flex双列布局中
+min-w-0 flex-1 的某列
+这之中，有一个其中包含着ElInput的div，div其会随着输入是否有内容而v-if，即无内容时不显示而v-else为一个别的div
+
+我现在遇到了问题，现在我来给你说说：初始状态为有内容，且我向下滚动了一些距离，但当我按键盘退格键将输入内容一个个删除后，最后一个删除时，页面会突然滚动到顶部立即了
+
+而我在非flex时（普通div），就没这个问题
+
+我遇到的问题是怎么回事，是css的某种特性我不知道吗
+
+或许可能是 ElInput 内部的某种操作导致的？
+因为我别的元素在因为别的原因切换时都不会导致那样
+
+ElInput 和 flex 的某种千丝万缕的机制共同作用下导致的？
+          -->
           <!-- 错误提示 -->
-          <template v-if="chatInputBarFunctionChoose === 'error'">
+          <div v-show="chatInputBarFunctionChoose === 'error'" class="h-full">
+            <!-- <div v-if="chatInputBarFunctionChoose === 'error'" class="h-full"> -->
             <div class="mr-[4px] flex h-full items-center justify-end">
               <div
                 class="select-none truncate text-[14px] font-bold text-color-text"
@@ -209,9 +231,13 @@ const autosizeElInput = computed(() => {
                 {{ i18nStore.t('chatInputBarMessageErrorText')() }}
               </div>
             </div>
-          </template>
+          </div>
           <!-- 登录提示 -->
-          <template v-else-if="chatInputBarFunctionChoose === 'login'">
+          <div v-show="chatInputBarFunctionChoose === 'login'" class="h-full">
+            <!-- <div
+            v-else-if="chatInputBarFunctionChoose === 'login'"
+            class="h-full"
+          > -->
             <div class="mr-[4px] flex h-full items-center justify-end">
               <div
                 class="select-none truncate text-[14px] font-bold text-color-text"
@@ -219,11 +245,16 @@ const autosizeElInput = computed(() => {
                 {{ i18nStore.t('chatInputBarLoginText')() }}
               </div>
             </div>
-          </template>
+          </div>
           <!-- 无发送消息权限 -->
-          <template
-            v-else-if="chatInputBarFunctionChoose === 'noPermissionSendMessage'"
+          <div
+            v-show="chatInputBarFunctionChoose === 'noPermissionSendMessage'"
+            class="h-full"
           >
+            <!-- <div
+            v-else-if="chatInputBarFunctionChoose === 'noPermissionSendMessage'"
+            class="h-full"
+          > -->
             <div class="mr-[4px] flex h-full items-center justify-end">
               <div
                 class="select-none truncate text-[14px] font-bold text-color-text"
@@ -231,9 +262,16 @@ const autosizeElInput = computed(() => {
                 {{ i18nStore.t('permissionNoPermissionSendMessageText')() }}
               </div>
             </div>
-          </template>
+          </div>
           <!-- 回到底部文字，有新消息时与新消息通知循环闪烁显示 -->
-          <template v-else-if="chatInputBarFunctionChoose === 'backBottom'">
+          <div
+            v-show="chatInputBarFunctionChoose === 'backBottom'"
+            class="h-full"
+          >
+            <!-- <div
+            v-else-if="chatInputBarFunctionChoose === 'backBottom'"
+            class="h-full"
+          > -->
             <div class="mr-[4px] flex h-full items-center justify-end">
               <Transition name="fade800ms" mode="out-in">
                 <div
@@ -258,9 +296,20 @@ const autosizeElInput = computed(() => {
                 </div>
               </Transition>
             </div>
-          </template>
+          </div>
           <!-- 输入框 或图片选择 -->
-          <template v-else>
+          <div
+            v-show="
+              [
+                'error',
+                'login',
+                'noPermissionSendMessage',
+                'backBottom',
+              ].includes(chatInputBarFunctionChoose) === false
+            "
+            class="h-full"
+          >
+            <!-- <div v-else class="h-full"> -->
             <div class="flex h-full flex-col items-stretch">
               <!-- 回复的消息 -->
               <div v-if="chatReplyMessage != null">
@@ -467,12 +516,13 @@ const autosizeElInput = computed(() => {
                         handleChatInputKeydownEnter
                       "
                       @input="reportTypingOnInput"
+                      @blur="reportTypingOnBlur"
                     />
                   </div>
                 </div>
               </div>
             </div>
-          </template>
+          </div>
         </div>
         <!-- 右栏 按钮 -->
         <div class="mr-2 flex flex-col-reverse">

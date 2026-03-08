@@ -83,7 +83,7 @@ export const useRealtimeUsersStatusComputed = () => {
         return latestNotViewingMark
       }
       if (initLatestNotViewingMark != null) {
-        return latestNotViewingMark
+        return initLatestNotViewingMark
       }
       return null
     })()

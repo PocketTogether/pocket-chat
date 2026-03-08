@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { UsersResponseWithBaseExpand } from '@/api'
-import { useRouterHistoryTool } from '@/composables'
+import { UserRealtimeStatusToIcon } from '@/components'
+import {
+  useRealtimeUsersStatusComputedForUserRealtimeStatus,
+  useRouterHistoryTool,
+} from '@/composables'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import { RiGlobalLine } from '@remixicon/vue'
@@ -53,6 +57,13 @@ const goUserInfoPage = () => {
     presetUserGetOneData: props.userData,
   })
 }
+
+const realtimeUsersStatusComputedForUserRealtimeStatus =
+  useRealtimeUsersStatusComputedForUserRealtimeStatus({
+    userId: computed(() => userAuthor.value.id),
+  })
+const { userRealtimeStatusForShow } =
+  realtimeUsersStatusComputedForUserRealtimeStatus
 </script>
 
 <template>
@@ -86,17 +97,33 @@ const goUserInfoPage = () => {
           <!-- 右侧：状态 -->
           <div class="">
             <div
-              class="ml-[3px] flex select-none items-center text-color-text-soft"
+              class="ml-[3px] flex select-none items-center transition-colors"
+              :style="{
+                color: userRealtimeStatusForShow.color,
+              }"
             >
               <!-- 状态文字 -->
-              <div class="mr-[4px]">
-                <div class="text-[13px] font-bold">离线</div>
+              <div class="mr-[7px]">
+                <Transition mode="out-in" name="fade200ms">
+                  <div :key="userRealtimeStatusForShow.key">
+                    <div class="text-[13px] font-bold">
+                      {{ userRealtimeStatusForShow.text }}
+                    </div>
+                  </div>
+                </Transition>
               </div>
               <!-- 状态图标 -->
               <div>
-                <div>
-                  <RiGlobalLine size="22px"></RiGlobalLine>
-                </div>
+                <Transition mode="out-in" name="fade-pop">
+                  <div :key="userRealtimeStatusForShow.key">
+                    <UserRealtimeStatusToIcon
+                      :realtimeUsersStatusComputedForUserRealtimeStatus="
+                        realtimeUsersStatusComputedForUserRealtimeStatus
+                      "
+                      size="21px"
+                    ></UserRealtimeStatusToIcon>
+                  </div>
+                </Transition>
               </div>
             </div>
           </div>

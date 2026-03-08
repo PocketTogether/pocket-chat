@@ -38,6 +38,8 @@ declare module 'vue' {
     RiCloseCircleFill: typeof import('@remixicon/vue')['RiCloseCircleFill']
     RiCloseCircleLine: typeof import('@remixicon/vue')['RiCloseCircleLine']
     RiCloseFill: typeof import('@remixicon/vue')['RiCloseFill']
+    RiCloudFill: typeof import('@remixicon/vue')['RiCloudFill']
+    RiContrast2Fill: typeof import('@remixicon/vue')['RiContrast2Fill']
     RiDeleteBin2Line: typeof import('@remixicon/vue')['RiDeleteBin2Line']
     RiDeleteBin7Fill: typeof import('@remixicon/vue')['RiDeleteBin7Fill']
     RiDeleteBin7Line: typeof import('@remixicon/vue')['RiDeleteBin7Line']

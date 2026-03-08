@@ -14,10 +14,14 @@ import { useRealtimeUsersStatusComputed } from './computed'
  * 1. userRealtimeStatus
  *    - 该用户的最新 presence 状态（包含 isTyping / isNotViewing / statusIsoDate 等）
  *
- * 2. statusByUserIdWithIsOnline
+ * 2. userRealtimeStatusWithIsOnline
  *    - 在 userRealtimeStatus 的基础上，额外计算 isOnline 字段
  *    - isOnline 判断基于 statusIsoDate 与当前时间差
  *
+ * 3. userRealtimeStatusForShow
+ *    - 用于 UI 展示的最终状态对象
+ *    - 包含 key / color / text，用于渲染状态图标与文案
+ *    - 自动根据 isOnline / isTyping / isNotViewing 等字段选择最合适的展示状态
  *
  * 性能设计：
  * ----------
@@ -32,6 +36,7 @@ import { useRealtimeUsersStatusComputed } from './computed'
  * - 用户列表项组件
  * - 任意需要实时显示“某个用户是否在线”的地方
  */
+
 export const useRealtimeUsersStatusComputedForUserRealtimeStatus = (data: {
   userId: ComputedRef<string | null | undefined>
 }) => {
@@ -83,6 +88,30 @@ export const useRealtimeUsersStatusComputedForUserRealtimeStatus = (data: {
 
   const i18nStore = useI18nStore()
 
+  /**
+   * userRealtimeStatusForShow
+   *
+   * 用途：
+   * ------
+   * 将用户实时状态（含 isOnline / isTyping / isNotViewing 等）转换为
+   * “适合 UI 展示的状态对象”。
+   *
+   * 输出内容包含：
+   * - key: 状态标识（如 online / offline / typing / not_viewing）
+   * - color: UI 使用的颜色值
+   * - text: 本地化后的状态文案
+   *
+   * 状态判定逻辑（优先级从高到低）：
+   * 1. data == null 或 isOnline = false → 离线
+   * 2. isNotViewing = true → 闲置
+   * 3. isTyping = true → 输入中
+   * 4. 其他情况 → 在线
+   *
+   * 特点：
+   * -------
+   * - 自动根据用户状态选择最合适的展示内容
+   * - 适用于用户列表、头像状态点、聊天头部等 UI 场景
+   */
   const userRealtimeStatusForShow = computed(() => {
     const data = userRealtimeStatusWithIsOnline.value
 
