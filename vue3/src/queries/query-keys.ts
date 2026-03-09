@@ -132,6 +132,14 @@ export const queryKeys = {
     ] as const
   },
 
+  /** useUsersPresencesStatusGetFirstListItemByUserIdQuery */
+  usersPresencesStatusGetFirstListItemByUserId: (userId?: string | null) => {
+    return [
+      'usersPresencesStatusGetFirstListItemByUserId',
+      ...definedOrEmpty(userId),
+    ] as const
+  },
+
   /** useUsersPresencesStatusInitGetListQuery */
   usersPresencesStatusInitGetList: () =>
     ['usersPresencesStatusInitGetList'] as const,

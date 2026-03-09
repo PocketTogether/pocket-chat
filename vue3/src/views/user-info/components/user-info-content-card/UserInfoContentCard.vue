@@ -5,7 +5,7 @@ import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import { useI18nStore } from '@/stores'
 import { useTimeAgo } from '@vueuse/core'
-import { useRealtimeUsersStatusComputedForUserRealtimeStatus } from '@/composables'
+import { useRealtimeUsersStatusComputedForUserRealtimeStatusWithLastOnline } from '@/composables'
 
 const props = defineProps<{
   userInfoQueryDesuwa: UserInfoQueryDesuwaType
@@ -46,6 +46,13 @@ const userDisplayUsername = computed(() => {
   return user.value?.username ?? ''
 })
 
+const realtimeUsersStatusComputedForUserRealtimeStatusWithLastOnline =
+  useRealtimeUsersStatusComputedForUserRealtimeStatusWithLastOnline({
+    userId: computed(() => user.value?.id),
+  })
+const { userRealtimeStatusForShow, isShowLastOnline, lastOnlineIsoDate } =
+  realtimeUsersStatusComputedForUserRealtimeStatusWithLastOnline
+
 const i18nStore = useI18nStore()
 
 /** 加入时间（created） */
@@ -57,21 +64,14 @@ const joinedAt = useTimeAgo(
   }
 )
 
-// /** 上次在线（updated） */
-// const lastOnline = useTimeAgo(
-//   computed(() => user.value?.updated),
-//   {
-//     messages: i18nStore.t('useTimeAgoMessages')(),
-//     max: 'day',
-//   }
-// )
-
-const realtimeUsersStatusComputedForUserRealtimeStatus =
-  useRealtimeUsersStatusComputedForUserRealtimeStatus({
-    userId: computed(() => user.value?.id),
-  })
-const { userRealtimeStatusForShow } =
-  realtimeUsersStatusComputedForUserRealtimeStatus
+/** 上次在线（updated） */
+const lastOnline = useTimeAgo(
+  computed(() => lastOnlineIsoDate.value ?? ''),
+  {
+    messages: i18nStore.t('useTimeAgoMessages')(),
+    max: 'day',
+  }
+)
 </script>
 
 <template>
@@ -90,7 +90,9 @@ const { userRealtimeStatusForShow } =
               <div class="w-[70px]"></div>
 
               <div class="ml-[12px] flex-1 truncate">
-                <div class="truncate text-[16px] font-bold text-color-text">
+                <div
+                  class="min-h-[24px] truncate text-[16px] font-bold text-color-text"
+                >
                   {{ userDisplayName }}
                 </div>
                 <div class="truncate text-[12px] text-color-text-soft">
@@ -123,7 +125,7 @@ const { userRealtimeStatusForShow } =
                     <div :key="userRealtimeStatusForShow.key">
                       <UserRealtimeStatusToIcon
                         :realtimeUsersStatusComputedForUserRealtimeStatus="
-                          realtimeUsersStatusComputedForUserRealtimeStatus
+                          realtimeUsersStatusComputedForUserRealtimeStatusWithLastOnline
                         "
                         size="22px"
                       ></UserRealtimeStatusToIcon>
@@ -175,21 +177,39 @@ const { userRealtimeStatusForShow } =
     <!-- 分割线 -->
     <div class="border-t-[3px] border-color-background"></div>
 
-    <!-- 加入时间 -->
-    <div class="mb-3 mt-2">
-      <div class="mx-5 text-[14px] font-bold text-color-text">
-        {{ i18nStore.t('userInfoPageUserContentJoinedAtTitle')() }}
-      </div>
-      <div class="mx-5 mt-[4px] flex justify-end">
-        <div class="text-[14px] font-bold text-color-text-soft">
-          {{ joinedAt }}
+    <Transition mode="out-in" name="fade">
+      <div v-if="isShowLastOnline">
+        <!-- 加入时间 + 上次在线 -->
+        <div class="flex">
+          <div class="flex-1">
+            <div class="mb-3 mt-2">
+              <div class="mx-5 text-[14px] font-bold text-color-text">
+                {{ i18nStore.t('userInfoPageUserContentJoinedAtTitle')() }}
+              </div>
+              <div class="mx-5 mt-[4px] flex justify-end">
+                <div class="text-[14px] font-bold text-color-text-soft">
+                  {{ joinedAt }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="border-l-[3px] border-color-background"></div>
+          <div class="flex-1">
+            <div class="mb-3 mt-2">
+              <div class="mx-5 text-[14px] font-bold text-color-text">
+                {{ i18nStore.t('userInfoPageUserContentLastOnlineTitle')() }}
+              </div>
+              <div class="mx-5 mt-[4px] flex justify-end">
+                <div class="text-[14px] font-bold text-color-text-soft">
+                  {{ lastOnline }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- 加入时间 + 上次在线 -->
-    <!-- <div class="flex">
-      <div class="flex-1">
+      <div v-else>
+        <!-- 加入时间 -->
         <div class="mb-3 mt-2">
           <div class="mx-5 text-[14px] font-bold text-color-text">
             {{ i18nStore.t('userInfoPageUserContentJoinedAtTitle')() }}
@@ -201,20 +221,7 @@ const { userRealtimeStatusForShow } =
           </div>
         </div>
       </div>
-      <div class="border-l-[3px] border-color-background"></div>
-      <div class="flex-1">
-        <div class="mb-3 mt-2">
-          <div class="mx-5 text-[14px] font-bold text-color-text">
-            {{ i18nStore.t('userInfoPageUserContentLastOnlineTitle')() }}
-          </div>
-          <div class="mx-5 mt-[4px] flex justify-end">
-            <div class="text-[14px] font-bold text-color-text-soft">
-              {{ lastOnline }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
+    </Transition>
   </div>
 </template>
 

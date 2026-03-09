@@ -10,6 +10,7 @@ import {
   type UsersNotViewingMarksRecord,
   type UsersNotViewingMarksResponse,
   type UsersPresencesStatusRecord,
+  type UsersPresencesStatusResponse,
 } from '@/lib'
 import { fetchWithTimeoutPreferred, urlJoinUtil } from '@/utils'
 import type { RecordSubscription } from 'pocketbase'
@@ -45,9 +46,47 @@ export const pbUsersPresencesStatusInitGetListApi = async () => {
         sort: usersPresencesStatusInitGetListSort,
         // filter, 不需要
         skipTotal: true,
+        // timeout为5000
         fetch: fetchWithTimeoutPreferred,
       }
     )
+  return pbRes
+}
+
+// pbUsersPresencesStatusGetFirstListItemByUserIdApi 使用的sort与 pbUsersPresencesStatusInitGetListApi 一样
+const usersPresencesStatusGetFirstListItemByUserIdSort =
+  usersPresencesStatusInitGetListSort
+
+/** 🧠 类型安全地构造 filter 字符串 */
+const usersPresencesStatusGetFirstListItemByUserIdFilterBuildFn = (data: {
+  userId: string
+}) => {
+  const recordKeys = {
+    author: 'author',
+  } as const satisfies Group<
+    // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
+    Partial<KeyValueMirror<keyof UsersPresencesStatusRecord>>
+  >
+
+  return `${recordKeys.author}='${data.userId}'` as const
+  // type const = `author='${string}'`
+}
+
+// userPresencesStatus按用户id查询第一个
+export const pbUsersPresencesStatusGetFirstListItemByUserIdApi = async (data: {
+  userId: string
+}) => {
+  const filter = usersPresencesStatusGetFirstListItemByUserIdFilterBuildFn(data)
+
+  const pbRes = await pb
+    .collection(Collections.UsersPresencesStatus)
+    .getFirstListItem<UsersPresencesStatusResponse>(filter, {
+      // expand, 不需要，因为此查询主要是为了得到用户上次在线时间
+      sort: usersPresencesStatusGetFirstListItemByUserIdSort,
+      // timeout为5000
+      fetch: fetchWithTimeoutPreferred,
+    })
+
   return pbRes
 }
 
@@ -77,6 +116,7 @@ export const pbUsersNotViewingMarksInitGetListApi = async () => {
         sort: usersNotViewingMarksInitGetListSort,
         // filter, 不需要
         skipTotal: true,
+        // timeout为5000
         fetch: fetchWithTimeoutPreferred,
       }
     )

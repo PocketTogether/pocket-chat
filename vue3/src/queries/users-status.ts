@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/vue-query'
 import { queryKeys } from './query-keys'
 import {
   pbUsersNotViewingMarksInitGetListApi,
+  pbUsersPresencesStatusGetFirstListItemByUserIdApi,
   pbUsersPresencesStatusInitGetListApi,
   type UsersPresencesStatusResponseWithBaseExpand,
 } from '@/api'
@@ -12,6 +13,48 @@ import { usePbCollectionConfigQuery } from './pb-collection-config'
 import { useAuthStore } from '@/stores'
 import { v4 as uuidv4 } from 'uuid'
 import type { UsersNotViewingMarksResponse } from '@/lib'
+
+export const useUsersPresencesStatusGetFirstListItemByUserIdQuery = (data: {
+  // 用户id
+  userId: ComputedRef<string | null | undefined>
+  // 当前是否有用户状态数据（在 初始状态query或实时状态store 中）
+  // 在没有时，才会让query去查询指定的用户，即如果有的话就不必查询
+  isHasUserRealtimeStatus: ComputedRef<boolean>
+}) => {
+  const { userId, isHasUserRealtimeStatus } = data
+
+  const query = useQuery({
+    enabled: computed(() => {
+      if (userId.value == null) {
+        return false
+      }
+      // 在没有时，才会让query去查询指定的用户，即如果有的话就不必查询
+      if (isHasUserRealtimeStatus.value) {
+        return false
+      }
+      return true
+    }),
+    queryKey: computed(() =>
+      queryKeys.usersPresencesStatusGetFirstListItemByUserId(userId.value)
+    ),
+    queryFn: async () => {
+      if (userId.value == null) {
+        throw new Error('userId.value == null')
+      }
+      const pbRes = await pbUsersPresencesStatusGetFirstListItemByUserIdApi({
+        userId: userId.value,
+      })
+      return pbRes
+    },
+    // 缓存时间
+    gcTime: queryConfig.gcTimeLong,
+    staleTime: queryConfig.staleTimeLong,
+    // ✅ 在网络错误时重试
+    retry: queryRetryPbNetworkError,
+  })
+
+  return query
+}
 
 export const useUsersPresencesStatusInitGetListQuery = () => {
   const query = useQuery({

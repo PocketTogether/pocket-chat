@@ -61,7 +61,8 @@ export const userGetByUsernameFilterBuildFn = (data: { username: string }) => {
     Partial<KeyValueMirror<keyof UsersRecord>>
   >
 
-  return `${recordKeys.username}='${data.username}' && ${recordKeys.isBanned}=false`
+  return `${recordKeys.username}='${data.username}' && ${recordKeys.isBanned}=false` as const
+  // type const = `username='${string}' && isBanned=false`
 }
 
 /** users集合 根据用户名查找 */

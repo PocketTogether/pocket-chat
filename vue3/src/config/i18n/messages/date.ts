@@ -125,7 +125,8 @@ export const i18nMessagesDatePart = {
         hour: (n: number) => `${n}小时`,
         minute: (n: number) => `${n}分钟`,
         second: (n: number) => `${n}秒`,
-        invalid: '无效时间',
+        // invalid: '无效时间',
+        invalid: '',
       } as const satisfies UseTimeAgoMessagesType
     },
 
@@ -147,7 +148,8 @@ export const i18nMessagesDatePart = {
         hour: (n: number) => `${n}小時`,
         minute: (n: number) => `${n}分鐘`,
         second: (n: number) => `${n}秒`,
-        invalid: '無效時間',
+        // invalid: '無效時間',
+        invalid: '',
       } as const satisfies UseTimeAgoMessagesType
     },
 
@@ -169,7 +171,8 @@ export const i18nMessagesDatePart = {
         hour: (n: number) => `${n}時間`,
         minute: (n: number) => `${n}分`,
         second: (n: number) => `${n}秒`,
-        invalid: '無効な時間',
+        // invalid: '無効な時間',
+        invalid: '',
       } as const satisfies UseTimeAgoMessagesType
     },
 
@@ -191,7 +194,8 @@ export const i18nMessagesDatePart = {
         hour: (n: number) => `${n}시간`,
         minute: (n: number) => `${n}분`,
         second: (n: number) => `${n}초`,
-        invalid: '잘못된 시간',
+        // invalid: '잘못된 시간',
+        invalid: '',
       } as const satisfies UseTimeAgoMessagesType
     },
 
@@ -239,7 +243,8 @@ export const i18nMessagesDatePart = {
         hour: (n: number) => pluralize(n, 'час', 'часа', 'часов'),
         minute: (n: number) => pluralize(n, 'минута', 'минуты', 'минут'),
         second: (n: number) => pluralize(n, 'секунда', 'секунды', 'секунд'),
-        invalid: 'недопустимое время',
+        // invalid: 'недопустимое время',
+        invalid: '',
       } as const satisfies UseTimeAgoMessagesType
     },
   },

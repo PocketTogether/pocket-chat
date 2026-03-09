@@ -2,6 +2,7 @@ import { usersStatusItemPresenceStatusKeyConfig } from '@/config'
 
 import { useI18nStore } from '@/stores'
 import { useRealtimeUsersStatusComputed } from './computed'
+import { useUsersPresencesStatusGetFirstListItemByUserIdQuery } from '@/queries'
 
 /**
  * useRealtimeUsersStatusComputedForUserRealtimeStatus
@@ -162,3 +163,81 @@ export const useRealtimeUsersStatusComputedForUserRealtimeStatus = (data: {
 export type RealtimeUsersStatusComputedForUserRealtimeStatusType = ReturnType<
   typeof useRealtimeUsersStatusComputedForUserRealtimeStatus
 >
+
+/** 用于用户详情页，多了用户上次在线数据处理与选择性查询逻辑 */
+export const useRealtimeUsersStatusComputedForUserRealtimeStatusWithLastOnline =
+  (data: { userId: ComputedRef<string | null | undefined> }) => {
+    //
+    const {
+      //
+      userId,
+    } = data
+
+    const realtimeUsersStatusComputedForUserRealtimeStatus =
+      useRealtimeUsersStatusComputedForUserRealtimeStatus(data)
+    const { userRealtimeStatus, userRealtimeStatusWithIsOnline } =
+      realtimeUsersStatusComputedForUserRealtimeStatus
+
+    const usersPresencesStatusGetFirstListItemByUserIdQuery =
+      useUsersPresencesStatusGetFirstListItemByUserIdQuery({
+        userId,
+        isHasUserRealtimeStatus: computed(() => {
+          if (userRealtimeStatus.value != null) {
+            return true
+          }
+          return false
+        }),
+      })
+
+    // 上次在线日期字符串
+    const lastOnlineIsoDate = computed(() => {
+      // 优先使用statusIsoDate
+      if (userRealtimeStatus.value != null) {
+        return userRealtimeStatus.value.statusIsoDate
+      }
+      // 没有则使用 statusIsoDateFormQuery
+      const statusIsoDateFormQuery =
+        usersPresencesStatusGetFirstListItemByUserIdQuery.data.value?.created
+      if (statusIsoDateFormQuery != null) {
+        return statusIsoDateFormQuery
+      }
+      // 查询未完成时是null
+      return null
+    })
+
+    // 是否应显示LastOnline，有值且当前不在线才应显示
+    const isShowLastOnline = computed(() => {
+      // 当前没有值，不应显示
+      if (lastOnlineIsoDate.value == null) {
+        return false
+      }
+
+      // 当前是否在线
+      const isOnline = (() => {
+        // 等于null时视同离线
+        if (userRealtimeStatusWithIsOnline.value == null) {
+          return false
+        }
+        return userRealtimeStatusWithIsOnline.value.isOnline
+      })()
+      // 当前在线，不应显示
+      if (isOnline) {
+        return false
+      }
+
+      // 有值且当前不在线才应显示
+      return true
+    })
+
+    return {
+      //
+      isShowLastOnline,
+      lastOnlineIsoDate,
+      ...realtimeUsersStatusComputedForUserRealtimeStatus,
+    }
+  }
+
+export type RealtimeUsersStatusComputedForUserRealtimeStatusWithLastOnlineType =
+  ReturnType<
+    typeof useRealtimeUsersStatusComputedForUserRealtimeStatusWithLastOnline
+  >
