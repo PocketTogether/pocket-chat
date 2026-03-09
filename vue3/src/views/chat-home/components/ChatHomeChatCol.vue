@@ -68,6 +68,14 @@ const isDev = import.meta.env.DEV
           <template #text> {{ i18nStore.t('pageSetting')() }} </template>
         </ChatTopBarMoreMenuItem>
 
+        <!-- 动态 -->
+        <ChatTopBarMoreMenuItem @click="$router.push(routerDict.LivePage.path)">
+          <template #icon>
+            <RiEarthLine size="18px"></RiEarthLine>
+          </template>
+          <template #text> {{ i18nStore.t('pageLive')() }} </template>
+        </ChatTopBarMoreMenuItem>
+
         <!-- 成员 -->
         <ChatTopBarMoreMenuItem
           @click="$router.push(routerDict.UserListPage.path)"

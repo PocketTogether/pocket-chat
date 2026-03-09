@@ -9,6 +9,7 @@ import {
   ImageInfoPage,
   ImageSelectPage,
   LayoutSimple,
+  LivePage,
   LoginPage,
   SearchPage,
   UserInfoPage,
@@ -69,6 +70,10 @@ const router = createRouter({
         {
           ...routerDict.SearchPage,
           component: SearchPage,
+        },
+        {
+          ...routerDict.LivePage,
+          component: LivePage,
         },
       ],
     },

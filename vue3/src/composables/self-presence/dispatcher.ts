@@ -7,6 +7,8 @@ import {
   usersStatusSelfPresenceSendCooldownThresholdMs,
   usersStatusSelfPresenceTypingActiveThresholdMs,
 } from '@/config'
+import { pb } from '@/lib'
+import { useProfileQuery } from '@/queries'
 import { useSelfPresenceStore } from '@/stores'
 
 // 用户自己的实时状态循环检查与发送 这一块
@@ -19,6 +21,7 @@ import { useSelfPresenceStore } from '@/stores'
  */
 export const useSelfPresenceDispatcher = () => {
   const selfPresenceStore = useSelfPresenceStore()
+  const profileQuery = useProfileQuery()
 
   /** -----------------------------
    * 基础状态计算
@@ -128,6 +131,18 @@ export const useSelfPresenceDispatcher = () => {
   // 将调用api函数 pbUsersPresencesStatusCreateApi
   // 将根据设计对store进行操作
   const sendPresenceFn = async () => {
+    // 未登录，返回
+    if (!pb.authStore.isValid || pb.authStore.record?.id == null) {
+      return
+    }
+    // 用户已封禁，返回
+    if (
+      profileQuery.data.value != null &&
+      profileQuery.data.value.isBanned === true
+    ) {
+      return
+    }
+
     const payload = {
       isTyping: isTypingFn(),
       isNotViewing: isNotViewingFn(),
@@ -193,6 +208,18 @@ export const useSelfPresenceDispatcher = () => {
   // 将调用api函数 pbUsersNotViewingMarksCreateApiBySendBeacon
   // 将根据设计对store进行操作
   const sendNotViewingMarksFn = () => {
+    // 未登录，返回
+    if (!pb.authStore.isValid || pb.authStore.record?.id == null) {
+      return
+    }
+    // 用户已封禁，返回
+    if (
+      profileQuery.data.value != null &&
+      profileQuery.data.value.isBanned === true
+    ) {
+      return
+    }
+
     try {
       const res = pbUsersNotViewingMarksCreateApiBySendBeacon()
 

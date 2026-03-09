@@ -73,4 +73,8 @@ export const routerDict = {
     path: '/search',
     name: 'SearchPage',
   },
+  LivePage: {
+    path: '/live',
+    name: 'LivePage',
+  },
 } as const satisfies Record<string, RouterItem>

@@ -47,6 +47,7 @@ declare module 'vue' {
     RiDiscussFill: typeof import('@remixicon/vue')['RiDiscussFill']
     RiDiscussLine: typeof import('@remixicon/vue')['RiDiscussLine']
     RiDownloadLine: typeof import('@remixicon/vue')['RiDownloadLine']
+    RiEarthLine: typeof import('@remixicon/vue')['RiEarthLine']
     RiEditFill: typeof import('@remixicon/vue')['RiEditFill']
     RiEditLine: typeof import('@remixicon/vue')['RiEditLine']
     RiErrorWarningLine: typeof import('@remixicon/vue')['RiErrorWarningLine']

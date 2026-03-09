@@ -124,4 +124,12 @@ export const i18nMessagesPagePart = {
     'ko-KR': () => '검색' as const,
     'ru-RU': () => 'Поиск' as const,
   },
+  pageLive: {
+    'en-US': () => 'Live' as const,
+    'zh-CN': () => '动态' as const,
+    'zh-TW': () => '動態' as const,
+    'ja-JP': () => 'ライブ' as const,
+    'ko-KR': () => '라이브' as const,
+    'ru-RU': () => 'Активность' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType
