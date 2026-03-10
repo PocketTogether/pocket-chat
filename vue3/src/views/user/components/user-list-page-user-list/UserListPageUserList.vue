@@ -2,8 +2,9 @@
 import { useUserPageListQuery } from '@/queries'
 import type { UserQueryModeDesuwaType } from './dependencies'
 import { useElementSize, useWindowSize } from '@vueuse/core'
-import { UserListItem, PaginationBar } from './components'
+import { PaginationBar } from './components'
 import { watchUntilSourceCondition } from '@/utils'
+import { UserListItem } from '@/components'
 
 const props = defineProps<{
   userQueryModeDesuwa: UserQueryModeDesuwaType

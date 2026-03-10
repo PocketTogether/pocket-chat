@@ -1,4 +1,4 @@
-import type { UserPageSortModeType, UsersResponseWithBaseExpand } from '@/api'
+import type { UserPageSortModeType } from '@/api'
 
 export type PageRecoverDataForUserListPageItemType = {
   uuid: string

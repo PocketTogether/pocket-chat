@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import type { UsersResponseWithBaseExpand } from '@/api'
 import { UserRealtimeStatusToIcon } from '@/components'
 import {
   useRealtimeUsersStatusComputedForUserRealtimeStatus,
   useRouterHistoryTool,
 } from '@/composables'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
-import { pb } from '@/lib'
-import { RiGlobalLine } from '@remixicon/vue'
+import { pb, type UsersResponse } from '@/lib'
 
 const props = defineProps<{
-  userData: UsersResponseWithBaseExpand
+  userData: UsersResponse
 }>()
 
 const userAuthor = computed(() => props.userData)

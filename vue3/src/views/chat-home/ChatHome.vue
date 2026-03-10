@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { ChatHomeChatCol, ContainerCol2ForChatHome } from './components'
+import { LiveContent } from './dependencies'
 
 const { width: windowWidth } = useWindowSize()
 
@@ -11,29 +12,28 @@ const showChatWidthLargerTrueWidthSmallerFalse = computed(() => {
   }
   return false
 })
+
+const refContainerCol2ForChatHome = ref<null | InstanceType<
+  typeof ContainerCol2ForChatHome
+>>(null)
 </script>
 
 <template>
   <div>
     <!-- 大屏 双列 -->
     <div v-if="windowWidth >= 900">
-      <ContainerCol2ForChatHome>
+      <ContainerCol2ForChatHome ref="refContainerCol2ForChatHome">
         <!-- 左侧 -->
         <template #col2>
           <div>
-            <div class="h-[200px] bg-red-950"></div>
-            <div class="border-t-[3px] border-color-background"></div>
-            <div class="h-[200px] bg-red-950"></div>
-            <div class="border-t-[3px] border-color-background"></div>
-            <div class="h-[200px] bg-red-950"></div>
-            <div class="border-t-[3px] border-color-background"></div>
-            <div class="h-[200px] bg-red-950"></div>
-            <div class="border-t-[3px] border-color-background"></div>
-            <div class="h-[200px] bg-red-950"></div>
-            <div class="border-t-[3px] border-color-background"></div>
-            <div class="h-[200px] bg-red-950"></div>
-            <div class="border-t-[3px] border-color-background"></div>
-            <div class="h-[200px] bg-red-950"></div>
+            <!--  -->
+            <div class="my-[24px]">
+              <LiveContent
+                :refScrollWarp="
+                  refContainerCol2ForChatHome?.refElScrollbar?.wrapRef
+                "
+              ></LiveContent>
+            </div>
           </div>
         </template>
         <!-- 右侧 -->

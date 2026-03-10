@@ -262,3 +262,19 @@ $types: (
 .fade-150ms-list-leave-to {
   opacity: 0;
 }
+
+/* fade-300ms-list */
+.fade-300ms-list-move,
+.fade-300ms-list-leave-active,
+.fade-300ms-list-enter-active {
+  transition: all 300ms;
+}
+.fade-300ms-list-leave-active {
+  position: absolute;
+}
+.fade-300ms-list-enter-from {
+  opacity: 0;
+}
+.fade-300ms-list-leave-to {
+  opacity: 0;
+}

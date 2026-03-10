@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ChatTopBarMoreMenuItem } from '@/components'
 import { useRouterHistoryTool } from '@/composables'
 import { routerDict } from '@/config'
 import { useI18nStore } from '@/stores'
@@ -82,7 +83,69 @@ const i18nStore = useI18nStore()
         </div>
       </div>
     </Transition>
+    <!-- bar-box 补丁，为解决firefox中盒子边缘与外阴影的缝隙问题 -->
+    <div
+      class="pointer-events-none absolute bottom-[-0.5px] left-[-0.5px] right-[-0.5px] top-0 z-[4] rounded-b-[24px] border-2 border-color-background-soft"
+    ></div>
+    <div class="top-bar-box relative z-[3] flow-root bg-color-background-soft">
+      <div class="flex items-center">
+        <!-- 返回 -->
+        <div
+          class="flex h-[40px] w-[48px] cursor-pointer items-center justify-center"
+          @click="chatTopBarBack"
+        >
+          <RiArrowLeftSFill></RiArrowLeftSFill>
+        </div>
+        <!-- 标题 -->
+        <div class="flex-1 truncate">
+          <div class="truncate text-[15px] font-bold text-color-text">
+            {{ pageTitle }}
+          </div>
+        </div>
+        <!-- 更多 -->
+        <div
+          ref="targetMoreMenuToggleShowButton"
+          class="more-menu-toggle-show-button flex h-[40px] w-[48px] cursor-pointer items-center justify-center"
+          :class="{
+            'is-show-more-menu': isShowMoreMenu,
+          }"
+          @click="toggleShowMoreMenu"
+        >
+          <RiMore2Fill class="more-menu-icon"></RiMore2Fill>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.top-bar-box {
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 0 6px 6px var(--color-background);
+}
+.more-menu {
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 0 6px 6px var(--color-background);
+  right: 24px;
+  max-width: calc(100% - (2 * 24px));
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.more-menu-toggle-show-button {
+  .more-menu-icon {
+    transition: all 300ms;
+    transform: rotate(0);
+  }
+  &.is-show-more-menu {
+    .more-menu-icon {
+      transform: rotate(90deg);
+    }
+  }
+}
+.more-menu-close-button {
+  .button-box {
+    height: 24px;
+  }
+}
+</style>

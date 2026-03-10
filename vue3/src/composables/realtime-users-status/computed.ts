@@ -32,9 +32,12 @@ export const useRealtimeUsersStatusComputed = () => {
     usersNotViewingMarksInitLatestMapByUser,
   } = useUsersNotViewingMarksInitGetListWithMapByUserProcessQuery()
 
-  /** 每秒更新一次的响应式时间戳 */
+  /**
+   * 每秒更新一次的响应式时间戳，不需要太频繁，
+   * 因为只有isOnline的判断使用它，其它的状态都是根据数据的
+   */
   const nowRefTimestamp = useTimestamp({
-    interval: 1000, // 默认 1000ms
+    interval: 2000, // 2000ms
   })
 
   /**
