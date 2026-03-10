@@ -1,9 +1,6 @@
 import { useRouterHistoryStore } from '@/stores'
 import type { UserQueryModeDesuwaType } from './query-mode'
 import { injectAppMainElScrollbar, useOnComponentLeave } from '@/composables'
-import { watchUntilSourceCondition } from '@/utils'
-import type { RefUserListPageUserListType } from './dependencies'
-import { useWindowSize } from '@vueuse/core'
 
 /** 页面恢复数据获取 */
 export const useUserListPagePageRecoverDataDesuwa = () => {
@@ -57,12 +54,10 @@ export const useUserListPagePageRecoverScrollTop = (data: {
 export const useUserListPagePageRecoverDataSetOnLeave = (data: {
   //
   userQueryModeDesuwa: UserQueryModeDesuwaType
-  refUserListPageUserList: RefUserListPageUserListType
 }) => {
   const {
     //
     userQueryModeDesuwa,
-    refUserListPageUserList,
   } = data
 
   const {
@@ -84,9 +79,6 @@ export const useUserListPagePageRecoverDataSetOnLeave = (data: {
       userQuerySearch: userQuerySearch.value,
       userQueryPage: userQueryPage.value,
       appMainElScrollbarScrollTop: appMainElScrollbar.value?.wrapRef?.scrollTop,
-      // windowWidth: windowSize.width.value,
-      layoutBoxWidth: refUserListPageUserList.value?.layoutBoxWidth,
-      transBoxHeight: refUserListPageUserList.value?.transBoxHeight,
     })
   }
 

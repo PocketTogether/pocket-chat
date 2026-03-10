@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { useUserPageListQuery } from '@/queries'
-import type {
-  UserListPagePageRecoverDataDesuwaType,
-  UserQueryModeDesuwaType,
-} from './dependencies'
+import type { UserQueryModeDesuwaType } from './dependencies'
 import { useElementSize, useWindowSize } from '@vueuse/core'
 import { UserListItem, PaginationBar } from './components'
+import { watchUntilSourceCondition } from '@/utils'
 
 const props = defineProps<{
   userQueryModeDesuwa: UserQueryModeDesuwaType
-  userListPagePageRecoverDataDesuwa: UserListPagePageRecoverDataDesuwaType
 }>()
 
 const {
@@ -21,21 +18,7 @@ const {
   userPageListQuery,
 } = props.userQueryModeDesuwa
 
-const { userListPagePageRecoverData } = props.userListPagePageRecoverDataDesuwa
-
-// console.log('userListPagePageRecoverData', userListPagePageRecoverData)
-
 const windowsSize = useWindowSize()
-
-const refLayoutBox = ref<HTMLElement | null>(null)
-const sizeLayoutBox = useElementSize(refLayoutBox)
-
-const layoutBoxWidth = computed(() => {
-  if (sizeLayoutBox.width.value <= 0) {
-    return userListPagePageRecoverData?.data.layoutBoxWidth ?? 0
-  }
-  return sizeLayoutBox.width.value
-})
 
 const refContentBox = ref<HTMLElement | null>(null)
 const sizeContentBox = useElementSize(refContentBox)
@@ -83,37 +66,55 @@ const transBoxHeight = computed(() => {
   if (transBoxHeightByCache.value > 10) {
     return transBoxHeightByCache.value
   }
-  const transBoxHeightByPageRecoverData =
-    userListPagePageRecoverData?.data.transBoxHeight
-  if (
-    transBoxHeightByPageRecoverData != null &&
-    transBoxHeightByPageRecoverData > 10
-  ) {
-    return transBoxHeightByPageRecoverData
-  }
   return transBoxHeightByDefault()
 })
 
-defineExpose({
-  transBoxHeight,
-  layoutBoxWidth,
+const isMountedForContent = ref(false)
+onMounted(async () => {
+  // 等待sizeContentBox有高度才算渲染完成
+  // 不过即使加了这个也仍然不够，索性直接300ms算了
+  // await watchUntilSourceCondition(
+  //   computed(() => sizeContentBox.height.value > 10),
+  //   (val) => val === true
+  // )
+  // await nextTick()
+  await new Promise((resolve) => setTimeout(resolve, 300))
+  isMountedForContent.value = true
+})
+
+const userPageListQueryDataValueOnSetupIsNotNull =
+  userPageListQuery.data.value != null
+
+const contentStyleHeight = computed(() => {
+  // 已渲染完毕，transBoxHeight 即可
+  if (isMountedForContent.value) {
+    return `${transBoxHeight.value}px`
+  }
+  // 未渲染完毕，根据当亲查询是否有数据来判断
+  else {
+    // Setup时当前查询就有数据，可直接返回undefined，即高度直接随内容
+    if (userPageListQueryDataValueOnSetupIsNotNull) {
+      return undefined
+    }
+    // 当前查询无数据，返回高度，即默认高度
+    return `${transBoxHeight.value}px`
+  }
 })
 </script>
 
 <template>
   <div>
-    <!-- 文件显示 -->
-    <!-- 布局盒子，获取宽度 -->
-    <div ref="refLayoutBox">
-      <Transition name="fade800ms" mode="out-in">
-        <div v-if="layoutBoxWidth > 0">
+    <!-- 用户显示 -->
+    <div>
+      <div>
+        <div>
           <!-- 样式盒子 -->
           <div class="overflow-hidden bg-color-background-soft">
             <!-- 高度过渡盒子 -->
             <div
               class="relative overflow-hidden transition-[height] duration-300"
               :style="{
-                height: `${transBoxHeight}px`,
+                height: contentStyleHeight,
               }"
             >
               <!-- 内容盒子 -->
@@ -134,26 +135,17 @@ defineExpose({
                     "
                   >
                     <div
-                      v-for="(item, index) in userPageListQuery.data.value
-                        .items"
+                      v-for="item in userPageListQuery.data.value.items"
                       :key="item.id"
                     >
-                      <!-- 分割线 -->
-                      <div
-                        v-if="index > 0"
-                        class="border-t-[3px] border-color-background"
-                      ></div>
                       <div>
                         <UserListItem :userData="item"></UserListItem>
                       </div>
+                      <!-- 分割线 -->
+                      <div class="border-t-[3px] border-color-background"></div>
                     </div>
                     <!-- 当一页中消息过少时，显示占位高度 -->
                     <div v-if="userPageListQuery.data.value.items.length < 4">
-                      <!-- 分割线 -->
-                      <div
-                        v-if="userPageListQuery.data.value.items.length > 0"
-                        class="border-t-[3px] border-color-background"
-                      ></div>
                       <!-- 占位图标 -->
                       <div class="flex h-[200px] items-center justify-center">
                         <div
@@ -163,18 +155,12 @@ defineExpose({
                           <RiMessage3Fill size="100px"></RiMessage3Fill>
                         </div>
                       </div>
+                      <!-- 分割线 -->
+                      <div class="border-t-[3px] border-color-background"></div>
                     </div>
                   </div>
                 </Transition>
               </div>
-              <!-- 分割线 横向 -->
-              <div
-                v-if="
-                  userPageListQuery.data.value != null &&
-                  userPageListQuery.data.value.items.length >= 4
-                "
-                class="border-t-[3px] border-color-background"
-              ></div>
               <!-- 加载遮罩 -->
               <Transition name="fade" mode="out-in">
                 <div
@@ -197,8 +183,12 @@ defineExpose({
             </div>
           </div>
           <div>
-            <!-- 分割线 横向 -->
-            <div class="border-t-[3px] border-color-background"></div>
+            <div class="relative">
+              <div class="absolute bottom-0 left-0 right-0">
+                <!-- 分割线 横向 -->
+                <div class="border-t-[3px] border-color-background"></div>
+              </div>
+            </div>
             <!-- 分页栏 -->
             <PaginationBar
               :userQuerySortMode="userQuerySortMode"
@@ -211,7 +201,7 @@ defineExpose({
             ></PaginationBar>
           </div>
         </div>
-      </Transition>
+      </div>
     </div>
   </div>
 </template>

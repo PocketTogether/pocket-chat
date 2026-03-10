@@ -30,15 +30,9 @@ useUserListPagePageRecoverScrollTop({
   userListPagePageRecoverDataDesuwa,
 })
 
-const refUserListPageUserList = ref<InstanceType<
-  typeof UserListPageUserList
-> | null>(null)
-export type RefUserListPageUserListType = typeof refUserListPageUserList
-
 // 页面恢复数据收集
 useUserListPagePageRecoverDataSetOnLeave({
   userQueryModeDesuwa,
-  refUserListPageUserList,
 })
 </script>
 

@@ -7,9 +7,6 @@ export type PageRecoverDataForUserListPageItemType = {
     userQuerySearch: string
     userQueryPage: number
     appMainElScrollbarScrollTop: number | undefined
-    // windowWidth: number | undefined
-    transBoxHeight: number | undefined
-    layoutBoxWidth: number | undefined
   }
 }
 
