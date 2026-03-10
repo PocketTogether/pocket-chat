@@ -82,6 +82,13 @@ const i18nStore = useI18nStore()
         <div class="h-[50px]"></div>
         <!-- 聊天顶栏菜单项 插槽 -->
         <slot name="chatTopBarMoreMenu"></slot>
+        <!-- 菜单项 首页 -->
+        <ChatTopBarMoreMenuItem @click="$router.push(routerDict.ChatHome.path)">
+          <template #icon>
+            <RiHomeLine size="18px"></RiHomeLine>
+          </template>
+          <template #text> {{ i18nStore.t('pageHome')() }} </template>
+        </ChatTopBarMoreMenuItem>
         <!-- 菜单项 刷新 -->
         <ChatTopBarMoreMenuItem
           :isRunning="isImageQueryRefreshRunningForAni"
