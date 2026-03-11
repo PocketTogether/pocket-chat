@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-03-11
+
+<details>
+<summary>📝 查看中文版本 (Chinese Version)</summary>
+
+### 新增
+- Feature/user and user realtime by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/30
+- 支持消息搜索，并可在消息中通过 “#标签” 来快速跳转至搜索页。
+- 支持用户艾特功能，可在消息中使用 “@username”，点击后可查看用户详情。
+- 支持用户实时状态，如 “在线”、“离线”、“闲置”、“输入中”。
+
+</details>
+
+### Added
+
+- Feature/user and user realtime by @haruki1953 in https://github.com/PocketTogether/pocket-chat/pull/30
+- Supports message search, and allows quick navigation to the search page via “#tags” inside messages.
+- Supports user mention: use “@username” in messages, and click to view user details.
+- Supports real‑time user presence status, including “Online”, “Offline”, “Idle”, and “Typing”.
+
 ## [0.5.1] - 2026-02-09
 
 <details>
@@ -215,7 +235,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pocket-chat: 一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3. 
 
-[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/0.5.1...HEAD
+[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.3.0...v0.4.0
