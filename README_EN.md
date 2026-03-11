@@ -38,20 +38,25 @@
 - Supports GitHub, X/Twitter, and other OAuth2 login/registration methods.
 - Supports message reply, edit, delete, and jumping to a message via its link.
 - Supports in-site new message notifications and desktop new message notifications.
-- Supports image sending, image viewing, and image metadata editing
+- Supports image sending, image viewing, and image metadata editing.
 - Supports file sending, file downloading, and file metadata editing.
 - Supports user permission control: message sending permission, image upload permission, file upload permission, and user banning.
+- Supports message search, and allows quick navigation to the search page via “#tags” inside messages.
+- Supports user mention: use “@username” in messages, and click to view user details.
+- Supports real‑time user presence status, including “Online”, “Offline”, “Idle”, and “Typing”.
 - Supports PWA installation, including “Install App” or “Add to Home Screen”, and provides partial offline access.
 - It comes with a companion Android project, [PocketNotifier](https://github.com/PocketTogether/pocket-notifier), which provides real‑time background notifications on mobile devices.
 - Project address: https://github.com/PocketTogether/pocket-chat
 - Live demo: https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
-![](./assets/Snipaste_2026-01-18_17-30-48.png)
+![](./assets/Snipaste_2026-03-11_12-29-34.png)
 
 <details>
 <summary>📸 <b>More Screenshots</b></summary>
 
+![](./assets/Snipaste_2026-03-11_12-30-46.png)
+![](./assets/Snipaste_2026-01-18_17-30-48.png)
 ![](./assets/Snipaste_2026-01-18_16-31-41.png)
 ![](./assets/Snipaste_2026-01-05_10-33-05.jpg)
 ![](./assets/Snipaste_2026-01-05_10-34-08.jpg)
@@ -70,8 +75,7 @@
 <details>
 <summary>💡 <b>Development Plan</b></summary>
 
-- User list and online status display
-- User @ mention functionality
+- Audio and video playback
 - Voice sending functionality
 
 </details>

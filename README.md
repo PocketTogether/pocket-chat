@@ -38,20 +38,25 @@
 - 支持配置 Github、X/Twitter 等 OAuth2 登录/注册方式。
 - 支持消息回复、编辑、删除等操作，支持通过消息链接定位访问消息。
 - 支持网站内新消息通知，支持桌面新消息通知。
-- 支持图片发送、图片查看、图片信息编辑
-- 支持文件发送、文件下载、文件信息编辑
-- 支持用户权限控制：发送消息权限、上传图片权限、上传文件权限、用户封禁功能
-- 支持pwa安装，即“安装”或“添加到主屏幕”。支持一定程度的离线访问
-- 配套安卓项目 [PocketNotifier](https://github.com/PocketTogether/pocket-notifier)，可在手机后台实时获取新消息
+- 支持图片发送、图片查看、图片信息编辑。
+- 支持文件发送、文件下载、文件信息编辑。
+- 支持用户权限控制：发送消息权限、上传图片权限、上传文件权限、用户封禁功能。
+- 支持消息搜索，并可在消息中通过 “#标签” 来快速跳转至搜索页。
+- 支持用户艾特功能，可在消息中使用 “@username”，点击后可查看用户详情。
+- 支持用户实时状态，如 “在线”、“离线”、“闲置”、“输入中”。
+- 支持PWA安装，即“安装”或“添加到主屏幕”。支持一定程度的离线访问。
+- 配套安卓项目 [PocketNotifier](https://github.com/PocketTogether/pocket-notifier)，可在手机后台实时获取新消息。
 - 项目地址 https://github.com/PocketTogether/pocket-chat
 - 预览 https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
-![](./assets/Snipaste_2026-01-18_17-30-48.png)
+![](./assets/Snipaste_2026-03-11_12-29-34.png)
 
 <details>
 <summary>📸 <b>更多截图</b></summary>
 
+![](./assets/Snipaste_2026-03-11_12-30-46.png)
+![](./assets/Snipaste_2026-01-18_17-30-48.png)
 ![](./assets/Snipaste_2026-01-18_16-31-41.png)
 ![](./assets/Snipaste_2026-01-05_10-33-05.jpg)
 ![](./assets/Snipaste_2026-01-05_10-34-08.jpg)
@@ -70,8 +75,7 @@
 <details>
 <summary>💡 <b>开发计划</b></summary>
 
-- 用户列表、在线状态显示功能
-- 用户@功能
+- 音视频同步播放
 - 语音发送功能
 
 </details>
