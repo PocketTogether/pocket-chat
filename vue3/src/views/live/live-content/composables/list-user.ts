@@ -2,6 +2,7 @@ import { useRealtimeUsersStatusComputedForUserList } from '@/composables'
 import type { UsersResponse } from '@/lib'
 import { useProfileQuery, useUserPageListQuery } from '@/queries'
 import type { LiveContentPageRecoverDataDesuwaType } from './page-recover'
+import { useAuthStore } from '@/stores'
 
 export const useLiveListUserDesuwa = (data: {
   liveContentPageRecoverDataDesuwa: LiveContentPageRecoverDataDesuwaType
@@ -50,6 +51,8 @@ export const useLiveListUserDesuwa = (data: {
   const profileQuery = useProfileQuery()
   // profileQuery.data.value 类型是 UsersResponse| undefined
 
+  const authStore = useAuthStore()
+
   /**
    * 合并所有可展示的用户列表（保持顺序 + 去重）
    * 顺序：
@@ -63,7 +66,12 @@ export const useLiveListUserDesuwa = (data: {
     const seen = new Set<string>()
 
     const selfUser = profileQuery.data.value
-    if (selfUser) {
+    if (
+      selfUser != null &&
+      // 避免profileQuery的placeholderData造成问题
+      authStore.isValid === true &&
+      authStore.record?.id === selfUser.id
+    ) {
       result.push(selfUser)
       seen.add(selfUser.id)
     }
