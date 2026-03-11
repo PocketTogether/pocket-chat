@@ -11,7 +11,7 @@ import type { MessagesResponse } from '@/lib'
 import { useProfileQuery } from '@/queries'
 import { useAuthStore, useI18nStore } from '@/stores'
 import { potoNotification, urlJoinWithOriginUtil } from '@/utils'
-import { useClipboard } from '@vueuse/core'
+import { useClipboard, useTimeAgo } from '@vueuse/core'
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router'
 
 /**
@@ -184,5 +184,72 @@ export const useMessageLinkProcess = (data: {
   return {
     copyMessageLink,
     messageRouterResolveObj,
+  }
+}
+
+/** 消息文字处理（只处理内容） */
+export const useMessageContentProcess = <
+  TMessageData extends MessagesResponse,
+>(data: {
+  messageData: ComputedRef<TMessageData>
+}) => {
+  const { messageData } = data
+  const i18nStore = useI18nStore()
+
+  /** 内容文本（图片 → 文件 → 文本） */
+  const messageContentText = computed(() => {
+    const msg = messageData.value
+
+    // 图片优先
+    if (msg.images.length > 0) {
+      return i18nStore.t('chatMessageReplyMessageImageShowText')()
+    }
+
+    // 文件其次
+    if (msg.file !== '') {
+      return i18nStore.t('chatMessageReplyMessageFileShowText')()
+    }
+
+    // 最后是文本
+    return msg.content
+  })
+
+  return {
+    messageContentText,
+  }
+}
+
+/** 消息文字 + 时间处理 */
+export const useMessageContentWithTimeProcess = <
+  TMessageData extends MessagesResponse,
+>(data: {
+  messageData: ComputedRef<TMessageData>
+}) => {
+  const { messageData } = data
+  const i18nStore = useI18nStore()
+
+  /** 复用内容处理 */
+  const { messageContentText } = useMessageContentProcess({ messageData })
+
+  /** 时间（useTimeAgo） */
+  const timeAgo = useTimeAgo(
+    computed(() => messageData.value.created),
+    {
+      messages: i18nStore.t('useTimeAgoMessages')(),
+      max: 'day',
+    }
+  )
+
+  /** 内容 + 时间 */
+  const messageContentWithTimeText = computed(() => {
+    if (messageContentText.value === '') {
+      return `${timeAgo.value}`
+    }
+    return `${messageContentText.value} | ${timeAgo.value}`
+  })
+
+  return {
+    messageContentText,
+    messageContentWithTimeText,
   }
 }

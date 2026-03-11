@@ -11,6 +11,7 @@ import {
 } from '@/utils'
 import { useClipboard } from '@vueuse/core'
 import { useI18nStore } from '@/stores'
+import { useRouterHistoryTool } from '@/composables'
 
 const props = defineProps<{
   imageInfoQueryDesuwa: ImageInfoQueryDesuwaType
@@ -75,6 +76,21 @@ const authorName = computed(() => {
 const authorUsername = computed(() => {
   return imageAuthor.value?.username ?? ''
 })
+
+const {
+  // 跳转至用户详情页的方法
+  routerGoUserInfoPage,
+} = useRouterHistoryTool()
+
+const goUserInfoPage = () => {
+  if (imageAuthor.value == null) {
+    return
+  }
+  routerGoUserInfoPage({
+    userId: imageAuthor.value.id,
+    presetUserGetOneData: imageAuthor.value,
+  })
+}
 
 const clipboard = useClipboard()
 const i18nStore = useI18nStore()
@@ -151,12 +167,13 @@ const imageDownloadUrl = computed(() => {
       <div class="flex flex-1 items-center truncate">
         <!-- 头像 -->
         <div
-          class="h-[44px] w-[44px] shrink-0 rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
+          class="h-[44px] w-[44px] shrink-0 cursor-pointer rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
           :style="{
             backgroundImage: `url('${authorAvatarUrl}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }"
+          @click="goUserInfoPage"
         ></div>
 
         <!-- 名称 / 用户名 -->

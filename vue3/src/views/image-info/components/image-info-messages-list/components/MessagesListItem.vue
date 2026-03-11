@@ -3,8 +3,8 @@ import type { MessagesResponseWithImageInfoMessageListExpand } from '@/api'
 import { appUserDefaultAvatar, fileUserAvatarConfig } from '@/config'
 import { pb } from '@/lib'
 import { useI18nStore } from '@/stores'
+import { useMessageContentProcess, useMessageLinkProcess } from '@/composables'
 import { useTimeAgo } from '@vueuse/core'
-import { useMessageLinkProcess } from '@/composables'
 
 const props = defineProps<{
   messageItem: MessagesResponseWithImageInfoMessageListExpand
@@ -32,13 +32,17 @@ const authorAvatarUrl = computed(() => {
   })
 })
 
+// 消息
+const { messageContentText } = useMessageContentProcess({
+  messageData,
+})
+
 const i18nStore = useI18nStore()
 
-// 时间
+/** 时间（useTimeAgo） */
 const timeAgo = useTimeAgo(
   computed(() => messageData.value.created),
   {
-    // i18n
     messages: i18nStore.t('useTimeAgoMessages')(),
     max: 'day',
   }
@@ -76,13 +80,22 @@ const {
               </div>
             </div>
           </div>
-          <!-- 日期 -->
+          <!-- 消息 -->
           <div class="flex-1 truncate">
-            <div class="mr-[10px]">
-              <div
-                class="select-none truncate text-[14px] font-bold text-color-text"
-              >
-                {{ timeAgo }}
+            <div class="mr-[8px] flex items-center justify-between">
+              <div class="flex-1 truncate">
+                <div
+                  class="select-none truncate text-[14px] font-bold text-color-text"
+                >
+                  {{ messageContentText }}
+                </div>
+              </div>
+              <div class="ml-[5px]">
+                <div
+                  class="select-none text-[11px] font-normal italic text-color-text-soft"
+                >
+                  {{ timeAgo }}
+                </div>
               </div>
             </div>
           </div>

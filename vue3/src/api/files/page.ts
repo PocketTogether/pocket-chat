@@ -103,7 +103,7 @@ export const filesPageFilterBuildFn = (data: {
   return filterIsDeletePart
 }
 
-/** 图片分页查询，普通分页 */
+/** 文件分页查询，普通分页 */
 export const pbFilePageListApi = async (
   page: number,
   data: {

@@ -135,5 +135,6 @@ export const useMessageDispaly = (data: {
     messageUserUsername,
     messageReplyMessageUserAvatarUrl,
     isMessageSendByCurrentUser,
+    currentMessageUserData,
   }
 }

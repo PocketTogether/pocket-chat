@@ -1,3 +1,6 @@
 export * from './recover-chat-col'
 export * from './recover-image-select-page'
 export * from './recover-file-select-page'
+export * from './recover-user-list-page'
+export * from './recover-search-page'
+export * from './recover-live-content'

@@ -4,7 +4,9 @@ import {
   pb,
   type Create,
   type Update,
+  type UsersRecord,
 } from '@/lib'
+import type { Group, KeyValueMirror } from '@/types'
 import {
   fetchWithTimeoutForPbRequestWillEmail,
   fetchWithTimeoutPreferred,
@@ -46,6 +48,33 @@ export const pbUsersGetOneApi = async (id: string) => {
     // timeout为5000
     fetch: fetchWithTimeoutPreferred,
   })
+  return pbRes
+}
+
+/** 🧠 类型安全地构造 filter 字符串（严格遵守 strict-boolean-expressions） */
+export const userGetByUsernameFilterBuildFn = (data: { username: string }) => {
+  const recordKeys = {
+    username: 'username',
+    isBanned: 'isBanned',
+  } as const satisfies Group<
+    // 限制键必须来自 `[CollectionName]Record`，且每个键的值必须与键名相同（KeyValueMirror），可选（允许只使用部分字段）
+    Partial<KeyValueMirror<keyof UsersRecord>>
+  >
+
+  return `${recordKeys.username}='${data.username}' && ${recordKeys.isBanned}=false` as const
+  // type const = `username='${string}' && isBanned=false`
+}
+
+/** users集合 根据用户名查找 */
+export const pbUsersGetByUsernameApi = async (username: string) => {
+  // 类型安全地构造filter
+  const userGetByUsernameFilter = userGetByUsernameFilterBuildFn({ username })
+  const pbRes = await pb
+    .collection(Collections.Users)
+    .getFirstListItem(userGetByUsernameFilter, {
+      // timeout为5000
+      fetch: fetchWithTimeoutPreferred,
+    })
   return pbRes
 }
 

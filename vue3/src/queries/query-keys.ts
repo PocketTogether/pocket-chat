@@ -1,4 +1,8 @@
-import type { PMLRCApiParameters0DataPageParamNonNullable } from '@/api'
+import type {
+  PMLRCApiParameters0DataPageParamNonNullable,
+  SearchPageSortModeType,
+  UserPageSortModeType,
+} from '@/api'
 import type { Ref } from 'vue'
 
 export const queryKeys = {
@@ -38,7 +42,6 @@ export const queryKeys = {
       ...definedOrEmpty(pageNum),
       ...definedOrEmpty(customStrId),
     ] as const
-    // return ['imagePageList', pageNum, authorId, searchContent] as const
   },
 
   /** useImagesGetOneQuery */
@@ -74,7 +77,6 @@ export const queryKeys = {
       ...definedOrEmpty(pageNum),
       ...definedOrEmpty(customStrId),
     ] as const
-    // return ['filePageList', pageNum, authorId, searchContent] as const
   },
 
   /** useFilesGetOneQuery */
@@ -92,6 +94,96 @@ export const queryKeys = {
       'fileInfoMessageList',
       ...definedOrEmpty(fileId),
       ...definedOrEmpty(pageNum),
+    ] as const
+  },
+
+  /** useUserPageListQuery */
+  userPageList: (
+    sortMode?: UserPageSortModeType | null,
+    searchContent?: string | null,
+    pageNum?: number | null,
+    /** 可自定义的充当唯一标识的字符串 */
+    customStrId?: string | null
+  ) => {
+    return [
+      'userPageList',
+      ...definedOrEmpty(sortMode),
+      ...definedOrEmpty(searchContent),
+      ...definedOrEmpty(pageNum),
+      ...definedOrEmpty(customStrId),
+    ] as const
+  },
+
+  /** useUsersGetOneQuery */
+  usersGetOne: (userId?: string | null) => {
+    return [
+      //
+      'usersGetOne',
+      ...definedOrEmpty(userId),
+    ] as const
+  },
+
+  /** useUserInfoMessageListQuery */
+  userInfoMessageList: (userId?: string | null, pageNum?: number | null) => {
+    return [
+      'userInfoMessageList',
+      ...definedOrEmpty(userId),
+      ...definedOrEmpty(pageNum),
+    ] as const
+  },
+
+  /** useUsersPresencesStatusGetFirstListItemByUserIdQuery */
+  usersPresencesStatusGetFirstListItemByUserId: (userId?: string | null) => {
+    return [
+      'usersPresencesStatusGetFirstListItemByUserId',
+      ...definedOrEmpty(userId),
+    ] as const
+  },
+
+  /** useUsersPresencesStatusInitGetListQuery */
+  usersPresencesStatusInitGetList: () =>
+    ['usersPresencesStatusInitGetList'] as const,
+
+  /** useUsersNotViewingMarksInitGetListQuery */
+  usersNotViewingMarksInitGetList: () =>
+    ['usersNotViewingMarksInitGetList'] as const,
+
+  /** useUsersPresencesStatusInitGetListWithMapByUserProcessQuery */
+  usersPresencesStatusInitGetListWithMapByUserProcess: (
+    /** 依赖别的查询中的数据，就需那个query的dependQueryUuid（thisTimeQueryUuid） */
+    dependQueryUuid?: string | null
+  ) => {
+    return [
+      'usersPresencesStatusInitGetListWithMapByUserProcess',
+      ...definedOrEmpty(dependQueryUuid),
+    ] as const
+  },
+
+  /** useUsersNotViewingMarksInitGetListWithMapByUserProcessQuery */
+  usersNotViewingMarksInitGetListWithMapByUserProcess: (
+    /** 依赖别的查询中的数据，就需那个query的dependQueryUuid（thisTimeQueryUuid） */
+    dependQueryUuid?: string | null
+  ) => {
+    return [
+      'usersNotViewingMarksInitGetListWithMapByUserProcess',
+      ...definedOrEmpty(dependQueryUuid),
+    ] as const
+  },
+
+  /** useSearchPageMessageListQuery */
+  searchPageMessageList: (
+    sortMode?: SearchPageSortModeType | null,
+    searchContent?: string | null,
+    pageNum?: number | null,
+    /** 可自定义的充当唯一标识的字符串 */
+    customStrId?: string | null
+  ) => {
+    return [
+      'searchPageMessageList',
+      ...definedOrEmpty(sortMode),
+      ...definedOrEmpty(searchContent),
+      ...definedOrEmpty(pageNum),
+      ...definedOrEmpty(customStrId),
     ] as const
   },
 

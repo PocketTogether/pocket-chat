@@ -76,11 +76,10 @@ const contentParts = computed((): PostContentPart[] => {
 </script>
 <template>
   <div class="text-with-link">
-    <template v-for="part in contentParts">
+    <template v-for="(part, index) in contentParts">
       <template v-if="part.type === 'link'">
         <a
-          :key="part.content"
-          type="primary"
+          :key="index"
           :href="part.href"
           target="_blank"
           rel="noopener noreferrer"
@@ -89,7 +88,7 @@ const contentParts = computed((): PostContentPart[] => {
           {{ part.content }}
         </a>
       </template>
-      <template v-else>{{ part.content }}</template>
+      <span v-else :key="index">{{ part.content }}</span>
     </template>
   </div>
 </template>

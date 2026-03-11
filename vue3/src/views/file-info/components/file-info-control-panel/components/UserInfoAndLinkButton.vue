@@ -6,6 +6,7 @@ import { pb } from '@/lib'
 import { potoMessage, potoNotification } from '@/utils'
 import { useClipboard } from '@vueuse/core'
 import { useI18nStore } from '@/stores'
+import { useRouterHistoryTool } from '@/composables'
 
 const props = defineProps<{
   fileInfoQueryDesuwa: FileInfoQueryDesuwaType
@@ -71,6 +72,21 @@ const authorUsername = computed(() => {
   return fileAuthor.value?.username ?? ''
 })
 
+const {
+  // 跳转至用户详情页的方法
+  routerGoUserInfoPage,
+} = useRouterHistoryTool()
+
+const goUserInfoPage = () => {
+  if (fileAuthor.value == null) {
+    return
+  }
+  routerGoUserInfoPage({
+    userId: fileAuthor.value.id,
+    presetUserGetOneData: fileAuthor.value,
+  })
+}
+
 const i18nStore = useI18nStore()
 
 const fileOpenUrl = computed(() => {
@@ -96,12 +112,13 @@ const fileDownloadUrl = computed(() => {
       <div class="flex flex-1 items-center truncate">
         <!-- 头像 -->
         <div
-          class="h-[44px] w-[44px] shrink-0 rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
+          class="h-[44px] w-[44px] shrink-0 cursor-pointer rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
           :style="{
             backgroundImage: `url('${authorAvatarUrl}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }"
+          @click="goUserInfoPage"
         ></div>
 
         <!-- 名称 / 用户名 -->

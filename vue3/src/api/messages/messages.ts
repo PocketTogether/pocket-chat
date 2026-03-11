@@ -1,4 +1,7 @@
-import { chatMessageRealtimeReConnectListNumberConfig } from '@/config'
+import {
+  chatMessageRealtimeReConnectListNumberConfig,
+  type PbMessagesMentionMapType,
+} from '@/config'
 import {
   Collections,
   onPbResErrorStatus401AuthClear,
@@ -25,8 +28,12 @@ export const pbMessagesSendChatApi = async (data: {
   images: string[]
   /** 发送文件 */
   file: string | null
+  /** 艾特用户 */
+  mentionedUsers?: string[]
+  mentionMap?: PbMessagesMentionMapType
 }) => {
-  const { roomId, content, replyMessageId, images, file } = data
+  const { content, replyMessageId, images, file, mentionedUsers, mentionMap } =
+    data
 
   // 未登录，抛出错误
   if (!pb.authStore.isValid || pb.authStore.record?.id == null) {
@@ -87,6 +94,8 @@ export const pbMessagesSendChatApi = async (data: {
       }
       return replyMessageId
     })(),
+    mentionedUsers,
+    mentionMap,
   }
 
   // 通过 pocketbase SDK 请求
@@ -116,8 +125,19 @@ export const pbMessagesEditChatApi = async (data: {
   images: string[]
   /** 发送文件 */
   file: string | null
+  /** 艾特用户 */
+  mentionedUsers?: string[]
+  mentionMap?: PbMessagesMentionMapType
 }) => {
-  const { chatEditMessageId, content, images, replyMessageId, file } = data
+  const {
+    chatEditMessageId,
+    content,
+    images,
+    replyMessageId,
+    file,
+    mentionedUsers,
+    mentionMap,
+  } = data
 
   // 未登录，抛出错误
   if (!pb.authStore.isValid || pb.authStore.record?.id == null) {
@@ -163,6 +183,8 @@ export const pbMessagesEditChatApi = async (data: {
       }
       return replyMessageId
     })(),
+    mentionedUsers,
+    mentionMap,
   }
 
   // 通过 pocketbase SDK 请求

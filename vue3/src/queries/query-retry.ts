@@ -9,7 +9,7 @@ import { ClientResponseError } from 'pocketbase'
  */
 export const queryRetryPbNetworkError = (
   failureCount: number,
-  error: Error
+  error: unknown
 ) => {
   // console.log('queryRetryPbNetworkError')
   // console.log(error)

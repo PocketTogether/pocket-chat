@@ -9,6 +9,7 @@ import { pb } from '@/lib'
 import { useI18nStore, useRealtimeMessagesStore } from '@/stores'
 import { useWebNotification } from '@vueuse/core'
 import { useRoute } from 'vue-router'
+import { useMessageContentProcess } from './messages'
 
 export const useRealtimeMessagesSubscribe = () => {
   const realtimeMessagesStore = useRealtimeMessagesStore()
@@ -51,15 +52,21 @@ export const useRealtimeMessagesSubscribe = () => {
     })()
     /** 内容 */
     const body = (() => {
-      // 内容可能为图片
-      if (newMessage.images.length > 0) {
-        return i18nStore.t('chatMessageReplyMessageImageShowText')()
-      }
-      // 内容可能为文件
-      if (newMessage.file !== '') {
-        return i18nStore.t('chatMessageReplyMessageFileShowText')()
-      }
-      return newMessage.content
+      // // 内容可能为图片
+      // if (newMessage.images.length > 0) {
+      //   return i18nStore.t('chatMessageReplyMessageImageShowText')()
+      // }
+      // // 内容可能为文件
+      // if (newMessage.file !== '') {
+      //   return i18nStore.t('chatMessageReplyMessageFileShowText')()
+      // }
+      // return newMessage.content
+
+      // 【260220】封装了
+      const { messageContentText } = useMessageContentProcess({
+        messageData: computed(() => newMessage),
+      })
+      return messageContentText.value
     })()
     /** 图标-头像 */
     const icon = (() => {

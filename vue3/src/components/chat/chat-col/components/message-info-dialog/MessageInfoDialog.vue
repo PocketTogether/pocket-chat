@@ -9,6 +9,7 @@ import {
   IGVSoltHoverSlideInfoGo,
   ImageGroupViewer,
   TextWithLink,
+  TextWithLinkForMessage,
 } from '@/components'
 import {
   useRouteControlDialog,
@@ -54,6 +55,7 @@ const {
   messageUserUsername,
   messageReplyMessageUserAvatarUrl,
   isMessageSendByCurrentUser,
+  currentMessageUserData,
 } = useMessageDispaly({
   props,
 })
@@ -92,6 +94,8 @@ const authStore = useAuthStore()
 const {
   // 跳转至图片详情页的方法
   routerGoImageInfoPage,
+  // 跳转至用户详情页的方法
+  routerGoUserInfoPage,
 } = useRouterHistoryTool()
 
 const goImageInfoPage = (data: {
@@ -102,6 +106,16 @@ const goImageInfoPage = (data: {
   // await new Promise((resolve) => setTimeout(resolve, 200))
   // await nextTick()
   routerGoImageInfoPage(data)
+}
+
+const goUserInfoPage = () => {
+  if (currentMessageUserData.value == null) {
+    return
+  }
+  routerGoUserInfoPage({
+    userId: currentMessageUserData.value.id,
+    presetUserGetOneData: currentMessageUserData.value,
+  })
 }
 
 const { permissionSendMessage } = useUserPermissionsDesuwa()
@@ -133,12 +147,13 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
               <div class="flex items-center">
                 <!-- 头像 -->
                 <div
-                  class="h-[44px] w-[44px] rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
+                  class="h-[44px] w-[44px] cursor-pointer rounded-full border-[2px] border-color-background-soft bg-color-background-soft"
                   :style="{
                     backgroundImage: `url('${messageUserAvatarUrl}')`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }"
+                  @click="goUserInfoPage"
                 ></div>
                 <!-- 名称 用户名 -->
                 <div class="flex-1 truncate">
@@ -332,10 +347,15 @@ const { permissionSendMessage } = useUserPermissionsDesuwa()
                   v-else
                   class="wrap-long-text mx-[15px] text-[16px] text-color-text"
                 >
-                  <TextWithLink
-                    :data="chatRoomMessagesGetOneQuery.data.value.content"
+                  <!-- 【260227】TextWithLinkForMessage需加key以避免消息变化时出问题 -->
+                  <TextWithLinkForMessage
+                    :key="
+                      chatRoomMessagesGetOneQuery.data.value.id +
+                      chatRoomMessagesGetOneQuery.data.value.updated
+                    "
+                    :messageData="chatRoomMessagesGetOneQuery.data.value"
                     aTwcss="text-el-primary hover:underline"
-                  ></TextWithLink>
+                  ></TextWithLinkForMessage>
                 </div>
                 <!-- 时间 -->
                 <div class="mx-[15px] mt-[5px] flex items-center justify-end">

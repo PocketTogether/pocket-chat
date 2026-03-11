@@ -1,9 +1,14 @@
 import type {
   FilesResponseWithBaseExpand,
   ImagesResponseWithBaseExpand,
+  UsersResponseWithBaseExpand,
 } from '@/api'
 import { routerDict } from '@/config'
-import type { useFilesGetOneQuery, useImagesGetOneQuery } from '@/queries'
+import type {
+  useFilesGetOneQuery,
+  useImagesGetOneQuery,
+  useUsersGetOneQuery,
+} from '@/queries'
 import { queryKeys } from '@/queries'
 import { useRouterHistoryStore } from '@/stores'
 import { useQueryClient } from '@tanstack/vue-query'
@@ -171,9 +176,78 @@ export const useRouterHistoryTool = () => {
     })
   }
 
+  /**
+   * 跳转至用户详情页的方法，为方便使用封装至此
+   */
+  const routerGoUserInfoPage = (data: {
+    userId: string
+    // 在跳转前预设置查询数据，这样跳转后就立即有数据
+    presetUserGetOneData?: UsersResponseWithBaseExpand
+  }) => {
+    const {
+      //
+      userId,
+      presetUserGetOneData,
+    } = data
+
+    // UsersGetOneQuery 的数据类型
+    type UsersGetOneQueryDataValueType = ReturnType<
+      typeof useUsersGetOneQuery
+    >['data']['value']
+
+    // 对 useUsersGetOneQuery
+    // 在跳转前预设置查询数据，这样跳转后就立即有数据
+    if (presetUserGetOneData != null) {
+      // 立即执行的箭头函数，主要为了其中可以使用return以方便逻辑检查
+      ;(() => {
+        // getQueryData 原本返回类型为 unknown，这里 as 为应为的值
+        // try 以避免访问 getQueryData 获取的值时出错，如 TypeError: Cannot read properties of undefined
+        try {
+          const userGetOneQueryKey = queryKeys.usersGetOne(userId)
+
+          // 先检查是否已有缓存
+          const cached = queryClient.getQueryData(userGetOneQueryKey) as
+            | UsersGetOneQueryDataValueType
+            | undefined
+
+          // 有缓存，且日期新，则不应再设置查询数据了
+          if (
+            cached != null &&
+            cached.updated >= presetUserGetOneData.updated
+          ) {
+            return
+          }
+
+          // 预设置查询数据
+          queryClient.setQueryData(
+            userGetOneQueryKey,
+            // 确保类型正确
+            presetUserGetOneData satisfies UsersGetOneQueryDataValueType
+          )
+        } catch (error) {
+          console.warn(
+            'useRouterHistoryTool',
+            'routerGoUserInfoPage',
+            'presetUserGetOneData',
+            'queryClient.getQueryData',
+            error
+          )
+        }
+      })()
+    }
+
+    router.push({
+      name: routerDict.UserInfoPage.name,
+      params: {
+        [routerDict.UserInfoPage.paramsKey.id]: userId,
+      },
+    })
+  }
+
   return {
     routerBackSafe,
     routerGoImageInfoPage,
     routerGoFileInfoPage,
+    routerGoUserInfoPage,
   }
 }

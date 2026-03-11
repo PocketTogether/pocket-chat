@@ -30,27 +30,27 @@
 </p>
 
 <p align="center">
-  English | <a href="./README_CN.md">简体中文</a>
+  <a href="./README_EN.md">English</a> | 简体中文
 </p>
 
-- PocketChat is an open-source real-time chat platform built on [PocketBase](https://github.com/pocketbase/pocketbase) and [Vue3](https://github.com/vuejs/vue).
-- Cross-platform support for Linux, Windows, and macOS. Easy deployment: can be run on Windows after extraction. Supports Docker deployment.
-- Supports GitHub, X/Twitter, and other OAuth2 login/registration methods.
-- Supports message reply, edit, delete, and jumping to a message via its link.
-- Supports in-site new message notifications and desktop new message notifications.
-- Supports image sending, image viewing, and image metadata editing
-- Supports file sending, file downloading, and file metadata editing.
-- Supports user permission control: message sending permission, image upload permission, file upload permission, and user banning.
-- Supports PWA installation, including “Install App” or “Add to Home Screen”, and provides partial offline access.
-- It comes with a companion Android project, [PocketNotifier](https://github.com/PocketTogether/pocket-notifier), which provides real‑time background notifications on mobile devices.
-- Project address: https://github.com/PocketTogether/pocket-chat
-- Live demo: https://sakiko.top
+- PocketChat 是一个基于 [PocketBase](https://github.com/pocketbase/pocketbase) 与 [Vue3](https://github.com/vuejs/vue) 的开源实时聊天平台。
+- 跨平台支持 linux、windows、macos 。部署便捷，可在 windows 上解压后运行。支持 docker 部署。
+- 支持配置 Github、X/Twitter 等 OAuth2 登录/注册方式。
+- 支持消息回复、编辑、删除等操作，支持通过消息链接定位访问消息。
+- 支持网站内新消息通知，支持桌面新消息通知。
+- 支持图片发送、图片查看、图片信息编辑
+- 支持文件发送、文件下载、文件信息编辑
+- 支持用户权限控制：发送消息权限、上传图片权限、上传文件权限、用户封禁功能
+- 支持pwa安装，即“安装”或“添加到主屏幕”。支持一定程度的离线访问
+- 配套安卓项目 [PocketNotifier](https://github.com/PocketTogether/pocket-notifier)，可在手机后台实时获取新消息
+- 项目地址 https://github.com/PocketTogether/pocket-chat
+- 预览 https://sakiko.top
 
 ![](./assets/Snipaste_2025-11-16_16-03-05.png)
 ![](./assets/Snipaste_2026-01-18_17-30-48.png)
 
 <details>
-<summary>📸 <b>More Screenshots</b></summary>
+<summary>📸 <b>更多截图</b></summary>
 
 ![](./assets/Snipaste_2026-01-18_16-31-41.png)
 ![](./assets/Snipaste_2026-01-05_10-33-05.jpg)
@@ -68,112 +68,115 @@
 </details>
 
 <details>
-<summary>💡 <b>Development Plan</b></summary>
+<summary>💡 <b>开发计划</b></summary>
 
-- User list and online status display
-- User @ mention functionality
-- Voice sending functionality
+- 用户列表、在线状态显示功能
+- 用户@功能
+- 语音发送功能
 
 </details>
 
-## Deployment
+## 部署
 
-Before deploying on Linux, it is recommended to try it first on Windows to get familiar with PocketChat.
+在 linux 上部署前，建议先在 windows 上尝试以便了解 PocketChat。
 
-Since version v0.1.0, [Docker deployment](#deploy-with-docker) has been supported.
+v0.1.0 版本后已支持 [使用 docker 部署](#使用-docker-部署)。
 
-### Quick Start on Windows
+### 在 windows 上快速尝试
 
-All PocketChat releases are published on GitHub. Download the latest zip package from https://github.com/PocketTogether/pocket-chat/releases, for example `pocket_chat_0.0.1_windows_amd64.zip`.
+PocketChat 所有的版本更新都在 Github 以 release 形式发布，在 https://github.com/PocketTogether/pocket-chat/releases 下载如 `pocket_chat_0.0.1_windows_amd64.zip` 这样的压缩包。
 
 ![](./assets/image.png)
 
-Extract the archive and double-click `start.bat`. A command-line window will open.
+解压，双击 start.bat 运行，会打开这样的命令行。
 
 ![](./assets/image-1.png)
 
-At the same time, your browser will automatically open the PocketBase superuser creation page (the link shown in the console, e.g. `http://127.0.0.1:58090/_/#/pbinstal/eyJhbGciOiJI......`).
+与此同时，将会自动在浏览器打开 PocketBase 创建超级用户页面 也就是命令行中的链接如 `http://127.0.0.1:58090/_/#/pbinstal/eyJhbGciOiJI......`。
 
-Creating a superuser is a [**required step after deployment**](#required-post-deployment-steps). See [Create admin superuser using the link from the logs](#create-admin-superuser-using-the-link-from-the-logs).
+创建超级用户是 [**部署后的务必进行的操作**](#部署后的务必进行的操作)，详见 [根据日志中的链接创建用于后台管理的超级用户](#根据日志中的链接创建用于后台管理的超级用户)
 
 ![](./assets/image-3.png)
 
-`http://127.0.0.1:58090/_/` → PocketChat admin panel (accessible after creating the superuser)
 
-- `users` collection: can view all users and modify user permissions.  
-  See [users collection – user permission control](#users-collection--user-permission-control) (supported since `v0.3.0`)
-- `config` collection: project-specific settings (see [Config collection settings](#config-collection-settings))
-- `messages` collection: view all sent messages
-- `images` collection: view all uploaded images (supported since version `v0.2.0`).
-- `files` collection: view all uploaded files (supported since version `v0.4.0`).
+`http://127.0.0.1:58090/_/` 为 PocketChat 的后台管理页面，创建超级用户后即可访问
+
+- users 集合，可查看所有用户，可修改用户权限，详见 [users 集合 用户权限控制](#users-集合-用户权限控制) （ `v0.3.0` 版本后支持）
+- config 集合，可查看或修改关于本项目的一些配置，详见 [config 集合配置](#config-集合配置)
+- messages 集合，可查看所有用户发送的所有消息
+- images 集合，可查看全部图片（ `v0.2.0` 版本后支持）
+- files 集合，可查看全部文件（ `v0.4.0` 版本后支持）
 
 ![](./assets/image-4.png)
 
 <details>
-<summary><b>images collection v0.2.0</b></summary>
+<summary><b>images 集合 v0.2.0</b></summary>
 
 ![](./assets/Snipaste_2026-01-05_10-50-02.png)
 
 </details>
 
 <details>
-<summary><b>files collection v0.4.0</b></summary>
+<summary><b>files 集合 v0.4.0</b></summary>
 
 ![](./assets/Snipaste_2026-01-18_16-35-24.png)
 
 </details>
 
-`http://127.0.0.1:58090` → PocketChat main chat interface
+`http://127.0.0.1:58090` 为 PocketChat 的主页，在浏览器访问即可开始使用。
 
 ![](./assets/image-2.png)
 
-Continue reading this document for more configuration options.
+关于 PocketChat 的更多配置请继续阅读此文档
 
-### Full Deployment on Linux
+### 在 linux 上完整部署
 
-For clarity, this guide uses the [1Panel](https://github.com/1Panel-dev/1Panel) control panel.
+为了简单易懂地演示，这里使用 [1Panel](https://github.com/1Panel-dev/1Panel) linux面板来进行 PocketChat 的部署操作
 
-#### Prepare the website
+#### 准备网站
 
-- Prepare a domain name (example used here: `uika.top`)
-- Create a reverse proxy in 1Panel (OpenResty) pointing to `http://127.0.0.1:58090`
+准备域名：在自己的域名服务商解析域名，此次部署演示用的域名为 `uika.top`
+
+准备反向代理：在 1Panel(OpenResty) 创建反向代理。反向代理地址即为 http://127.0.0.1:58090 。
 
 ![](./assets/Snipaste_2025-11-17_09-01-57.png)
 
-> In this example the port is 58091 because 58090 was already in use by another PocketChat instance. How to change the port is explained in [Change port (optional)](#change-port-optional)
+> 笔者因为在此之前就已经部署了一个 PocketChat ，默认端口 58090 已被使用了，所以设置的是 58091，之后会讲到 PocketChat 如何 [修改端口](#修改端口)
 
-After creating the proxy, enable HTTPS (refer to 1Panel docs: https://docs.1panel.pro/user_manual/websites/website_config_basic/#https)
+创建反向代理之后，还要再为它配置 https ，这里就不讲了 [1Panel 文档 HTTPS](https://docs.1panel.pro/user_manual/websites/website_config_basic/#https)
 
-For configuring browser caching in the reverse proxy, see
-[Configuring Browser Caching in the Reverse Proxy](#configuring-browser-caching-in-the-reverse-proxy)
+反向代理中配置浏览器缓存，详见 [反向代理中配置浏览器缓存](#反向代理中配置浏览器缓存)
 
-#### Download and extract
+#### 下载与解压
 
-In 1Panel File Manager, create a folder (e.g. `/root/pocketchat`), then use `Download from remote` to fetch the Linux zip from GitHub Releases (e.g. `pocket_chat_0.0.1_linux_amd64.zip`).
+在 1Panel 打开文件管理，在合适的地方创建文件夹，此次演示创建的文件夹为 `/root/pocketchat`
+
+创建并进入文件夹后，点击 远程下载，输入 PocketChat 在 Github Releases 的压缩包的链接，下载如 `pocket_chat_0.0.1_linux_amd64.zip` 这样的压缩包
 
 ![](./assets/Snipaste_2025-11-17_09-30-20.png)
 
-After downloading, extract it.
+下载后，点击解压缩进行解压，解压后即可看到如下图所示的这些文件
 
 ![](./assets/Snipaste_2025-11-17_09-36-50.png)
 
-#### Set executable permission
+#### 设置执行权限
 
-Click the permission number next to the `pocketbase` file and make it executable.
+点击 `pocketbase` 文件对应的权限数字来设置执行权限
 
 ![](./assets/Snipaste_2025-11-17_13-33-57.png)
 
-#### Change port (optional)
 
-Edit `start.sh` and change the port in the last line:
+#### 修改端口（可选）
+
+点击打开 `start.sh` （此次演示即为 `/root/pocketchat/start.sh`），就能看到以下内容（在最后一行）。将其中的 `58090` 修改为自己想要的端口即可。
 
 ```sh
-./pocketbase serve --http 127.0.0.1:58090   # Change 58090 to your desired port
+./pocketbase serve --http 127.0.0.1:58090
 ```
 
-#### Run in background & start on boot
+#### 后台运行与开机自启
 
-In `/etc/systemd/system`, create a file named `pocketchat.service` with the following content (adjust paths as needed):
+在 1Panel 文件管理打开 `/etc/systemd/system` 文件夹，创建文件 `pocketchat.service`，点击此文件以进行编辑，粘贴以下内容（需根据自己的情况进行编辑）
 
 ```ini
 [Unit]
@@ -191,24 +194,30 @@ User=root
 WantedBy=multi-user.target
 ```
 
+- WorkingDirectory 为 [下载与解压](#下载与解压) 步骤中创建的文件夹，此次演示中即为 `/root/pocketchat`
+- ExecStart 也要根据上述情况进行设置，此次演示中即为 `/bin/sh /root/pocketchat/start.sh`
+
 ![](./assets/collage.png)
 
-Then open the terminal in 1Panel and run:
+`pocketchat.service` 文件创建完毕后，在 1Panel 打开终端，依次执行以下命令
 
 ```sh
-# Reload systemd configuration
+# 重新加载 systemd 配置
 systemctl daemon-reload
-# Start the service
+
+# 启动服务 pocketchat
 systemctl start pocketchat
-# Enable on boot
+
+# 设置开机自启
 systemctl enable pocketchat
-# View logs
+
+# 查看日志
 journalctl -u pocketchat.service --no-pager -o cat
 ```
 
 ![](./assets/Snipaste_2025-11-17_14-15-28.png)
 
-Replace `127.0.0.1:58091` in the log link with your domain and change `http` → `https`. Example:
+将日志中的链接中的 `127.0.0.1:58090` 替换为自己刚刚配置的域名，`http` 换为 `https`。如下（笔者本次演示中更改了端口，所以是 58091）
 
 ```
 http://127.0.0.1:58091/_/#/pbinstal/eyJhbGcixxxxxxxxxxx......xxxxxxxxxxxxxx
@@ -216,27 +225,28 @@ http://127.0.0.1:58091/_/#/pbinstal/eyJhbGcixxxxxxxxxxx......xxxxxxxxxxxxxx
 https://uika.top/_/#/pbinstal/eyJhbGcixxxxxxxxxxx......xxxxxxxxxxxxxx
 ```
 
-Open the modified link, [create the superuser](#create-admin-superuser-using-the-link-from-the-logs), and complete the [**required post-deployment steps**](#required-post-deployment-steps).
+在浏览器访问修改后的链接，即可进入 PocketBase 创建超级用户页面。[创建超级用户](#根据日志中的链接创建用于后台管理的超级用户) 并进行 [**部署后的务必进行的操作**](#部署后的务必进行的操作) 之后，即可开始使用 PocketChat
 
 ![](./assets/Snipaste_2025-11-17_14-50-28.png)
 ![](./assets/Snipaste_2025-11-17_15-12-46.png)
 
-Additional useful commands:
+
+更多命令参考
 
 ```sh
-# Check status
+# 查看状态
 systemctl status pocketchat
-# Restart
+# 重启
 systemctl restart pocketchat
-# Stop
+# 停止
 systemctl stop pocketchat
-# Disable boot start
+# 取消开机自启
 systemctl disable pocketchat
 ```
 
-### Deploy with Docker
+### 使用 docker 部署
 
-You can find the latest image at: https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
+可在此查看最新镜像： https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
 ```sh
 mkdir -p ${HOME}/PocketChat/pb_data
@@ -252,98 +262,88 @@ docker run -d \
 docker logs PocketChat
 ```
 
+### 已部署的 PocketChat 的更新指南
 
-### PocketChat Update Guide (For Deployed Instances)
+#### 手动部署的更新指南
 
-#### Manual Update Guide
+以下步骤适用于 **通过二进制方式（非 Docker）部署的 PocketChat**。所有操作可以在 1Panel 完成。
 
-The following steps apply to **PocketChat deployed via binary (non-Docker)**. All operations can be performed through **1Panel**.
-
-##### 1. Stop the currently running service
+##### 1. 停止当前运行的服务
 ```sh
 systemctl stop pocketchat
 ```
 
-##### 2. Navigate to the PocketChat installation directory
-This is usually the directory where you originally extracted the files, for example:
+##### 2. 进入 PocketChat 安装目录
+PocketChat 的安装目录通常是你当初解压的位置，例如：
 ```sh
 cd /root/pocketchat
 ```
 
-##### 3. Back up the existing version (optional but recommended)
-To prevent data loss in case the update fails, you can zip the current directory as a backup.
+##### 3. 备份现有版本（可选但推荐）
+为了避免更新失败导致数据丢失，你可以将当前目录打包为 .zip 以备份
 
-##### 4. Remove old version files (keep `pb_data`)
-Delete all files and folders **except** `pb_data`.
+##### 4. 删除旧版本文件（保留 pb_data）
+删除除 `pb_data` 以外的所有文件和文件夹：
 
-> `pb_data` is the PocketBase database directory and **must be preserved**.
+> `pb_data` 是 PocketBase 的数据库目录，**必须保留**。
 
-##### 5. Download and extract the new PocketChat release
-Download the latest PocketChat release from GitHub Releases and extract it, for example:
+##### 5. 下载并解压新版 PocketChat
+从 GitHub Releases 下载最新版本 PocketChat，并解压，例如：
 `pocket_chat_0.2.1_linux_amd64.zip`
 ```
 pocket_chat_<VERSION>_linux_amd64.zip
 ```
 
-##### 6. Important notes
-- **If you changed the port**
-  Update the port in `start.sh`:
+##### 6. 需要注意的事项
+- **如果你修改过端口**  
+  请重新编辑 `start.sh` 中的端口：
   ```sh
   ./pocketbase serve --http 127.0.0.1:58090
   ```
+- **如果你修改过前端文件**（例如 `pb_public/index.html`）  
+  请重新应用你的自定义修改。
+- **确保 pocketbase 可执行文件有执行权限**
 
-- **If you modified frontend files**  
-  (e.g., `pb_public/index.html`)  
-  Reapply your custom changes after updating.
-
-- **Ensure the `pocketbase` binary has executable permissions**
-
-##### 7. Start the service and check its status
-Start the service:
+##### 7. 启动服务并查看运行状态
+启动服务
 ```sh
 systemctl start pocketchat
 ```
-
-Check the service status:
+查看运行状态
 ```sh
 systemctl status pocketchat
 ```
+如果状态正常，更新完成。
 
-If the status is normal, the update is complete.
+#### Docker 部署的更新指南
+如果你使用 Docker 部署 PocketChat，更新流程会更简单。
 
-#### Docker Deployment Update Guide
+##### 1. 查看可用镜像最新版本
+访问： https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
 
-If you deployed PocketChat using Docker, the update process is simpler.
-
-##### 1. Check the latest available image versions
-Visit:  
-https://github.com/PocketTogether/pocket-chat/pkgs/container/pocket-chat
-
-Choose the version you want to update to, for example:
+选择你要更新到的版本，例如：
 `ghcr.io/pockettogether/pocket-chat:0.2.1`
 ```
 ghcr.io/pockettogether/pocket-chat:<VERSION>
 ```
 
-(Optional) Pull the image in advance:
+提前拉取指定版本镜像（可选）
 ```sh
 docker pull ghcr.io/pockettogether/pocket-chat:<VERSION>
 ```
+- 提前拉取可以更明确地看到下载进度
+- 提前拉取可以避免 run 时拉取失败导致容器没创建成功
+- CI/CD 场景中 pull 和 run 分开更清晰
 
-Benefits of pulling beforehand:
-- You can clearly see the download progress.
-- Avoids container creation failure if the pull fails during `docker run`.
-- Cleaner separation of pull/run steps in CI/CD workflows.
-
-##### 2. Stop and remove the old container (data will not be deleted)
+##### 2. 停止并删除旧容器（不会删除数据）
 ```sh
 docker stop PocketChat
 docker rm PocketChat
 ```
 
-> Your data is stored in the mounted directory `${HOME}/PocketChat/pb_data` and will not be lost.
+> 数据保存在挂载的 `${HOME}/PocketChat/pb_data` 中，不会丢失。
 
-##### 3. Start a new container using the latest image
+##### 3. 使用最新镜像重新启动容器
 ```sh
 docker run -d \
   --name PocketChat \
@@ -353,81 +353,78 @@ docker run -d \
   ghcr.io/pockettogether/pocket-chat:<VERSION>
 ```
 
-##### 4. Check logs to confirm everything is running correctly
+##### 4. 查看日志确认运行正常
 ```sh
 docker logs PocketChat
 ```
+更新完成。
 
-Update complete.
 
-## Required Post-Deployment Steps
+## 部署后的务必进行的操作
 
-### Create admin superuser using the link from the logs
+### 根据日志中的链接创建用于后台管理的超级用户
 
-Fill in email and password. The email does not need to be real (e.g. `admin@admin.test`).
+填写 邮箱 与 密码，即可创建超级用户
 
-> [`.test` is a reserved top-level domain that will never be registered on the public internet - Wikipedia](https://en.wikipedia.org/wiki/.test)
+> 如果不想的话，邮箱不必填真实的邮箱，比如 admin@admin.test  
+> （[.test 是一个保留的 顶级域名 它保证永远不会被注册到互联网上 - Wikipedia](https://en.wikipedia.org/wiki/.test)）
 
 ![](./assets/Snipaste_2025-11-17_14-50-28.png)
 
-### Config collection settings
+### config 集合配置
 
 <!-- ![](./assets/Snipaste_2025-11-17_15-30-28.png) -->
 <!-- ![](./assets/Snipaste_2026-01-05_10-56-53.png) -->
 ![](./assets/Snipaste_2026-01-11_18-35-25.png)
 
-- `website-name` – Site name displayed on login page and top-left of chat
+- `website-name` : 网站名称，显示在 登录页 和 聊天主页左上角
 
-- [`external-links-to-social-media-icons-etc`](#social-media-and-other-icon-external-links-external-links-to-social-media-icons-etc) – Social media icon links shown at the bottom of the login page
+- [`external-links-to-social-media-icons-etc`](#社交媒体等图标外链-external-links-to-social-media-icons-etc) : 社交媒体等图标外链（显示在登录页底部的图标链接） 
 
-- [`admin-contact-info-for-permission`](#admin-contact-info-for-permission) : Administrator contact information, mainly used to display to users when they lack permissions (supported since `v0.3.0`)
+- [`admin-contact-info-for-permission`](#管理员联系方式-admin-contact-info-for-permission) : 管理员联系方式，主要用于用户权限不足时，提示给用户的联系方式 （ `v0.3.0` 版本后支持）
 
-- [`upload-image-process-options`](#image-processing-configuration-upload-image-process-options) – Image processing configuration `v0.2.0`
+- [`upload-image-process-options`](#图片处理配置-upload-image-process-options) : 图片处理配置 `v0.2.0`
 
-- `password-update-rate-limit-second` – Seconds to wait before another password change request is allowed
+- `password-update-rate-limit-second` : 发送密码修改请求后，需要等待一段时间，才能再次进行这一操作。此值控制需等待的时间，单位为秒。
 
-- `email-verify-rate-limit-second` – Seconds to wait before another email verification request is allowed
+- `email-verify-rate-limit-second` : 发送邮箱验证请求后，需要等待一段时间，才能再次进行这一操作。此值控制需等待的时间，单位为秒。
 
-- `email-update-rate-limit-second` – Seconds to wait before another email update request is allowed
+- `email-update-rate-limit-second` : 发送邮箱修改请求后，需要等待一段时间，才能再次进行这一操作。此值控制需等待的时间，单位为秒。
 
-- `allow-anonymous-view` – `true` = guests can view chat; `false` = only logged-in users
+- `allow-anonymous-view` : 是否允许游客浏览，为 `true` 则允许游客浏览，为 `false` 则只允许已登录的用户浏览
 
-- `allow-users-to-register` – `true` = registration enabled; `false` = registration disabled and form hidden
+- `allow-users-to-register` : 是否开启用户注册，为 `true` 则允许用户注册，为 `false` 则不允许 且登录页将不显示注册表单
 
-- `user-register-oauth2-only` : Whether to allow OAuth2-only registration. Default value: `false` (supported since `v0.3.0`)
-  - When `true`, only OAuth2 registration is allowed. Email-password registration is disabled, and the registration form will not appear on the login page.
-  - When `false`, both OAuth2 registration and email-password registration are allowed.
-  - Note: When `allow-users-to-register` is `false`, registration is completely disabled, and `user-register-oauth2-only` does not take effect.
+- `user-register-oauth2-only` : 是否只允许oauth2注册，默认值为 `false` （ `v0.3.0` 版本后支持）
+  - 为 `true` 则只允许通过 oauth2 注册，将禁止邮箱密码注册，且登录页将不显示注册表单
+  - 为 `false` 则 oauth2 注册、邮箱密码注册 都会被允许
+  - 注意： `allow-users-to-register` 为 `false` 时，注册功能整体关闭，此时 user-register-oauth2-only 不生效。
 
-- `user-can-send-message-default` : Whether sending messages is allowed by default. Default value: `true` (supported since `v0.3.0`)
-  - Controls the system’s default message-sending permission when the `canSendMessage` field in the users collection is not set.  
-    This configuration only applies when the user record does not explicitly specify `"YES"` or `"NO"`.  
-    See [users collection – user permission control](#users-collection--user-permission-control)
-  - `true`: When `canSendMessage` is not set, the user is allowed to send messages by default.
-  - `false`: When `canSendMessage` is not set, the user is not allowed to send messages by default.
+- `user-can-send-message-default` : 是否默认允许发送消息，默认值为 `true` （ `v0.3.0` 版本后支持）
+  - 用于控制当 users 集合中用户记录中的 canSendMessage 字段未设置时，系统对该用户的默认消息发送权限。该配置仅在用户记录未设置 canSendMessage 时生效，若用户记录中显式设置为 "YES" 或 "NO"，则以用户记录为准。详见 [users 集合 用户权限控制](#users-集合-用户权限控制)
+  - `true` ，当用户的 canSendMessage 字段未设置时，系统默认允许该用户发送消息
+  - `false` ，当用户的 canSendMessage 字段未设置时，系统默认不允许该用户发送消息
 
-- `user-can-upload-image-default` : Whether uploading images is allowed by default. Default value: `true` (supported since `v0.3.0`)
-  - Same behavior as `user-can-send-message-default`.
-  - `true`: When `canUploadImage` is not set, the user is allowed to upload images by default.
-  - `false`: When `canUploadImage` is not set, the user is not allowed to upload images by default.
+- `user-can-upload-image-default` : 是否默认允许上传图片，默认值为 `true` （ `v0.3.0` 版本后支持）
+  - 和 `user-can-send-message-default` 类似
+  - `true` ，当用户的 canUploadImage 字段未设置时，系统默认允许该用户上传图片
+  - `false` ，当用户的 canUploadImage 字段未设置时，系统默认不允许该用户上传图片
 
-- `user-can-upload-file-default` : Whether uploading files is allowed by default. Default value: `true` (supported since `v0.4.0`)
-  - Same behavior as `user-can-upload-image-default`.
-  - `true`: When `canUploadFile` is not set, the user is allowed to upload files by default.
-  - `false`: When `canUploadFile` is not set, the user is not allowed to upload files by default.
+- `user-can-upload-file-default` : 是否默认允许上传文件，默认值为 `true` （ `v0.4.0` 版本后支持）  
+  - 和 `user-can-upload-image-default` 类似
+  - `true` ，当用户的 canUploadFile 字段未设置时，系统默认允许该用户上传文件  
+  - `false` ，当用户的 canUploadFile 字段未设置时，系统默认不允许该用户上传文件  
 
-- `user-max-upload-file-size-default` : Default maximum file upload size (in bytes). Default value: `20971520` (`20 * 1024 * 1024`), which equals 20MB (supported since `v0.4.0`)
-  - Used when a user’s `maxUploadFileSize` field is set to `0`, determining the default maximum file size the user is allowed to upload.
-  - Must be a positive integer (greater than 0), measured in bytes.
-  - Note that both `maxUploadFileSize` and `user-max-upload-file-size-default` only provide data for the frontend to enforce size limits. The actual file size restriction is handled on the frontend. See  
-    [users collection — permission control: maxUploadFileSize](#maxuploadfilesize)
+- `user-max-upload-file-size-default` : 默认文件上传大小限制（字节数），默认值为 `20971520` （`20 * 1024 * 1024`） 即 20MB （ `v0.4.0` 版本后支持）  
+  - 用于控制当 users 集合中用户记录中的 maxUploadFileSize 字段为 `0` 时，系统对该用户的默认最大文件上传大小限制。
+  - 必须为正整数（大于 0 的整数），单位为字节  
+  - 注意 maxUploadFileSize 或 user-max-upload-file-size-default 都仅仅是给前端提供数据，是由前端来进行大小限制的，详见 [users 集合 用户权限控制 maxUploadFileSize](#maxuploadfilesize)
 
-
-#### Social media and other icon external links (external-links-to-social-media-icons-etc)
+#### 社交媒体等图标外链 external-links-to-social-media-icons-etc
 
 ![](./assets/Snipaste_2025-11-17_15-47-40.png)
 
-Default value:
+默认值为
 
 ```json
 [
@@ -449,32 +446,30 @@ Default value:
 ]
 ```
 
-Set to `[]` to disable. 
+如果不需要图标外链则可以设置为空数组 `[]`
 
-Icons come from https://remixicon.com/ (use the class name).
+`icon` 使用的图标为 https://remixicon.com/ ，使用其图标的 `class` 值
 
 ![](./assets/Snipaste_2025-11-17_15-50-13.png)
 
-### admin-contact-info-for-permission
+### 管理员联系方式 admin-contact-info-for-permission
 
-Default value: empty string `""`
+默认值为 空字符串 `""`
 
-Recommended text (use `\n` for line breaks):
-
+建议设置为像这样的文本（`\n` 表示换行）
 ```
 "Discord - discord.gg/aZq6u3Asak\nTelegram - t.me/PocketTogether"
 ```
 
-Displayed in the frontend as:
+在前端中显示的效果为
 
 ![](./assets/Snipaste_2026-01-11_19-19-53.jpg)
 
-
-#### Image processing configuration (upload-image-process-options)
+#### 图片处理配置 upload-image-process-options
 
 ![](./assets/Snipaste_2026-01-05_11-23-48.png)
 
-Default value:
+默认值为
 
 ```json
 {
@@ -501,41 +496,33 @@ Default value:
 }
 ```
 
-Configuration details:
+配置说明
 
 ```
-bigConfig   Configuration for large images
-imageConfig Configuration for medium images
-smallConfig Configuration for small images
-tinyConfig  Configuration for extra-small images
+bigConfig 大图的配置
+imageConfig 中图的配置
+smallConfig 小图的配置
+tinyConfig 超小图的配置
 
-format  Image format, supported values:
-        "image/png" | "image/jpeg" | "image/webp"
+format 为图片应处理为的格式，支持："image/png" | "image/jpeg" | "image/webp"
 
-quality Image quality, a number between 0 and 1.
-        Only applies to "image/jpeg" and "image/webp".
+quality 为图片质量，为 0 到 1 之间的数字，只在 "image/jpeg" | "image/webp" 时生效
 
-sumWidthHeightLimit
-        The limit for the sum of image width and height.
-        Images will be resized according to this value.
-        Note: The values must follow the order:
-              bigConfig > imageConfig > smallConfig > tinyConfig
+sumWidthHeightLimit 为图片长宽之和的限制值，将按此值将图片处理为不同大小的图片
+注意，其值要符合 bigConfig > imageConfig > smallConfig > tinyConfig
 
-(The frontend will automatically choose the most appropriate image size
-based on element dimensions and screen resolution.)
+（前端会根据元素尺寸与屏幕分辨率，选择尺寸最合适的图片来显示）
 ```
 
-#### Reset config to defaults
+#### config 重置为默认
 
-Delete any field in the config collection and restart PocketChat – that field will revert to its default value.
+将 config 集合中任意一项删除，然后重启 PocketChat，此项配置就会重置为默认值。
 
-#### Config Validatio
+#### config 配置正确性检验
 
-After modifying the `config` collection, reopen the frontend webpage (note: this refers to the user-facing site at the root path, **not** the PocketBase admin panel). Then open the browser’s developer tools and check the console.  
-If no error messages appear, the configuration is valid.
+config 集合修改后，重新打开前端网页（注意是根路径的面向用户的网页，而不是pocketbase的管理面板网页），并打开浏览器的开发者工具，查看其控制台，如果没有错误信息即代表配置正确
 
-If a configuration entry is missing — for example, if `external-links-to-social-media-icons-etc` is not found — the following error will appear:
-
+如果某个配置缺失，如 `external-links-to-social-media-icons-etc` 缺失，将显示如下错误信息
 ```
 src\queries\pb-collection-config.ts
 usePbCollectionConfigQuery
@@ -543,8 +530,7 @@ findKeyItem == null
 key: external-links-to-social-media-icons-etc
 ```
 
-If a configuration entry is invalid — for example, if the type of `upload-image-process-options` is incorrect — the following error will appear:
-
+如果某个配置错误，如 `upload-image-process-options` 配置的类型错误，将显示如下错误信息
 ```
 src\queries\pb-collection-config.ts
 usePbCollectionConfigQuery
@@ -554,134 +540,131 @@ key: upload-image-process-options
 
 ![](./assets/Snipaste_2026-01-05_13-30-55.png)
 
-### users collection – user permission control
+### users 集合 用户权限控制
 
 <!-- ![](./assets/Snipaste_2026-01-11_19-27-16.png) -->
 ![](./assets/Snipaste_2026-01-18_18-22-51.png)
 
 #### canSendMessage
-Used to control whether the user has permission to send messages.  
-- Field type: **select**, options:
-- `"YES"`: Explicitly allow the user to send messages  
-- `"NO"`: Explicitly forbid the user from sending messages  
-- `N/A` (default): Not set. The system will use  
-  **user-can-send-message-default** from the config collection.
+用于控制用户是否具备发送消息的权限。  
+- 字段类型：**select**，可选值：
+- `"YES"`：显式允许该用户发送消息  
+- `"NO"`：显式禁止该用户发送消息  
+- `N/A`（默认）：未设置，此时系统将根据 config 集合中的  
+  **user-can-send-message-default** 配置决定是否允许发送消息
 
 #### canUploadImage
-Used to control whether the user has permission to upload images.  
-- Field type: **select**, options:
-- `"YES"`: Explicitly allow the user to upload images  
-- `"NO"`: Explicitly forbid the user from uploading images  
-- `N/A` (default): Not set. The system will use  
-  **user-can-upload-image-default** from the config collection.
+用于控制用户是否具备上传图片的权限。  
+- 字段类型：**select**，可选值：
+- `"YES"`：显式允许该用户上传图片  
+- `"NO"`：显式禁止该用户上传图片  
+- `N/A`（默认）：未设置，此时系统将根据 config 集合中的  
+  **user-can-upload-image-default** 配置决定是否允许上传图片
 
 #### canUploadFile
-Used to control whether the user has permission to upload files.  
-- Field type: **select**, options:  
-- `"YES"`: Explicitly allow the user to upload files  
-- `"NO"`: Explicitly forbid the user from uploading files  
-- `N/A` (default): Not set. The system will use  
-  **user-can-upload-file-default** from the config collection.
+用于控制用户是否具备上传文件的权限。  
+- 字段类型：**select**，可选值：  
+- `"YES"`：显式允许该用户上传文件  
+- `"NO"`：显式禁止该用户上传文件  
+- `N/A`（默认）：未设置，此时系统将根据 config 集合中的  
+  **user-can-upload-file-default** 配置决定是否允许上传文件  
 
 #### maxUploadFileSize
-Used to control the maximum file size (in bytes) the user is allowed to upload.  
-- Field type: **number**, must be an integer greater than or equal to `0`  
-- `> 0`: Explicitly specifies the maximum upload file size (in bytes) for this user  
-- `0` (default): Not set. The system will use  
-  **user-max-upload-file-size-default** from the config collection.
+用于控制用户可上传文件的最大大小（字节数）。  
+- 字段类型：**number**，需为大于或等于 `0` 的整数  
+- `> 0`：显式指定该用户可上传文件的最大大小（字节数）  
+- `0`（默认）：未设置，此时系统将根据 config 集合中的  
+  **user-max-upload-file-size-default** 配置决定该用户可上传文件的最大大小  
 
-Additional notes:  
-- `maxUploadFileSize` and `user-max-upload-file-size-default` are **only used for frontend-side size enforcement**, because PocketBase currently does not support file size limits in API rules.  
-- Permissions such as `canUploadFile`, however, are fully enforceable on both the frontend and backend (via PocketBase API rules).
+额外说明：  
+- `maxUploadFileSize` 与 `user-max-upload-file-size-default` **仅用于前端限制**，因为 PocketBase 当前不支持在 API 规则中限制文件大小  
+- 但 `canUploadFile` 这类的可以放心，其可在前后端双重保证
 
-If you want to enforce a backend-level file size limit (this limit applies globally to all users), you can modify the `Max file size` option in the **files** collection → **file** field settings.  
-Make sure to save the collection after making changes.
+如果想强制限制上传文件大小（会对所有用户生效），可在 files集合-设置-file字段 修改其 `Max file size` ，修改后记得保存
 
 ![](./assets/Snipaste_2026-01-18_18-28-45.png)
 
 #### isBanned
-Used to mark whether a user is banned.  
-- Field type: **boolean**  
-- **false** (default): User is normal and can log in and use all features  
-- **true**: User is banned and cannot access any content
+用于标记用户是否被封禁。  
+- 字段类型：**boolean**
+- **false**（默认）：用户正常，可登录、可使用功能  
+- **true**：用户已被封禁，该用户将无法访问全部内容
 
-Ban effect:  
+封禁效果
 ![](./assets/Snipaste_2026-01-11_19-37-25.png)
 
-### Application settings
+### Application 信息配置
 
 ![](./assets/Snipaste_2025-11-17_16-30-18.png)
 
-- **Application name** – used as sender name in emails (keep consistent with `website-name`)
-- **Application URL** – used in emails, set to your domain
+- **Application name** ，邮件发送将使用此值，建议和 config 集合中的 `website-name` 保持一致
+- **Application URL** ，邮件发送将使用此值，应设置为自己的网站链接
 
-If using Cloudflare, add `CF-Connecting-IP` to **User IP proxy headers** to resolve real IPs.
+关于 **User IP proxy headers** ，自己用了 cloudflare ，需按照其提示添加 `CF-Connecting-IP`，即可解除其警告，并能解析到用户的真实ip
 
 ![](./assets/Snipaste_2025-11-17_16-53-57.png)
 ![](./assets/Snipaste_2025-11-17_16-57-00.png)
 
-See PocketBase production recommendations: https://pocketbase.io/docs/going-to-production/
+建议浏览 [PocketBase](https://pocketbase.io) 官网进一步了解 PocketBase，并查看 [生产环境的建议](https://pocketbase.io/docs/going-to-production/)
 
-### pb_public/index.html – site meta information
+### pb_public index.html 网站元信息配置
 
-Used for social media previews. Edit `pb_public/index.html` as needed.
+用于在社交媒体等地方预览网站的网站元信息，配置在 `pb_public/index.html` ，可以根据自己的信息来修改
 
 ![](./assets/Snipaste_2025-11-17_17-35-37.png)
 
-The loading animation is also defined here.
+`index.html` 也控制着网站的加载动画，有能力的话也可以自己修改
 
-## Configure email sending (SMTP)
+## 配置发送电子邮件的设置
 
-Required for email verification, password reset, etc.
+用户修改邮箱、验证邮箱、重置密码、等功能需要向用户的邮箱发送邮件，不配置的话就无法使用这些功能。
 
-Example configuration used on sakiko.top:
+应使用 SMTP ，`sakiko.top` 的邮件服务是这样配置的：
 
 ![](./assets/Snipaste_2025-11-17_17-06-11.png)
 
-Self-hosted option: https://docker-mailserver.github.io/docker-mailserver/latest/usage/
+笔者使用的是自建邮箱： https://docker-mailserver.github.io/docker-mailserver/latest/usage/
 
-Or use services listed on PocketBase docs (MailerSend, Brevo, SendGrid, Mailgun, AWS SES). https://pocketbase.io/docs/going-to-production/#use-smtp-mail-server
+或使用 PocketBase 官网中提到的  MailerSend, Brevo, SendGrid, Mailgun, AWS SES ：https://pocketbase.io/docs/going-to-production/#use-smtp-mail-server
 
-## Configure OAuth2 login/registration
+## 配置 OAuth2 登录/注册
 
-PocketBase OAuth2 docs: https://pocketbase.io/docs/authentication/#authenticate-with-oauth2
+PocketBase OAuth2 : https://pocketbase.io/docs/authentication/#authenticate-with-oauth2
 
-(The warning icon on the users collection is normal when no providers are configured.)
+（现在看到 users 集合有警告提示图标是因为没有配置 OAuth2 ，是正常现象，即使不打算配置 OAuth2 也不必担心）
 
 ![](./assets/Snipaste_2025-11-17_18-11-27.png)
 
-In the users collection → Settings → Options → OAuth2 → Add provider.
+在 PocketBase 中的 user 集合，点击设置图标，点击 **Options** ，展开 **OAuth2** ，点击 **Add provider** ，选择对应的平台即可进行配置
 
 ![](./assets/collage(6).png)
 
-Example with GitHub:
-
-Go to https://github.com/settings/developers → New OAuth App
+以 github 为例 ，访问 https://github.com/settings/developers 以创建 OAuth App
 
 ![](./assets/Snipaste_2025-11-17_19-28-10.png)
 
-Click **New OAuth App** and fill out the form. In this example, `uika.top` is used for demonstration.  
+点击 New OAuth App ，填写表单进行创建，此处用 `uika.top` 来演示
 
 ![](./assets/Snipaste_2025-11-17_19-31-36.png)
 
-The **Authorization callback URL** is very important. It should be set to your own domain followed by `/api/oauth2-redirect`. See [PocketBase OAuth2](https://pocketbase.io/docs/authentication/#authenticate-with-oauth2) for details.  
+**Authorization callback URL** 很重要，应填写自己的域名 + /api/oauth2-redirect ，详见 [PocketBase OAuth2](https://pocketbase.io/docs/authentication/#authenticate-with-oauth2)
 
 ```
 https://yourdomain.com/api/oauth2-redirect
-```  
+```
 
-After creation you get Client ID and Client Secret.
+创建后即可看到这样的页面，`Client ID` 与 `Client secrets` 就是我们需要的
 
 ![](./assets/Snipaste_2025-11-17_19-38-39.png)
 
-You can also set an app logo, e.g. https://github.com/PocketTogether/pocket-chat/blob/master/resources/icon1.png
+除此之外，还能设置 Application logo ，可使用此图标 https://github.com/PocketTogether/pocket-chat/blob/master/resources/icon1.png
 
-## Configuring Browser Caching in the Reverse Proxy
+## 反向代理中配置浏览器缓存
 
-- It is not recommended to use 1Panel’s visual form to configure the reverse proxy.  
-- Instead, it is recommended to directly edit the Nginx configuration file within 1Panel and manually configure the reverse proxy and browser caching policies.  
-- This approach provides more flexibility and is better suited for the fine-grained caching control required by PocketChat (such as static asset caching, PocketBase file caching, dynamic content no-cache, etc.).
-- Starting from v0.5.0, to ensure more reliable PWA installation, you should also configure the correct MIME type for `manifest.webmanifest` in this section.
+- 建议不要使用 1Panel 的可视化表单来配置反向代理。
+- 更推荐在 1Panel 中直接编辑 Nginx 配置文件，以手动方式完成反向代理与浏览器缓存策略的设置。
+- 这种方式更灵活，也更适合 PocketChat 所需的精细化缓存控制（例如静态资源缓存、PocketBase 文件缓存、动态内容 no-cache 等）。
+- v0.5.0 后，为了更稳定地支持pwa安装，还要在此为 manifest.webmanifest 设置正确的 MIME
 
 ```nginx
 # PocketBase file caching
@@ -765,59 +748,51 @@ location = /manifest.webmanifest {
 }
 ```
 
-### Notes on PocketBase File
+### 关于 PocketBase 文件的一些说明
 
-All files in PocketBase (images, videos, etc.) are accessed through a fixed path:
-
+PocketBase 的所有文件（图片、视频等）都通过固定路径访问：
 ```
 /api/files/:collectionId/:recordId/:filename
 
 http://127.0.0.1:58090/api/files/pbc_3607937828/426c1mnva7cd4k4/image_twlm01yw5w.webp
 ```
 
-Each uploaded file is stored using the original filename (sanitized) with an additional suffix — a random segment (typically 10 characters). For example:
-
+每个上传的文件都将以原始文件名（已脱敏处理）存储，并添加一个后缀。 随机部分（通常为 10 个字符）。例如： 
 ```
 image_twlm01yw5w.webp
 ```
 
 https://pocketbase.io/docs/files-handling/#file-url
 
-## Development Guide
+## 开发指南
 
-### PocketChat Project Directory Structure
+pocket-chat 项目目录结构
 
-- `pocketbase/` — Folder containing PocketBase  
-- `vue3/` — Vue3 frontend folder  
-- `project-tools-node/` — Project packaging tool scripts folder  
-- `pocketbase-typegen/` is the PocketBase type-generation tool.
-- `resources/` — Image resources used in the project  
-- `note/` — Development notes (few in this project, more in [PocketTogether](#about-pockettogether))  
-- `assets/` — Images used in README.md  
+- `pocketbase/` 为 PocketBase 所在的文件夹
+- `vue3/` 为 Vue3 前端文件夹
+- `project-tools-node/` 为项目打包工具脚本文件夹
+- `pocketbase-typegen/` 为pocketbase类型生成工具
+- `resources/` 为项目中所用到的一些图片资源
+- `note/` 为项目开发过程中的一些笔记（在本项目中很少，更多的在 [PocketTogether](#关于-pockettogether) 中）
+- `assets/` README.md 中使用的一些图片
 
-### PocketBase Backend
+### pocketbase 后端
 
-It is recommended to open the `pocketbase/` directory in VS Code for development (instead of opening the project root). For example, when editing JS files in `pocketbase/pb_hooks/`, use `pocketbase/jsconfig.json` to enforce stricter typing. JS code in `pocketbase/pb_hooks/` should use JSDoc for type definitions.
+建议用 vscode 打开 `pocketbase/` 目录进行开发（而不是打开 本项目根目录），比如修改 `pocketbase/pb_hooks/` 目录中的 js 文件时，要借助 `pocketbase/jsconfig.json` 使其更类型严格，`pocketbase/pb_hooks/` 目录中的 js 代码应使用 jsDoc 来设置类型。
 
-To avoid increasing repository size, `pocketbase.exe` is ignored in Git. This means the executable is not included in the repository. Before development, manually download `pocketbase.exe` from:  
-https://github.com/pocketbase/pocketbase/releases  
+为了不增加项目git体积，为 `pocketbase.exe` 配置了忽略，即本项目仓库中并不包含 `pocketbase.exe` ，在进行开发前需要手动下载 `pocketbase.exe` ，在 https://github.com/pocketbase/pocketbase/releases 下载压缩包，解压后将 `pocketbase.exe` 复制到本项目 `pocketbase/` 目录中。
 
-Unzip and copy `pocketbase.exe` into the `pocketbase/` directory.
+关于本项目所使用的 `pocketbase.exe` 具体版本可以查看 `pocketbase/CHANGELOG.md` ，以其中最新（最靠上）的版本为准。
 
-The specific version of `pocketbase.exe` used in this project can be found in `pocketbase/CHANGELOG.md` (use the latest entry at the top).
+双击 `pocketbase/start.sh` 即可启动本项目的 PocketBase
 
-Double-click `pocketbase/start.sh` to start PocketBase for this project.
+如果在本项目的 PocketBase 的 Web UI 中修改了数据库架构，请在 `http://127.0.0.1:58090/_/#/settings/export-collections` 将其内容复制到 `pocketbase/pb_schema.json` ，并在前端重新 [生成后端数据库的 TS 类型](#生成后端数据库的-ts-类型)。
 
-If you modify the database schema via the PocketBase Web UI, export it from:  
-`http://127.0.0.1:58090/_/#/settings/export-collections`  
+关于 `pocketbase/pb_schema.json` ，pocketbase 的运行并不依赖于这个文件，其目的主要是为了借助git更清晰地观察数据库架构变化。此外它的另一个重要用处是帮助前端 [生成后端数据库的 TS 类型](#生成后端数据库的-ts-类型)
 
-Copy the exported content into `pocketbase/pb_schema.json`, then regenerate the [TypeScript types for the backend database](#generate-backend-database-ts-types) in the frontend.
+### vue3 前端
 
-Note: PocketBase does not depend on `pb_schema.json` to run. Its purpose is to track schema changes via Git and to help the frontend [generate backend database TS types](#generate-backend-database-ts-types).
-
-### Vue3 Frontend
-
-It is recommended to open the `vue3/` directory in VS Code for development (instead of the project root).
+建议用 vscode 打开 `vue3/` 目录进行开发（而不是打开 本项目根目录）
 
 ```sh
 # Project Setup
@@ -833,20 +808,19 @@ pnpm build
 pnpm lint
 ```
 
-#### Generate Backend Database TS Types
+#### 生成后端数据库的 TS 类型
 
-This project uses [pocketbase-typegen](https://www.npmjs.com/package/pocketbase-typegen) to generate PocketBase backend data types for the frontend:
+本项目使用 [pocketbase-typegen](https://www.npmjs.com/package/pocketbase-typegen) 来在前端生成 pocketbase 后端的数据类型：
 `"pocketbase-typegen": "^1.3.1",`
 
-【260111】I modified **pocketbase-typegen** and localized it into the `pocketbase-typegen/` directory.  
-You should install its dependencies inside that directory before using it from the frontend:
+【260111】自己对 pocketbase-typegen 改了改，将其本地化在了 `pocketbase-typegen/` 目录，应在此目录安装依赖后，再在前端中使用
 ```sh
 # pwd
 # /e/Project/pocket-chat/pocketbase-typegen
 pnpm i
 ```
 
-Using it from the frontend:
+前端使用
 ```sh
 # pwd
 # /e/Project/pocket-chat/vue3
@@ -857,13 +831,13 @@ pnpm pb-typegen-json
 # "pb-typegen-json": "node scripts/pocketbase-typegen.cjs"
 ```
 
-For more details about `pocketbase-typegen/`, refer to:
+关于 `pocketbase-typegen/` 其详情可参考
 ```
-vue3/scripts/pocketbase-typegen.cjs
-pocketbase-typegen/README.md
-pocketbase-typegen/README-pocketbase-typegen.md
+vue3\scripts\pocketbase-typegen.cjs
+pocketbase-typegen\README.md
+pocketbase-typegen\README-pocketbase-typegen.md
 ```
 
-### About PocketTogether
+### 关于 PocketTogether
 
-[PocketTogether](https://github.com/PocketTogether/pocket-together) is a real-time group chat and synchronized watching platform built on PocketBase and Vue3 (currently in development). PocketChat is essentially a partial product of PocketTogether.
+[PocketTogether](https://github.com/PocketTogether/pocket-together) 是一个基于 PocketBase 与 Vue3 的实时群聊与同步观看平台（开发中），PocketChat 其实是 PocketTogether 的半成品。

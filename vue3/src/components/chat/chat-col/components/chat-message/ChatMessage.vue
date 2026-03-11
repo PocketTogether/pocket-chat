@@ -29,11 +29,14 @@ import {
   IGVSoltAltLable,
   ImageGroupViewerWithQueryAndRealtime,
   TextWithLink,
+  TextWithLinkForMessage,
 } from '@/components'
 import {
   imageCalcMaxWidthByRatioUtil,
   pbImageDataChooseByLargest,
 } from '@/utils'
+import { useRouterHistoryTool } from '@/composables'
+import { MessageUserNameTime } from './components'
 
 const props = defineProps<{
   /** 消息数据 */
@@ -86,6 +89,13 @@ const {
 
 // 封装 消息的显示逻辑
 // useMessageDisplay
+const messageDisplayDesuwa = useMessageDisplay({
+  props,
+  currentMessageData,
+})
+
+export type MessageDisplayDesuwaType = typeof messageDisplayDesuwa
+
 const {
   isMessageCurrentUser,
   isMessagesDispalyTogetherNext,
@@ -97,10 +107,7 @@ const {
   messageUserName,
   timeAgo,
   messageReplyMessageUserAvatarUrl,
-} = useMessageDisplay({
-  props,
-  currentMessageData,
-})
+} = messageDisplayDesuwa
 
 // 封装 消息的操作逻辑
 // useMessageControl
@@ -208,6 +215,18 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
     }
   }
 )
+
+const {
+  // 跳转至用户详情页的方法
+  routerGoUserInfoPage,
+} = useRouterHistoryTool()
+
+const goUserInfoPage = () => {
+  routerGoUserInfoPage({
+    userId: currentMessageData.value.author,
+    presetUserGetOneData: currentMessageData.value.expand?.author,
+  })
+}
 </script>
 
 <template>
@@ -238,12 +257,13 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
                 // 不与下一条消息一起显示时，才显示头像和名称
                 isMessagesDispalyTogetherNext === false
               "
-              class="h-[40px] w-full rounded-full bg-color-background-soft"
+              class="h-[40px] w-full cursor-pointer rounded-full bg-color-background-soft"
               :style="{
                 backgroundImage: `url('${messageUserAvatarUrl}')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }"
+              @click="goUserInfoPage"
             ></div>
           </div>
         </div>
@@ -475,22 +495,38 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
                     >
                       <!-- 消息是否为自己发送，背景色会不一样，所以链接的颜色也不一样 -->
                       <!-- 还需要判断为已删除背景色的情况 -->
-                      <TextWithLink
+                      <!-- 【260227】TextWithLinkForMessage需加key以避免消息变化时出问题 -->
+                      <TextWithLinkForMessage
                         v-if="isCurrentMessageRealtimeUpdatedIsDeleted"
-                        :data="currentMessageData.content"
+                        :key="
+                          'isCurrentMessageRealtimeUpdatedIsDeleted' +
+                          currentMessageData.id +
+                          currentMessageData.updated
+                        "
+                        :messageData="currentMessageData"
                         aTwcss="text-el-danger-dark-3 hover:underline"
-                      ></TextWithLink>
-                      <TextWithLink
+                      ></TextWithLinkForMessage>
+                      <TextWithLinkForMessage
                         v-else-if="isMessageCurrentUser"
-                        :data="currentMessageData.content"
+                        :key="
+                          'isMessageCurrentUser' +
+                          currentMessageData.id +
+                          currentMessageData.updated
+                        "
+                        :messageData="currentMessageData"
                         aTwcss="text-el-primary-dark-3 hover:underline"
-                      ></TextWithLink>
-                      <TextWithLink
+                      ></TextWithLinkForMessage>
+                      <TextWithLinkForMessage
                         v-else
-                        :data="currentMessageData.content"
+                        :key="
+                          'normal' +
+                          currentMessageData.id +
+                          currentMessageData.updated
+                        "
+                        :messageData="currentMessageData"
                         aTwcss="text-el-primary hover:underline"
                       >
-                      </TextWithLink>
+                      </TextWithLinkForMessage>
                     </div>
                   </div>
                 </div>
@@ -567,24 +603,11 @@ const messageShowModeWithData = computed<MessageShowModeWithDataValueType>(
           // 不与下一条消息一起显示时，才显示头像和名称
           isMessagesDispalyTogetherNext === false
         "
-        class="mb-3 flex select-none items-center"
-        :class="{
-          // 消息为当前用户发送，flex-row-reverse使其靠右显示
-          'flex-row-reverse': isMessageCurrentUser,
-        }"
       >
-        <!-- 用户名 -->
-        <div class="max-w-[50%] truncate text-[12px] font-bold text-color-text">
-          {{ messageUserName }}
-        </div>
-        <!-- 分隔 -->
-        <div class="mx-[8px]">
-          <RiCircleFill size="4px" class="text-color-text-soft"></RiCircleFill>
-        </div>
-        <!-- 时间 -->
-        <div class="truncate text-[12px] text-color-text-soft">
-          {{ timeAgo }}
-        </div>
+        <MessageUserNameTime
+          :goUserInfoPage="goUserInfoPage"
+          :messageDisplayDesuwa="messageDisplayDesuwa"
+        ></MessageUserNameTime>
       </div>
     </div>
   </div>

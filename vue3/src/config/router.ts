@@ -55,4 +55,26 @@ export const routerDict = {
       paramsKey,
     } as const
   })(),
+  UserListPage: {
+    path: '/user-list',
+    name: 'UserListPage',
+  },
+  UserInfoPage: (() => {
+    const paramsKey = {
+      id: 'id',
+    } as const
+    return {
+      path: `/user-info/:${paramsKey.id}`,
+      name: 'UserInfoPage',
+      paramsKey,
+    }
+  })(),
+  SearchPage: {
+    path: '/search',
+    name: 'SearchPage',
+  },
+  LivePage: {
+    path: '/live',
+    name: 'LivePage',
+  },
 } as const satisfies Record<string, RouterItem>

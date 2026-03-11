@@ -402,7 +402,9 @@
         "indexes": [
             "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
             "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''",
-            "CREATE UNIQUE INDEX `idx_1fdbvxxIaT` ON `users` (`username`)"
+            "CREATE UNIQUE INDEX `idx_1fdbvxxIaT` ON `users` (`username`)",
+            "CREATE INDEX `idx_ZVfkPUJG9Z` ON `users` (`created`)",
+            "CREATE INDEX `idx_tCqATPBWyD` ON `users` (`updated`)"
         ],
         "system": false,
         "authRule": "",
@@ -1091,7 +1093,11 @@
                 "type": "autodate"
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE INDEX `idx_oQL2XaBBBV` ON `files` (`author`)",
+            "CREATE INDEX `idx_znjiiQYNvh` ON `files` (`created`)",
+            "CREATE INDEX `idx_pztAxKGtSi` ON `files` (`updated`)"
+        ],
         "system": false
     },
     {
@@ -1405,7 +1411,11 @@
                 "type": "autodate"
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE INDEX `idx_lq3ggmke7m` ON `images` (`author`)",
+            "CREATE INDEX `idx_21mpENhWUk` ON `images` (`created`)",
+            "CREATE INDEX `idx_IjuwXU8Pwx` ON `images` (`updated`)"
+        ],
         "system": false
     },
     {
@@ -1508,6 +1518,29 @@
                 "type": "relation"
             },
             {
+                "cascadeDelete": false,
+                "collectionId": "_pb_users_auth_",
+                "hidden": false,
+                "id": "relation1142616359",
+                "maxSelect": 999,
+                "minSelect": 0,
+                "name": "mentionedUsers",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "hidden": false,
+                "id": "json3084938907",
+                "maxSize": 0,
+                "name": "mentionMap",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "json"
+            },
+            {
                 "hidden": false,
                 "id": "autodate2990389176",
                 "name": "created",
@@ -1528,7 +1561,141 @@
                 "type": "autodate"
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE INDEX `idx_EvGVtTLFw0` ON `messages` (`author`)",
+            "CREATE INDEX `idx_0HywW3Oa80` ON `messages` (`replyMessage`)",
+            "CREATE INDEX `idx_JWlR4e2P9J` ON `messages` (`images`)",
+            "CREATE INDEX `idx_6t47i1IN7l` ON `messages` (`file`)",
+            "CREATE INDEX `idx_sStLG437oQ` ON `messages` (`mentionedUsers`)",
+            "CREATE INDEX `idx_bRy1vmOOPn` ON `messages` (`created`)",
+            "CREATE INDEX `idx_2Wn4zSR3iY` ON `messages` (`updated`)"
+        ],
+        "system": false
+    },
+    {
+        "id": "pbc_2654335481",
+        "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+        "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+        "createRule": "",
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "usersNotViewingMarks",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "_pb_users_auth_",
+                "hidden": false,
+                "id": "relation3182418120",
+                "maxSelect": 1,
+                "minSelect": 0,
+                "name": "author",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE INDEX `idx_X5iw7XYOKP` ON `usersNotViewingMarks` (`author`)",
+            "CREATE INDEX `idx_D0NJG8AyBW` ON `usersNotViewingMarks` (`created`)"
+        ],
+        "system": false
+    },
+    {
+        "id": "pbc_3188303726",
+        "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+        "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+        "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned\n(\n  @collection.users:isBannedCheck.id ?= @request.auth.id &&\n  @collection.users:isBannedCheck.isBanned ?= false\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的author需为当前用户）\n@request.body.author = @request.auth.id",
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "usersPresencesStatus",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "_pb_users_auth_",
+                "hidden": false,
+                "id": "relation3182418120",
+                "maxSelect": 1,
+                "minSelect": 0,
+                "name": "author",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "hidden": false,
+                "id": "bool624419442",
+                "name": "isNotViewing",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "bool"
+            },
+            {
+                "hidden": false,
+                "id": "bool273319153",
+                "name": "isTyping",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "bool"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE INDEX `idx_0YLKYveHTm` ON `usersPresencesStatus` (`author`)",
+            "CREATE INDEX `idx_jLcjZzoGzc` ON `usersPresencesStatus` (`created`)"
+        ],
         "system": false
     }
 ]

@@ -55,6 +55,14 @@ export const useFirstDataLoadingAndAnimationMaskClose = (data: {
   const indexMaskClose = async () => {
     // const scrollbarWidth = getScrollbarWidth()
     const maskElement = document.getElementById('index-mask')
+
+    // 【260213】图标放大动画
+    const loadingElement = document.getElementById('index-loading')
+    if (loadingElement) {
+      loadingElement.style.transform = 'scale(1.5)'
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+
     // document.documentElement.style.overflowY = ''
     if (maskElement) {
       // maskElement.style.right = `-${scrollbarWidth}px`

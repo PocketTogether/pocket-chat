@@ -179,6 +179,8 @@ export const useMessageDisplay = (data: {
     return currentMessageUserData.value.name
   })
 
+  const messageUserId = computed(() => props.chatRoomMessagesItem.author)
+
   const i18nStore = useI18nStore()
 
   // 时间
@@ -232,6 +234,7 @@ export const useMessageDisplay = (data: {
     isMessageBoxroundedBR,
     messageUserAvatarUrl,
     messageUserName,
+    messageUserId,
     timeAgo,
     messageReplyMessageUserAvatarUrl,
   }

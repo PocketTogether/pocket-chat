@@ -154,7 +154,7 @@ const passwordUpdateRateLimitInfo = computed(() => {
       :dialogVisible="dialogVisible"
       :dialogCloseFn="dialogClose"
     >
-      <div class="flow-root rounded-3xl bg-color-background-soft">
+      <div class="content-box flow-root rounded-3xl bg-color-background-soft">
         <div class="m-4">
           <div>
             <ConfirmContainer
@@ -260,4 +260,8 @@ const passwordUpdateRateLimitInfo = computed(() => {
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.content-box {
+  box-shadow: 0 0 6px 6px var(--color-background);
+}
+</style>
