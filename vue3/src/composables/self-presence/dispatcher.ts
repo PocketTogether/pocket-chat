@@ -80,6 +80,8 @@ export const useSelfPresenceDispatcher = () => {
   const checkNeedSendPresenceByUpdatePresence = () => {
     const isTyping = isTypingFn()
     const isNotViewing = isNotViewingFn()
+    const userId = pb.authStore.record?.id
+
     const lastPayload = selfPresenceStore.lastPresenceSentPayload
 
     // null即是为尚未发送过，应发送
@@ -90,6 +92,10 @@ export const useSelfPresenceDispatcher = () => {
     // if (lastPayload.isNotViewing !== isNotViewing) return true
     // 【260307】要考虑到 NotViewingMarks
     if (willBeConsideredNotViewing() !== isNotViewing) return true
+
+    // 【260311】
+    // 用于如果退出登录并切换用户，则应再次发送
+    if (lastPayload.userId !== userId) return true
 
     return false
   }
@@ -146,6 +152,7 @@ export const useSelfPresenceDispatcher = () => {
     const payload = {
       isTyping: isTypingFn(),
       isNotViewing: isNotViewingFn(),
+      userId: pb.authStore.record.id,
     }
 
     try {

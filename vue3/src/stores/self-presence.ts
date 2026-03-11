@@ -4,6 +4,7 @@ import { ref, computed } from 'vue'
 export type SelfPresenceSentPayloadType = {
   isTyping: boolean
   isNotViewing: boolean
+  userId?: string | null
 }
 
 /**
