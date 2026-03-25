@@ -38,7 +38,7 @@ const refContainerCol2ForChatHome = ref<null | InstanceType<
         </template>
         <!-- 右侧 -->
         <template #col1>
-          <div>
+          <div class="min-h-dvh w-full">
             <ChatHomeChatCol></ChatHomeChatCol>
           </div>
         </template>

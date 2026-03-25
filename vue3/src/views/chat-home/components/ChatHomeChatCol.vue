@@ -6,6 +6,7 @@ import { usePbCollectionConfigQuery } from '@/queries'
 import { useAuthStore, useI18nStore } from '@/stores'
 import { pbMessagesSendChatApi } from '@/api'
 import { generateRandomIntegerBetween, generateRandomKey } from '@/utils'
+import type { Text } from 'vue'
 
 const i18nStore = useI18nStore()
 
@@ -40,7 +41,26 @@ const isDev = import.meta.env.DEV
 </script>
 
 <template>
-  <div>
+  <div ref="dragRef" class="relative h-full">
+    <!-- 用来识别 文件/图片 的拖拽上传 -->
+    <div class="pointer-events-none absolute inset-0 z-50 rounded-lg">
+      <!-- 固定窗口位置 -->
+      <div
+        class="bg-primary text sticky top-0 flex h-screen w-full flex-col gap-4 pb-16 pt-14"
+      >
+        <!-- 文件 -->
+        <div
+          class="flex flex-1 items-center justify-center rounded-lg border-4 border-dashed border-blue-100 text-2xl font-bold backdrop-blur-md"
+        >
+          <h1>你好 往这里拖文件喵</h1>
+        </div>
+        <div
+          class="flex flex-1 items-center justify-center rounded-lg border-4 border-dashed border-blue-100 text-2xl font-bold backdrop-blur-md"
+        >
+          <h1>你好 往这里拖图片喵</h1>
+        </div>
+      </div>
+    </div>
     <ChatCol
       :refScrollWarp="appMainElScrollbar?.wrapRef"
       :couldGoBack="false"
