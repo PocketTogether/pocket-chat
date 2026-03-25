@@ -3,10 +3,17 @@ import { routerDict } from '@/config'
 import { ChatCol, ChatTopBarMoreMenuItem } from '@/components'
 import { injectAppMainElScrollbar } from '@/composables'
 import { usePbCollectionConfigQuery } from '@/queries'
-import { useAuthStore, useI18nStore } from '@/stores'
+import { useAuthStore, useI18nStore, useUploadFileStore } from '@/stores'
 import { pbMessagesSendChatApi } from '@/api'
-import { generateRandomIntegerBetween, generateRandomKey } from '@/utils'
-import type { Text } from 'vue'
+import {
+  generateRandomIntegerBetween,
+  generateRandomKey,
+  potoMessage,
+  formatFileSize,
+} from '@/utils'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useUserPermissionsDesuwa } from '@/composables'
+import type { UploadFile } from 'element-plus'
 
 const i18nStore = useI18nStore()
 
@@ -38,26 +45,121 @@ const testPbSendMessage = async () => {
 }
 
 const isDev = import.meta.env.DEV
+
+// 关于拖拽的逻辑如下
+
+// 最外层的遮罩
+const dragRef = ref<HTMLElement | null>(null)
+const uploadFileStore = useUploadFileStore()
+const { permissionMaxUploadFileSize, openPermissionAdminContactNotif } =
+  useUserPermissionsDesuwa()
+
+// 是否显示
+const isDragging = ref(false)
+let dragCounter = 0
+
+const handleDragEnter = (e: DragEvent) => {
+  e.preventDefault()
+  // if (e.dataTransfer?.types.includes('Files')) {
+  if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+    dragCounter++
+    isDragging.value = true
+  }
+}
+
+const handleDragLeave = (e: DragEvent) => {
+  e.preventDefault()
+  if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+    dragCounter--
+    if (dragCounter === 0) {
+      isDragging.value = false
+    }
+  }
+}
+
+// const handleDragOver = (e: DragEvent) => {
+//   e.preventDefault()
+//   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+//     e.dataTransfer.dropEffect = 'copy'
+//   } else {
+//     e.dataTransfer.dropEffect = 'none'
+//   }
+// }
+const handleDragOver = (e: DragEvent) => {
+  e.preventDefault()
+
+  const dt = e.dataTransfer
+  // 没有数据就退出去 确保安全（不是 NULL）
+  if (!dt) return
+
+  if (dt.types.includes('Files')) {
+    dt.dropEffect = 'copy'
+  } else {
+    dt.dropEffect = 'none'
+  }
+}
+
+const handleDrop = (e: DragEvent) => {
+  e.preventDefault()
+  dragCounter = 0
+  isDragging.value = false
+
+  const files = e.dataTransfer?.files
+  if (!files || files.length === 0) return
+
+  for (const file of files) {
+    // console.log('Dropped file:', file.name, file.type, file.size)
+  }
+}
+
+// 挂载好以后注册四个拖拽方法
+onMounted(() => {
+  const el = dragRef.value
+  if (el) {
+    el.addEventListener('dragenter', handleDragEnter)
+    el.addEventListener('dragleave', handleDragLeave)
+    el.addEventListener('dragover', handleDragOver)
+    el.addEventListener('drop', handleDrop)
+  }
+})
+
+onUnmounted(() => {
+  const el = dragRef.value
+  if (el) {
+    el.removeEventListener('dragenter', handleDragEnter)
+    el.removeEventListener('dragleave', handleDragLeave)
+    el.removeEventListener('dragover', handleDragOver)
+    el.removeEventListener('drop', handleDrop)
+  }
+})
 </script>
 
 <template>
   <div ref="dragRef" class="relative h-full">
     <!-- 用来识别 文件/图片 的拖拽上传 -->
-    <div class="pointer-events-none absolute inset-0 z-50 rounded-lg">
+    <div
+      v-if="isDragging"
+      class="pointer-events-none absolute inset-0 z-50 rounded-lg"
+    >
       <!-- 固定窗口位置 -->
-      <div
-        class="bg-primary text sticky top-0 flex h-screen w-full flex-col gap-4 pb-16 pt-14"
-      >
-        <!-- 文件 -->
+      <div class="bg-primary sticky top-0 flex h-screen w-full">
         <div
-          class="flex flex-1 items-center justify-center rounded-lg border-4 border-dashed border-blue-100 text-2xl font-bold backdrop-blur-md"
+          class="mb-16 mt-12 flex w-full flex-col gap-2 rounded-xl backdrop-blur-md"
         >
-          <h1>你好 往这里拖文件喵</h1>
-        </div>
-        <div
-          class="flex flex-1 items-center justify-center rounded-lg border-4 border-dashed border-blue-100 text-2xl font-bold backdrop-blur-md"
-        >
-          <h1>你好 往这里拖图片喵</h1>
+          <!-- 文件 -->
+          <div
+            class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed border-color-text-soft text-2xl font-bold text-color-text-soft"
+          >
+            <RiImageLine size="40px"></RiImageLine>
+            <h1>你好 往这里拖文件喵</h1>
+          </div>
+          <!-- 图片 -->
+          <div
+            class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed border-color-text-soft text-2xl font-bold text-color-text-soft"
+          >
+            <RiFolderLine size="40px"></RiFolderLine>
+            <h1>你好 往这里拖图片喵</h1>
+          </div>
         </div>
       </div>
     </div>
