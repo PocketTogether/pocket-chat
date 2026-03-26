@@ -6,8 +6,21 @@ import { usePbCollectionConfigQuery } from '@/queries'
 import { useAuthStore, useI18nStore, useUploadFileStore } from '@/stores'
 import { formatFileSize, potoMessage } from '@/utils'
 import type { UploadFile } from 'element-plus'
+import { onMounted } from 'vue'
 
 const uploadFileStore = useUploadFileStore()
+
+// 注册拖拽事件，处理拖拽上传的文件
+onMounted(() => {
+  const pending = uploadFileStore.useDropFiles
+  if (pending.length === 0) return
+  for (const file of pending) {
+    const fakerFile = { raw: file } as UploadFile
+    fileUploadAdd(fakerFile)
+  }
+  // 清空暂存
+  uploadFileStore.useDropFiles = []
+})
 
 const i18nStore = useI18nStore()
 

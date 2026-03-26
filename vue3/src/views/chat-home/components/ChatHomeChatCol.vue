@@ -3,7 +3,12 @@ import { routerDict } from '@/config'
 import { ChatCol, ChatTopBarMoreMenuItem } from '@/components'
 import { injectAppMainElScrollbar } from '@/composables'
 import { usePbCollectionConfigQuery } from '@/queries'
-import { useAuthStore, useI18nStore, useUploadFileStore } from '@/stores'
+import {
+  useAuthStore,
+  useI18nStore,
+  useUploadFileStore,
+  useUploadImageStore,
+} from '@/stores'
 import { pbMessagesSendChatApi } from '@/api'
 import {
   generateRandomIntegerBetween,
@@ -14,6 +19,9 @@ import {
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useUserPermissionsDesuwa } from '@/composables'
 import type { UploadFile } from 'element-plus'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const i18nStore = useI18nStore()
 
@@ -52,7 +60,9 @@ const isDev = import.meta.env.DEV
 const dragRef = ref<HTMLElement | null>(null)
 const FolderRef = ref<HTMLElement | null>(null)
 const ImageRef = ref<HTMLElement | null>(null)
+// 暂存 文件/图片 的 stores
 const uploadFileStore = useUploadFileStore()
+const uploadImageStore = useUploadImageStore()
 const { permissionMaxUploadFileSize, openPermissionAdminContactNotif } =
   useUserPermissionsDesuwa()
 
@@ -61,22 +71,37 @@ const isDragging = ref(false)
 // 是否高亮
 const isHoveringFileZone = ref(false)
 const isHoveringImageZone = ref(false)
+// 是非为图片/文件
+const FilesOrImages = ref(false)
 let dragCounter = 0
 
 // 文件拖拽进入区域判断
 const handleDragEnter = (e: DragEvent) => {
   e.preventDefault()
+  FilesOrImages.value = false
   // if (e.dataTransfer?.types.includes('Files')) {
   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
     dragCounter++
     isDragging.value = true
   }
+  // 查看 type 是文件还是图片
+  if (e.dataTransfer?.items) {
+    for (const item of e.dataTransfer.items) {
+      if (item.type.startsWith('image/')) {
+        FilesOrImages.value = true
+        break
+      }
+    }
+  }
 }
 const handleDragLeave = (e: DragEvent) => {
   e.preventDefault()
   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
-    dragCounter--
-    if (dragCounter === 0) {
+    // dragCounter--
+    // if (dragCounter === 0) {
+    dragCounter = Math.max(0, dragCounter - 1)
+    if (dragCounter <= 0) {
+      dragCounter = 0
       isDragging.value = false
       isHoveringFileZone.value = false
       isHoveringImageZone.value = false
@@ -113,10 +138,6 @@ const handleDrop = (e: DragEvent) => {
 
   const files = e.dataTransfer?.files
   if (!files || files.length === 0) return
-
-  for (const file of files) {
-    // console.log('Dropped file:', file.name, file.type, file.size)
-  }
 }
 
 // 高亮判断
@@ -136,12 +157,50 @@ const handleImageZoneDragLeave = (e: DragEvent) => {
   e.preventDefault()
   isHoveringImageZone.value = false
 }
-
 const handleZoneDragOver = (e: DragEvent) => {
   e.preventDefault()
   if (e.dataTransfer) {
     e.dataTransfer.dropEffect = 'copy'
   }
+}
+// 文件的跳转上传
+const handleFileDrop = (e: DragEvent) => {
+  e.preventDefault()
+  dragCounter = 0
+  isDragging.value = false
+  isHoveringFileZone.value = false
+  // 暂存文件
+  const files = e.dataTransfer?.files
+  if (!files || files.length === 0) return
+  // 做一次前端大小校验
+  // 20MB
+  const MAX_SIZE = 20 * 1024 * 1024
+  const bigFiles = Array.from(files).filter((file) => file.size <= MAX_SIZE)
+  if (bigFiles.length === 0) return
+
+  uploadFileStore.useDropFiles = bigFiles
+  // 跳转
+  router.push(routerDict.FileSelectPage.path)
+}
+// 图片的跳转上传
+const handleImageDrop = (e: DragEvent) => {
+  e.preventDefault()
+  dragCounter = 0
+  isDragging.value = false
+  isHoveringImageZone.value = false
+  // 暂存图片
+  const image = e.dataTransfer?.files
+  if (!image || image.length === 0) return
+
+  // 保险判断是否为图片
+  const images = Array.from(image).filter((file) =>
+    file.type.startsWith('image/')
+  )
+  if (images.length === 0) return
+
+  uploadImageStore.useDropImages = images
+  // 跳转
+  router.push(routerDict.ImageSelectPage.path)
 }
 
 // 挂载好以后注册四个拖拽方法
@@ -196,18 +255,19 @@ onUnmounted(() => {
 <template>
   <div ref="dragRef" class="relative h-full">
     <!-- 用来识别 文件/图片 的拖拽上传 -->
-    <Transition
-      enterActiveClass="transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-      leaveActiveClass="transition-all duration-200 ease-in"
-      enterFromClass="opacity-0 scale-[0.98] backdrop-blur-0"
-      enterToClass="opacity-100 scale-100 backdrop-blur-md"
-      leaveFromClass="opacity-100 scale-100"
-      leaveToClass="opacity-0 scale-[0.98]"
-    >
-      <div v-if="isDragging" class="absolute inset-0 z-50 rounded-lg">
-        <!-- 固定窗口位置 -->
-        <div class="bg-primary sticky top-0 flex h-screen w-full">
+    <div v-if="isDragging" class="absolute inset-0 z-50 rounded-lg">
+      <!-- 固定窗口位置 -->
+      <div class="bg-primary sticky top-0 flex h-screen w-full">
+        <Transition
+          enterActiveClass="transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          leaveActiveClass="transition-all duration-200 ease-in"
+          enterFromClass="opacity-0 scale-[0.98]"
+          enterToClass="opacity-100 scale-100"
+          leaveFromClass="opacity-100 scale-100"
+          leaveToClass="opacity-0 scale-[0.98]"
+        >
           <div
+            v-if="isDragging"
             class="mb-16 mt-12 flex w-full flex-col gap-2 rounded-xl backdrop-blur-md"
           >
             <!-- 文件 -->
@@ -220,6 +280,7 @@ onUnmounted(() => {
               @dragenter="handleFileZoneDragEnter"
               @dragleave="handleFileZoneDragLeave"
               @dragover="handleZoneDragOver"
+              @drop="handleFileDrop"
             >
               <RiFolderLine
                 size="40px"
@@ -232,6 +293,7 @@ onUnmounted(() => {
             </div>
             <!-- 图片 -->
             <div
+              v-if="FilesOrImages"
               ref="ImageRef"
               class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed border-color-text-soft text-2xl font-bold text-color-text-soft"
               :class="
@@ -240,6 +302,7 @@ onUnmounted(() => {
               @dragenter="handleImageZoneDragEnter"
               @dragleave="handleImageZoneDragLeave"
               @dragover="handleZoneDragOver"
+              @drop="handleImageDrop"
             >
               <RiImageLine
                 size="40px"
@@ -251,9 +314,10 @@ onUnmounted(() => {
               <h1 v-else class="pointer-events-none">你好 往这里拖图片喵</h1>
             </div>
           </div>
-        </div>
+        </Transition>
       </div>
-    </Transition>
+    </div>
+
     <ChatCol
       :refScrollWarp="appMainElScrollbar?.wrapRef"
       :couldGoBack="false"
