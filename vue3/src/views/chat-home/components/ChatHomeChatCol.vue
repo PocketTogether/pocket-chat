@@ -50,14 +50,20 @@ const isDev = import.meta.env.DEV
 
 // 最外层的遮罩
 const dragRef = ref<HTMLElement | null>(null)
+const FolderRef = ref<HTMLElement | null>(null)
+const ImageRef = ref<HTMLElement | null>(null)
 const uploadFileStore = useUploadFileStore()
 const { permissionMaxUploadFileSize, openPermissionAdminContactNotif } =
   useUserPermissionsDesuwa()
 
 // 是否显示
 const isDragging = ref(false)
+// 是否高亮
+const isHoveringFileZone = ref(false)
+const isHoveringImageZone = ref(false)
 let dragCounter = 0
 
+// 文件拖拽进入区域判断
 const handleDragEnter = (e: DragEvent) => {
   e.preventDefault()
   // if (e.dataTransfer?.types.includes('Files')) {
@@ -66,17 +72,17 @@ const handleDragEnter = (e: DragEvent) => {
     isDragging.value = true
   }
 }
-
 const handleDragLeave = (e: DragEvent) => {
   e.preventDefault()
   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
     dragCounter--
     if (dragCounter === 0) {
       isDragging.value = false
+      isHoveringFileZone.value = false
+      isHoveringImageZone.value = false
     }
   }
 }
-
 // const handleDragOver = (e: DragEvent) => {
 //   e.preventDefault()
 //   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
@@ -98,17 +104,43 @@ const handleDragOver = (e: DragEvent) => {
     dt.dropEffect = 'none'
   }
 }
-
 const handleDrop = (e: DragEvent) => {
   e.preventDefault()
   dragCounter = 0
   isDragging.value = false
+  isHoveringFileZone.value = false
+  isHoveringImageZone.value = false
 
   const files = e.dataTransfer?.files
   if (!files || files.length === 0) return
 
   for (const file of files) {
     // console.log('Dropped file:', file.name, file.type, file.size)
+  }
+}
+
+// 高亮判断
+const handleFileZoneDragEnter = (e: DragEvent) => {
+  e.preventDefault()
+  isHoveringFileZone.value = true
+}
+const handleFileZoneDragLeave = (e: DragEvent) => {
+  e.preventDefault()
+  isHoveringFileZone.value = false
+}
+const handleImageZoneDragEnter = (e: DragEvent) => {
+  e.preventDefault()
+  isHoveringImageZone.value = true
+}
+const handleImageZoneDragLeave = (e: DragEvent) => {
+  e.preventDefault()
+  isHoveringImageZone.value = false
+}
+
+const handleZoneDragOver = (e: DragEvent) => {
+  e.preventDefault()
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = 'copy'
   }
 }
 
@@ -121,6 +153,21 @@ onMounted(() => {
     el.addEventListener('dragover', handleDragOver)
     el.addEventListener('drop', handleDrop)
   }
+  // 当父元素被 v-if 条件切换时，可能会导致元素被销毁重建
+  // 所以事件监听无法绑定（需要用 watch），我们直接替换成 Vue 方案
+
+  // const folderEl = FolderRef.value
+  // if (folderEl) {
+  //   folderEl.addEventListener('dragenter', handleFileZoneDragEnter)
+  //   folderEl.addEventListener('dragleave', handleFileZoneDragLeave)
+  //   folderEl.addEventListener('dragover', handleZoneDragOver)
+  // }
+  // const imageEl = ImageRef.value
+  // if (imageEl) {
+  //   imageEl.addEventListener('dragenter', handleImageZoneDragEnter)
+  //   imageEl.addEventListener('dragleave', handleImageZoneDragLeave)
+  //   imageEl.addEventListener('dragover', handleZoneDragOver)
+  // }
 })
 
 onUnmounted(() => {
@@ -131,16 +178,25 @@ onUnmounted(() => {
     el.removeEventListener('dragover', handleDragOver)
     el.removeEventListener('drop', handleDrop)
   }
+  // const folderEl = FolderRef.value
+  // if (folderEl) {
+  //   folderEl.removeEventListener('dragenter', handleFileZoneDragEnter)
+  //   folderEl.removeEventListener('dragleave', handleFileZoneDragLeave)
+  //   folderEl.removeEventListener('dragover', handleZoneDragOver)
+  // }
+  // const imageEl = ImageRef.value
+  // if (imageEl) {
+  //   imageEl.removeEventListener('dragenter', handleImageZoneDragEnter)
+  //   imageEl.removeEventListener('dragleave', handleImageZoneDragLeave)
+  //   imageEl.removeEventListener('dragover', handleZoneDragOver)
+  // }
 })
 </script>
 
 <template>
   <div ref="dragRef" class="relative h-full">
     <!-- 用来识别 文件/图片 的拖拽上传 -->
-    <div
-      v-if="isDragging"
-      class="pointer-events-none absolute inset-0 z-50 rounded-lg"
-    >
+    <div v-if="isDragging" class="absolute inset-0 z-50 rounded-lg">
       <!-- 固定窗口位置 -->
       <div class="bg-primary sticky top-0 flex h-screen w-full">
         <div
@@ -148,17 +204,40 @@ onUnmounted(() => {
         >
           <!-- 文件 -->
           <div
-            class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed border-color-text-soft text-2xl font-bold text-color-text-soft"
+            ref="FolderRef"
+            class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed text-2xl font-bold text-color-text-soft"
+            :class="
+              isHoveringFileZone ? 'border-glow' : 'border-color-text-soft'
+            "
+            @dragenter="handleFileZoneDragEnter"
+            @dragleave="handleFileZoneDragLeave"
+            @dragover="handleZoneDragOver"
           >
-            <RiImageLine size="40px"></RiImageLine>
-            <h1>你好 往这里拖文件喵</h1>
+            <RiFolderLine
+              size="40px"
+              class="pointer-events-none"
+            ></RiFolderLine>
+            <h1 v-if="isHoveringFileZone" class="pointer-events-none">
+              现在可以松手了哦
+            </h1>
+            <h1 v-else class="pointer-events-none">你好 往这里拖文件喵</h1>
           </div>
           <!-- 图片 -->
           <div
+            ref="ImageRef"
             class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed border-color-text-soft text-2xl font-bold text-color-text-soft"
+            :class="
+              isHoveringImageZone ? 'border-glow' : 'border-color-text-soft'
+            "
+            @dragenter="handleImageZoneDragEnter"
+            @dragleave="handleImageZoneDragLeave"
+            @dragover="handleZoneDragOver"
           >
-            <RiFolderLine size="40px"></RiFolderLine>
-            <h1>你好 往这里拖图片喵</h1>
+            <RiImageLine size="40px" class="pointer-events-none"></RiImageLine>
+            <h1 v-if="isHoveringImageZone" class="pointer-events-none">
+              现在可以松手了哦
+            </h1>
+            <h1 v-else class="pointer-events-none">你好 往这里拖图片喵</h1>
           </div>
         </div>
       </div>
