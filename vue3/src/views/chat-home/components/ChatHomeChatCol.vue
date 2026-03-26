@@ -196,52 +196,64 @@ onUnmounted(() => {
 <template>
   <div ref="dragRef" class="relative h-full">
     <!-- 用来识别 文件/图片 的拖拽上传 -->
-    <div v-if="isDragging" class="absolute inset-0 z-50 rounded-lg">
-      <!-- 固定窗口位置 -->
-      <div class="bg-primary sticky top-0 flex h-screen w-full">
-        <div
-          class="mb-16 mt-12 flex w-full flex-col gap-2 rounded-xl backdrop-blur-md"
-        >
-          <!-- 文件 -->
+    <Transition
+      enterActiveClass="transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+      leaveActiveClass="transition-all duration-200 ease-in"
+      enterFromClass="opacity-0 scale-[0.98] backdrop-blur-0"
+      enterToClass="opacity-100 scale-100 backdrop-blur-md"
+      leaveFromClass="opacity-100 scale-100"
+      leaveToClass="opacity-0 scale-[0.98]"
+    >
+      <div v-if="isDragging" class="absolute inset-0 z-50 rounded-lg">
+        <!-- 固定窗口位置 -->
+        <div class="bg-primary sticky top-0 flex h-screen w-full">
           <div
-            ref="FolderRef"
-            class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed text-2xl font-bold text-color-text-soft"
-            :class="
-              isHoveringFileZone ? 'border-glow' : 'border-color-text-soft'
-            "
-            @dragenter="handleFileZoneDragEnter"
-            @dragleave="handleFileZoneDragLeave"
-            @dragover="handleZoneDragOver"
+            class="mb-16 mt-12 flex w-full flex-col gap-2 rounded-xl backdrop-blur-md"
           >
-            <RiFolderLine
-              size="40px"
-              class="pointer-events-none"
-            ></RiFolderLine>
-            <h1 v-if="isHoveringFileZone" class="pointer-events-none">
-              现在可以松手了哦
-            </h1>
-            <h1 v-else class="pointer-events-none">你好 往这里拖文件喵</h1>
-          </div>
-          <!-- 图片 -->
-          <div
-            ref="ImageRef"
-            class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed border-color-text-soft text-2xl font-bold text-color-text-soft"
-            :class="
-              isHoveringImageZone ? 'border-glow' : 'border-color-text-soft'
-            "
-            @dragenter="handleImageZoneDragEnter"
-            @dragleave="handleImageZoneDragLeave"
-            @dragover="handleZoneDragOver"
-          >
-            <RiImageLine size="40px" class="pointer-events-none"></RiImageLine>
-            <h1 v-if="isHoveringImageZone" class="pointer-events-none">
-              现在可以松手了哦
-            </h1>
-            <h1 v-else class="pointer-events-none">你好 往这里拖图片喵</h1>
+            <!-- 文件 -->
+            <div
+              ref="FolderRef"
+              class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed text-2xl font-bold text-color-text-soft"
+              :class="
+                isHoveringFileZone ? 'border-glow' : 'border-color-text-soft'
+              "
+              @dragenter="handleFileZoneDragEnter"
+              @dragleave="handleFileZoneDragLeave"
+              @dragover="handleZoneDragOver"
+            >
+              <RiFolderLine
+                size="40px"
+                class="pointer-events-none"
+              ></RiFolderLine>
+              <h1 v-if="isHoveringFileZone" class="pointer-events-none">
+                现在可以松手了哦
+              </h1>
+              <h1 v-else class="pointer-events-none">你好 往这里拖文件喵</h1>
+            </div>
+            <!-- 图片 -->
+            <div
+              ref="ImageRef"
+              class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed border-color-text-soft text-2xl font-bold text-color-text-soft"
+              :class="
+                isHoveringImageZone ? 'border-glow' : 'border-color-text-soft'
+              "
+              @dragenter="handleImageZoneDragEnter"
+              @dragleave="handleImageZoneDragLeave"
+              @dragover="handleZoneDragOver"
+            >
+              <RiImageLine
+                size="40px"
+                class="pointer-events-none"
+              ></RiImageLine>
+              <h1 v-if="isHoveringImageZone" class="pointer-events-none">
+                现在可以松手了哦
+              </h1>
+              <h1 v-else class="pointer-events-none">你好 往这里拖图片喵</h1>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Transition>
     <ChatCol
       :refScrollWarp="appMainElScrollbar?.wrapRef"
       :couldGoBack="false"
@@ -302,4 +314,35 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+// .border-glow {
+//   border-color: white;
+//   transition:
+//     border-color 0.2s ease,
+//     box-shadow 0.2s ease,
+//     transform 0.15s ease;
+//   box-shadow:
+//     0 0 16px rgba(255, 255, 255, 0.25),
+//     0 8px 30px rgba(255, 255, 255, 0.12);
+// }
+
+// .border-glow:hover {
+//   // box-shadow:
+//   //   0 0 0 1px rgba(255, 255, 255, 0.4),
+//   //   0 12px 40px rgba(255, 255, 255, 0.18);
+//   box-shadow:
+//     0 0 12px rgba(255, 255, 255, 0.35),
+//     0 8px 30px rgba(255, 255, 255, 0.12);
+// }
+.border-glow {
+  border-color: white;
+
+  transition:
+    border-color 0.28s ease,
+    box-shadow 0.28s ease;
+
+  box-shadow:
+    0 0 16px rgba(255, 255, 255, 0.14),
+    0 10px 32px rgba(255, 255, 255, 0.06);
+}
+</style>
