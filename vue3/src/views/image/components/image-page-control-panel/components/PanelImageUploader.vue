@@ -4,6 +4,7 @@ import { useUserPermissionsDesuwa } from '@/composables'
 import { pbCollectionConfigDefaultGetFn, routerDict } from '@/config'
 import { usePbCollectionConfigQuery } from '@/queries'
 import { useAuthStore, useI18nStore, useUploadImageStore } from '@/stores'
+import { onMounted } from 'vue'
 import type { UploadFile } from 'element-plus'
 
 // 定义允许的图片类型
@@ -15,6 +16,18 @@ const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
 const pbCollectionConfigQuery = usePbCollectionConfigQuery()
 
 const uploadImageStore = useUploadImageStore()
+
+// 注册拖拽事件，处理拖拽上传的图片
+onMounted(() => {
+  const pending = uploadImageStore.useDropImages
+  if (pending.length === 0) return
+  for (const image of pending) {
+    const fakerFile = { raw: image } as UploadFile
+    imageUploadAdd(fakerFile)
+  }
+  // 清空暂存
+  uploadImageStore.useDropImages = []
+})
 
 const imageUploadAdd = async (uploadFile: UploadFile) => {
   const rawFile = uploadFile.raw

@@ -56,6 +56,7 @@ export type UploadFileStoreDependenciesDataForModule = {
   uploadRecordList: Ref<UploadFileStoreRecord[]>
   uploadFileList: Ref<UploadFileStoreFile[]>
   uploadProgressInfoList: Ref<UploadFileStoreProgressInfo[]>
+  useDropFiles: Ref<File[]>
 }
 
 /**
@@ -78,12 +79,15 @@ export const useUploadFileStore = defineStore(
 
     /** 非持久化：进度列表 */
     const uploadProgressInfoList = ref<UploadFileStoreProgressInfo[]>([])
+    /** 非持久化：拖拽暂存的文件 */
+    const useDropFiles = ref<File[]>([])
 
     const uploadFileStoreDependenciesDataForModule: UploadFileStoreDependenciesDataForModule =
       {
         uploadRecordList,
         uploadFileList,
         uploadProgressInfoList,
+        useDropFiles,
       }
 
     /** 仅允许初始化一次，此为实现其所需的标记 */
@@ -148,6 +152,8 @@ export const useUploadFileStore = defineStore(
     return {
       // 上传记录 持久化
       uploadRecordList,
+      // 拖拽暂存的文件
+      useDropFiles,
       // 上传管理相关函数
       ...uploadFileSystemControlModule,
       // 单项操作函数

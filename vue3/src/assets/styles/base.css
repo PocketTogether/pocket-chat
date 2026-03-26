@@ -49,3 +49,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* 弹性滚动 */
+html, body {
+  overscroll-behavior: none;
+}
