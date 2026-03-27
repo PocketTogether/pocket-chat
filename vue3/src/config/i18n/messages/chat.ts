@@ -184,4 +184,28 @@ export const i18nMessagesChatPart = {
     'ko-KR': () => '[파일]' as const,
     'ru-RU': () => '[Файл]' as const,
   },
+  chatDragZoneReleaseText: {
+    'en-US': () => 'You can release now' as const,
+    'zh-CN': () => '现在可以松手了哦' as const,
+    'zh-TW': () => '現在可以放手了哦' as const,
+    'ja-JP': () => '今すぐリリースできます' as const,
+    'ko-KR': () => '이제 놓을 수 있습니다' as const,
+    'ru-RU': () => 'Теперь можно отпустить' as const,
+  },
+  chatDragZoneFilePlaceholderText: {
+    'en-US': () => 'Drag files here' as const,
+    'zh-CN': () => '你好 往这里拖文件喵' as const,
+    'zh-TW': () => '你好 往這裡拖檔案喵' as const,
+    'ja-JP': () => 'ここにファイルをドラッグしてください' as const,
+    'ko-KR': () => '여기에 파일을 드래그하세요' as const,
+    'ru-RU': () => 'Перетащите файлы сюда' as const,
+  },
+  chatDragZoneImagePlaceholderText: {
+    'en-US': () => 'Drag images here' as const,
+    'zh-CN': () => '你好 往这里拖图片喵' as const,
+    'zh-TW': () => '你好 往這裡拖圖片喵' as const,
+    'ja-JP': () => 'ここに画像をドラッグしてください' as const,
+    'ko-KR': () => '여기에 이미지를 드래그하세요' as const,
+    'ru-RU': () => 'Перетащите изображения сюда' as const,
+  },
 } as const satisfies I18nMessagesSatisfiesType

@@ -108,14 +108,6 @@ const handleDragLeave = (e: DragEvent) => {
     }
   }
 }
-// const handleDragOver = (e: DragEvent) => {
-//   e.preventDefault()
-//   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
-//     e.dataTransfer.dropEffect = 'copy'
-//   } else {
-//     e.dataTransfer.dropEffect = 'none'
-//   }
-// }
 const handleDragOver = (e: DragEvent) => {
   e.preventDefault()
 
@@ -255,7 +247,7 @@ onUnmounted(() => {
 <template>
   <div ref="dragRef" class="relative h-full">
     <!-- 用来识别 文件/图片 的拖拽上传 -->
-    <div v-if="isDragging" class="absolute inset-0 z-50 rounded-lg">
+    <div v-show="isDragging" class="absolute inset-0 z-50 rounded-lg">
       <!-- 固定窗口位置 -->
       <div class="bg-primary sticky top-0 flex h-screen w-full">
         <Transition
@@ -287,9 +279,11 @@ onUnmounted(() => {
                 class="pointer-events-none"
               ></RiFolderLine>
               <h1 v-if="isHoveringFileZone" class="pointer-events-none">
-                现在可以松手了哦
+                {{ i18nStore.t('chatDragZoneReleaseText')() }}
               </h1>
-              <h1 v-else class="pointer-events-none">你好 往这里拖文件喵</h1>
+              <h1 v-else class="pointer-events-none">
+                {{ i18nStore.t('chatDragZoneFilePlaceholderText')() }}
+              </h1>
             </div>
             <!-- 图片 -->
             <div
@@ -309,9 +303,11 @@ onUnmounted(() => {
                 class="pointer-events-none"
               ></RiImageLine>
               <h1 v-if="isHoveringImageZone" class="pointer-events-none">
-                现在可以松手了哦
+                {{ i18nStore.t('chatDragZoneReleaseText')() }}
               </h1>
-              <h1 v-else class="pointer-events-none">你好 往这里拖图片喵</h1>
+              <h1 v-else class="pointer-events-none">
+                {{ i18nStore.t('chatDragZoneImagePlaceholderText')() }}
+              </h1>
             </div>
           </div>
         </Transition>
@@ -379,25 +375,6 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-// .border-glow {
-//   border-color: white;
-//   transition:
-//     border-color 0.2s ease,
-//     box-shadow 0.2s ease,
-//     transform 0.15s ease;
-//   box-shadow:
-//     0 0 16px rgba(255, 255, 255, 0.25),
-//     0 8px 30px rgba(255, 255, 255, 0.12);
-// }
-
-// .border-glow:hover {
-//   // box-shadow:
-//   //   0 0 0 1px rgba(255, 255, 255, 0.4),
-//   //   0 12px 40px rgba(255, 255, 255, 0.18);
-//   box-shadow:
-//     0 0 12px rgba(255, 255, 255, 0.35),
-//     0 8px 30px rgba(255, 255, 255, 0.12);
-// }
 .border-glow {
   border-color: white;
 
