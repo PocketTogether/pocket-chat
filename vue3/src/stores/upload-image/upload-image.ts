@@ -92,7 +92,6 @@ export const useUploadImageStore = defineStore(
         uploadRecordList,
         uploadFileList,
         uploadProgressInfoList,
-        uploadDropImages,
       }
 
     /** 仅允许初始化一次，此为实现其所需的标记 */
