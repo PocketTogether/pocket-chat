@@ -78,6 +78,14 @@ export const useUploadFileStore = defineStore(
 
     /** 非持久化：进度列表 */
     const uploadProgressInfoList = ref<UploadFileStoreProgressInfo[]>([])
+    /** 非持久化：拖拽暂存的文件 */
+    const uploadDropFiles = ref<File[]>([])
+    // 只读 computed，用于暴露给外部
+    const dropFiles = computed(() => uploadDropFiles.value)
+    // 提供 setter 方法修改状态
+    const dropFilesSet = (val: File[]) => {
+      uploadDropFiles.value = val
+    }
 
     const uploadFileStoreDependenciesDataForModule: UploadFileStoreDependenciesDataForModule =
       {
@@ -148,6 +156,11 @@ export const useUploadFileStore = defineStore(
     return {
       // 上传记录 持久化
       uploadRecordList,
+      // 拖拽暂存的文件
+      // uploadDropFiles 的外部接口
+      dropFiles,
+      // 提供修改 uploadDropFiles 的方法
+      dropFilesSet,
       // 上传管理相关函数
       ...uploadFileSystemControlModule,
       // 单项操作函数

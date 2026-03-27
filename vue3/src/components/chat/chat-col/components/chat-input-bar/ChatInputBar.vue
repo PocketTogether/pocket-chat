@@ -160,17 +160,6 @@ const autosizeElInput = computed(() => {
             <RiArrowDownWideLine size="20px"></RiArrowDownWideLine>
           </div>
         </div>
-        <!-- 菜单项 图片 -->
-        <ChatTopBarMoreMenuItem
-          @click="$router.push(routerDict.ImageSelectPage.path)"
-        >
-          <template #icon>
-            <RiImageLine size="18px"></RiImageLine>
-          </template>
-          <template #text>
-            {{ i18nStore.t('chatInputBarBackMenuImage')() }}
-          </template>
-        </ChatTopBarMoreMenuItem>
         <!-- 菜单项 文件 -->
         <ChatTopBarMoreMenuItem
           @click="$router.push(routerDict.FileSelectPage.path)"
@@ -180,6 +169,17 @@ const autosizeElInput = computed(() => {
           </template>
           <template #text>
             {{ i18nStore.t('chatInputBarBackMenuFile')() }}
+          </template>
+        </ChatTopBarMoreMenuItem>
+        <!-- 菜单项 图片 -->
+        <ChatTopBarMoreMenuItem
+          @click="$router.push(routerDict.ImageSelectPage.path)"
+        >
+          <template #icon>
+            <RiImageLine size="18px"></RiImageLine>
+          </template>
+          <template #text>
+            {{ i18nStore.t('chatInputBarBackMenuImage')() }}
           </template>
         </ChatTopBarMoreMenuItem>
         <!-- 垫片 -->
