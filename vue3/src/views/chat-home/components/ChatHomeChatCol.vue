@@ -189,58 +189,17 @@ const handleImageDrop = (e: DragEvent) => {
   // 跳转
   router.push(routerDict.ImageSelectPage.path)
 }
-
-// 挂载好以后注册四个拖拽方法
-onMounted(() => {
-  const el = dragRef.value
-  if (el) {
-    el.addEventListener('dragenter', handleDragEnter)
-    el.addEventListener('dragleave', handleDragLeave)
-    el.addEventListener('dragover', handleDragOver)
-    el.addEventListener('drop', handleDrop)
-  }
-  // 当父元素被 v-if 条件切换时，可能会导致元素被销毁重建
-  // 所以事件监听无法绑定（需要用 watch），我们直接替换成 Vue 方案
-
-  // const folderEl = FolderRef.value
-  // if (folderEl) {
-  //   folderEl.addEventListener('dragenter', handleFileZoneDragEnter)
-  //   folderEl.addEventListener('dragleave', handleFileZoneDragLeave)
-  //   folderEl.addEventListener('dragover', handleZoneDragOver)
-  // }
-  // const imageEl = ImageRef.value
-  // if (imageEl) {
-  //   imageEl.addEventListener('dragenter', handleImageZoneDragEnter)
-  //   imageEl.addEventListener('dragleave', handleImageZoneDragLeave)
-  //   imageEl.addEventListener('dragover', handleZoneDragOver)
-  // }
-})
-
-onUnmounted(() => {
-  const el = dragRef.value
-  if (el) {
-    el.removeEventListener('dragenter', handleDragEnter)
-    el.removeEventListener('dragleave', handleDragLeave)
-    el.removeEventListener('dragover', handleDragOver)
-    el.removeEventListener('drop', handleDrop)
-  }
-  // const folderEl = FolderRef.value
-  // if (folderEl) {
-  //   folderEl.removeEventListener('dragenter', handleFileZoneDragEnter)
-  //   folderEl.removeEventListener('dragleave', handleFileZoneDragLeave)
-  //   folderEl.removeEventListener('dragover', handleZoneDragOver)
-  // }
-  // const imageEl = ImageRef.value
-  // if (imageEl) {
-  //   imageEl.removeEventListener('dragenter', handleImageZoneDragEnter)
-  //   imageEl.removeEventListener('dragleave', handleImageZoneDragLeave)
-  //   imageEl.removeEventListener('dragover', handleZoneDragOver)
-  // }
-})
 </script>
 
 <template>
-  <div ref="dragRef" class="relative h-full">
+  <div
+    ref="dragRef"
+    class="relative h-full"
+    @dragenter="handleDragEnter"
+    @dragleave="handleDragLeave"
+    @dragover="handleDragOver"
+    @drop="handleDrop"
+  >
     <!-- 用来识别 文件/图片 的拖拽上传 -->
     <div v-show="isDragging" class="absolute inset-0 z-50 rounded-lg">
       <!-- 固定窗口位置 -->
