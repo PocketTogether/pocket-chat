@@ -56,7 +56,6 @@ export type UploadImageStoreDependenciesDataForModule = {
   uploadRecordList: Ref<UploadImageStoreRecord[]>
   uploadFileList: Ref<UploadImageStoreFile[]>
   uploadProgressInfoList: Ref<UploadImageStoreProgressInfo[]>
-  uploadDropImages: Ref<File[]>
 }
 
 /**
