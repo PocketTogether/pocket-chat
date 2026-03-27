@@ -6,6 +6,7 @@ import {
   imageScaleImageWithPicaService,
   imageCanvasToBlobWithPicaService,
 } from '@/utils'
+import type { PotoUploadFile } from '@/types'
 
 /**
  * 计算上传进度百分比（0-100 的整数）。
@@ -26,7 +27,7 @@ export const uploadProgressPercentageUtil = (
  * 上传图片处理工具：生成 主图、大图、小图、超小图
  */
 export const uploadImageProcessUtil = async (
-  uploadFile: UploadFile,
+  uploadFile: PotoUploadFile,
   options: {
     imageConfig: {
       sumWidthHeightLimit: number
