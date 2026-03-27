@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import type { PotoUploadFile } from '@/types'
 import type { UploadFile, UploadUserFile } from 'element-plus'
 import Pica from 'pica'
 
@@ -8,7 +9,7 @@ const imageRatioTolerance = 0.01
 
 // 从文件中加载图片
 export function imageLoadImageFromFileService(
-  uploadFile: UploadFile | UploadUserFile
+  uploadFile: UploadFile | UploadUserFile | PotoUploadFile
 ): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     if (!uploadFile.raw) {

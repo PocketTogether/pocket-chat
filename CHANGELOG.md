@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-03-11
+<details>
+<summary>📝 查看中文版本 (Chinese Version)</summary>
+
+### 新增
+- 支持快速拖拽文件上传 by @KIPPUDESU in https://github.com/PocketTogether/pocket-chat/pull/33 https://github.com/PocketTogether/pocket-chat/pull/35 
+
+</details>
+
+### Added
+
+- Supports quick drag-and-drop file uploads by @KIPPUDESU in https://github.com/PocketTogether/pocket-chat/pull/33 https://github.com/PocketTogether/pocket-chat/pull/35 
+
 ## [0.6.0] - 2026-03-11
 
 <details>
@@ -235,7 +248,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pocket-chat: 一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3. 
 
-[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.6.0...HEAD
+[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.4.0...v0.5.0

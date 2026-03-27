@@ -4,6 +4,7 @@ import { useUserPermissionsDesuwa } from '@/composables'
 import { pbCollectionConfigDefaultGetFn, routerDict } from '@/config'
 import { usePbCollectionConfigQuery } from '@/queries'
 import { useAuthStore, useI18nStore, useUploadFileStore } from '@/stores'
+import type { PotoUploadFile } from '@/types'
 import { formatFileSize, potoMessage } from '@/utils'
 import type { UploadFile } from 'element-plus'
 import { onMounted } from 'vue'
@@ -15,8 +16,12 @@ onMounted(() => {
   const pending = uploadFileStore.dropFiles
   if (pending.length === 0) return
   for (const file of pending) {
-    const fakerFile = { raw: file } as UploadFile
-    fileUploadAdd(fakerFile)
+    const potoUploadFile: PotoUploadFile = {
+      name: file.name,
+      size: file.size,
+      raw: file,
+    }
+    fileUploadAdd(potoUploadFile)
   }
   // 清空暂存
   uploadFileStore.dropFilesSet([])
@@ -32,7 +37,7 @@ const {
   openPermissionAdminContactNotif,
 } = useUserPermissionsDesuwa()
 
-const fileUploadAdd = async (uploadFile: UploadFile) => {
+const fileUploadAdd = async (uploadFile: PotoUploadFile) => {
   const rawFile = uploadFile.raw
   if (!rawFile) {
     console.warn('!rawFile')
