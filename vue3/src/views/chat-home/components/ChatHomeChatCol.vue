@@ -79,7 +79,6 @@ let dragCounter = 0
 const handleDragEnter = (e: DragEvent) => {
   e.preventDefault()
   FilesOrImages.value = false
-  // if (e.dataTransfer?.types.includes('Files')) {
   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
     dragCounter++
     isDragging.value = true
@@ -108,14 +107,6 @@ const handleDragLeave = (e: DragEvent) => {
     }
   }
 }
-// const handleDragOver = (e: DragEvent) => {
-//   e.preventDefault()
-//   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
-//     e.dataTransfer.dropEffect = 'copy'
-//   } else {
-//     e.dataTransfer.dropEffect = 'none'
-//   }
-// }
 const handleDragOver = (e: DragEvent) => {
   e.preventDefault()
 
@@ -172,13 +163,9 @@ const handleFileDrop = (e: DragEvent) => {
   // 暂存文件
   const files = e.dataTransfer?.files
   if (!files || files.length === 0) return
-  // 做一次前端大小校验
-  // 20MB
-  const MAX_SIZE = 20 * 1024 * 1024
-  const bigFiles = Array.from(files).filter((file) => file.size <= MAX_SIZE)
-  if (bigFiles.length === 0) return
 
-  uploadFileStore.useDropFiles = bigFiles
+  // 暂存
+  uploadFileStore.dropFilesSet(Array.from(files))
   // 跳转
   router.push(routerDict.FileSelectPage.path)
 }
@@ -198,64 +185,23 @@ const handleImageDrop = (e: DragEvent) => {
   )
   if (images.length === 0) return
 
-  uploadImageStore.useDropImages = images
+  uploadImageStore.dropImagesSet(images)
   // 跳转
   router.push(routerDict.ImageSelectPage.path)
 }
-
-// 挂载好以后注册四个拖拽方法
-onMounted(() => {
-  const el = dragRef.value
-  if (el) {
-    el.addEventListener('dragenter', handleDragEnter)
-    el.addEventListener('dragleave', handleDragLeave)
-    el.addEventListener('dragover', handleDragOver)
-    el.addEventListener('drop', handleDrop)
-  }
-  // 当父元素被 v-if 条件切换时，可能会导致元素被销毁重建
-  // 所以事件监听无法绑定（需要用 watch），我们直接替换成 Vue 方案
-
-  // const folderEl = FolderRef.value
-  // if (folderEl) {
-  //   folderEl.addEventListener('dragenter', handleFileZoneDragEnter)
-  //   folderEl.addEventListener('dragleave', handleFileZoneDragLeave)
-  //   folderEl.addEventListener('dragover', handleZoneDragOver)
-  // }
-  // const imageEl = ImageRef.value
-  // if (imageEl) {
-  //   imageEl.addEventListener('dragenter', handleImageZoneDragEnter)
-  //   imageEl.addEventListener('dragleave', handleImageZoneDragLeave)
-  //   imageEl.addEventListener('dragover', handleZoneDragOver)
-  // }
-})
-
-onUnmounted(() => {
-  const el = dragRef.value
-  if (el) {
-    el.removeEventListener('dragenter', handleDragEnter)
-    el.removeEventListener('dragleave', handleDragLeave)
-    el.removeEventListener('dragover', handleDragOver)
-    el.removeEventListener('drop', handleDrop)
-  }
-  // const folderEl = FolderRef.value
-  // if (folderEl) {
-  //   folderEl.removeEventListener('dragenter', handleFileZoneDragEnter)
-  //   folderEl.removeEventListener('dragleave', handleFileZoneDragLeave)
-  //   folderEl.removeEventListener('dragover', handleZoneDragOver)
-  // }
-  // const imageEl = ImageRef.value
-  // if (imageEl) {
-  //   imageEl.removeEventListener('dragenter', handleImageZoneDragEnter)
-  //   imageEl.removeEventListener('dragleave', handleImageZoneDragLeave)
-  //   imageEl.removeEventListener('dragover', handleZoneDragOver)
-  // }
-})
 </script>
 
 <template>
-  <div ref="dragRef" class="relative h-full">
+  <div
+    ref="dragRef"
+    class="relative h-full"
+    @dragenter="handleDragEnter"
+    @dragleave="handleDragLeave"
+    @dragover="handleDragOver"
+    @drop="handleDrop"
+  >
     <!-- 用来识别 文件/图片 的拖拽上传 -->
-    <div v-if="isDragging" class="absolute inset-0 z-50 rounded-lg">
+    <div v-show="isDragging" class="absolute inset-0 z-50 rounded-lg">
       <!-- 固定窗口位置 -->
       <div class="bg-primary sticky top-0 flex h-screen w-full">
         <Transition
@@ -287,9 +233,11 @@ onUnmounted(() => {
                 class="pointer-events-none"
               ></RiFolderLine>
               <h1 v-if="isHoveringFileZone" class="pointer-events-none">
-                现在可以松手了哦
+                {{ i18nStore.t('chatDragZoneReleaseText')() }}
               </h1>
-              <h1 v-else class="pointer-events-none">你好 往这里拖文件喵</h1>
+              <h1 v-else class="pointer-events-none">
+                {{ i18nStore.t('chatDragZoneFilePlaceholderText')() }}
+              </h1>
             </div>
             <!-- 图片 -->
             <div
@@ -309,9 +257,11 @@ onUnmounted(() => {
                 class="pointer-events-none"
               ></RiImageLine>
               <h1 v-if="isHoveringImageZone" class="pointer-events-none">
-                现在可以松手了哦
+                {{ i18nStore.t('chatDragZoneReleaseText')() }}
               </h1>
-              <h1 v-else class="pointer-events-none">你好 往这里拖图片喵</h1>
+              <h1 v-else class="pointer-events-none">
+                {{ i18nStore.t('chatDragZoneImagePlaceholderText')() }}
+              </h1>
             </div>
           </div>
         </Transition>
@@ -379,25 +329,6 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-// .border-glow {
-//   border-color: white;
-//   transition:
-//     border-color 0.2s ease,
-//     box-shadow 0.2s ease,
-//     transform 0.15s ease;
-//   box-shadow:
-//     0 0 16px rgba(255, 255, 255, 0.25),
-//     0 8px 30px rgba(255, 255, 255, 0.12);
-// }
-
-// .border-glow:hover {
-//   // box-shadow:
-//   //   0 0 0 1px rgba(255, 255, 255, 0.4),
-//   //   0 12px 40px rgba(255, 255, 255, 0.18);
-//   box-shadow:
-//     0 0 12px rgba(255, 255, 255, 0.35),
-//     0 8px 30px rgba(255, 255, 255, 0.12);
-// }
 .border-glow {
   border-color: white;
 

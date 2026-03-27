@@ -56,7 +56,6 @@ export type UploadImageStoreDependenciesDataForModule = {
   uploadRecordList: Ref<UploadImageStoreRecord[]>
   uploadFileList: Ref<UploadImageStoreFile[]>
   uploadProgressInfoList: Ref<UploadImageStoreProgressInfo[]>
-  useDropImages: Ref<File[]>
 }
 
 /**
@@ -81,13 +80,18 @@ export const useUploadImageStore = defineStore(
     const uploadProgressInfoList = ref<UploadImageStoreProgressInfo[]>([])
 
     /** 非持久化：拖拽暂存的图片文件 */
-    const useDropImages = ref<File[]>([])
+    const uploadDropImages = ref<File[]>([])
+    // 只读 computed，用于暴露给外部
+    const dropImages = computed(() => uploadDropImages.value)
+    // 提供 setter 方法修改状态
+    const dropImagesSet = (val: File[]) => {
+      uploadDropImages.value = val
+    }
     const uploadImageStoreDependenciesDataForModule: UploadImageStoreDependenciesDataForModule =
       {
         uploadRecordList,
         uploadFileList,
         uploadProgressInfoList,
-        useDropImages,
       }
 
     /** 仅允许初始化一次，此为实现其所需的标记 */
@@ -153,7 +157,10 @@ export const useUploadImageStore = defineStore(
       // 上传记录 持久化
       uploadRecordList,
       // 拖拽暂存的图片文件
-      useDropImages,
+      // uploadDropImages 的外部接口
+      dropImages,
+      // 提供修改 uploadDropImages 的方法
+      dropImagesSet,
       // 上传管理相关函数
       ...uploadImageSystemControlModule,
       // 单项操作函数
