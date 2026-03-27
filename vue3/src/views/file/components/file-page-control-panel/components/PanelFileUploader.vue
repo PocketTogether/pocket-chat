@@ -12,14 +12,14 @@ const uploadFileStore = useUploadFileStore()
 
 // 注册拖拽事件，处理拖拽上传的文件
 onMounted(() => {
-  const pending = uploadFileStore.useDropFiles
+  const pending = uploadFileStore.dropFiles
   if (pending.length === 0) return
   for (const file of pending) {
     const fakerFile = { raw: file } as UploadFile
     fileUploadAdd(fakerFile)
   }
   // 清空暂存
-  uploadFileStore.useDropFiles = []
+  uploadFileStore.dropFilesSet([])
 })
 
 const i18nStore = useI18nStore()

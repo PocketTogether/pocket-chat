@@ -79,7 +79,6 @@ let dragCounter = 0
 const handleDragEnter = (e: DragEvent) => {
   e.preventDefault()
   FilesOrImages.value = false
-  // if (e.dataTransfer?.types.includes('Files')) {
   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
     dragCounter++
     isDragging.value = true
@@ -164,13 +163,9 @@ const handleFileDrop = (e: DragEvent) => {
   // 暂存文件
   const files = e.dataTransfer?.files
   if (!files || files.length === 0) return
-  // 做一次前端大小校验
-  // 20MB
-  const MAX_SIZE = 20 * 1024 * 1024
-  const bigFiles = Array.from(files).filter((file) => file.size <= MAX_SIZE)
-  if (bigFiles.length === 0) return
 
-  uploadFileStore.useDropFiles = bigFiles
+  // 暂存
+  uploadFileStore.dropFilesSet(Array.from(files))
   // 跳转
   router.push(routerDict.FileSelectPage.path)
 }
@@ -190,7 +185,7 @@ const handleImageDrop = (e: DragEvent) => {
   )
   if (images.length === 0) return
 
-  uploadImageStore.useDropImages = images
+  uploadImageStore.dropImagesSet(images)
   // 跳转
   router.push(routerDict.ImageSelectPage.path)
 }

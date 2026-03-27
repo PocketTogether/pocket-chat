@@ -19,14 +19,14 @@ const uploadImageStore = useUploadImageStore()
 
 // 注册拖拽事件，处理拖拽上传的图片
 onMounted(() => {
-  const pending = uploadImageStore.useDropImages
+  const pending = uploadImageStore.dropImages
   if (pending.length === 0) return
   for (const image of pending) {
     const fakerFile = { raw: image } as UploadFile
     imageUploadAdd(fakerFile)
   }
   // 清空暂存
-  uploadImageStore.useDropImages = []
+  uploadImageStore.dropImagesSet([])
 })
 
 const imageUploadAdd = async (uploadFile: UploadFile) => {
