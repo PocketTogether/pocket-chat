@@ -63,8 +63,6 @@ const ImageRef = ref<HTMLElement | null>(null)
 // 暂存 文件/图片 的 stores
 const uploadFileStore = useUploadFileStore()
 const uploadImageStore = useUploadImageStore()
-const { permissionMaxUploadFileSize, openPermissionAdminContactNotif } =
-  useUserPermissionsDesuwa()
 
 // 是否显示
 const isDragging = ref(false)
@@ -194,32 +192,35 @@ const handleImageDrop = (e: DragEvent) => {
 <template>
   <div
     ref="dragRef"
-    class="relative h-full"
+    class="relative min-h-dvh"
     @dragenter="handleDragEnter"
     @dragleave="handleDragLeave"
     @dragover="handleDragOver"
     @drop="handleDrop"
   >
     <!-- 用来识别 文件/图片 的拖拽上传 -->
-    <div v-show="isDragging" class="absolute inset-0 z-50 rounded-lg">
-      <!-- 固定窗口位置 -->
-      <div class="bg-primary sticky top-0 flex h-screen w-full">
-        <Transition
+    <Transition name="fade" mode="out-in">
+      <div
+        v-if="isDragging"
+        class="absolute bottom-0 left-[-2000px] right-[-2000px] top-0 z-50 bg-color-background-a80 backdrop-blur-md"
+      >
+        <!-- 固定窗口位置 -->
+        <div class="sticky top-0 flex h-dvh w-full">
+          <!--
           enterActiveClass="transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
           leaveActiveClass="transition-all duration-200 ease-in"
           enterFromClass="opacity-0 scale-[0.98]"
           enterToClass="opacity-100 scale-100"
           leaveFromClass="opacity-100 scale-100"
           leaveToClass="opacity-0 scale-[0.98]"
-        >
+         -->
           <div
-            v-if="isDragging"
-            class="mb-16 mt-12 flex w-full flex-col gap-2 rounded-xl backdrop-blur-md"
+            class="mx-[2000px] mb-[52px] mt-[40px] flex w-full flex-col gap-[8px]"
           >
             <!-- 文件 -->
             <div
               ref="FolderRef"
-              class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed text-2xl font-bold text-color-text-soft"
+              class="flex flex-1 flex-col items-center justify-center gap-2 rounded-b-[8px] rounded-t-[24px] border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
               :class="
                 isHoveringFileZone ? 'border-glow' : 'border-color-text-soft'
               "
@@ -243,7 +244,7 @@ const handleImageDrop = (e: DragEvent) => {
             <div
               v-if="FilesOrImages"
               ref="ImageRef"
-              class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border-4 border-dashed border-color-text-soft text-2xl font-bold text-color-text-soft"
+              class="flex flex-1 flex-col items-center justify-center gap-2 rounded-b-[24px] rounded-t-[8px] border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
               :class="
                 isHoveringImageZone ? 'border-glow' : 'border-color-text-soft'
               "
@@ -264,9 +265,9 @@ const handleImageDrop = (e: DragEvent) => {
               </h1>
             </div>
           </div>
-        </Transition>
+        </div>
       </div>
-    </div>
+    </Transition>
 
     <ChatCol
       :refScrollWarp="appMainElScrollbar?.wrapRef"

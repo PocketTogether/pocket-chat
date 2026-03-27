@@ -15,10 +15,10 @@ import {
   useUploadImageSystemControlModule,
 } from './modules'
 import type { I18nMessagesUploadPartUploadProgressInfoErrorPartKeyType } from '@/config'
+import type { PotoUploadFile } from '@/types'
 
 export interface UploadImageStoreRecord {
   uuid: string
-  fileUid: number
   name: string
   type: string
   size: number
@@ -32,7 +32,8 @@ export interface UploadImageStoreRecord {
 
 export interface UploadImageStoreFile {
   uuid: string
-  uploadFile: UploadFile
+  // uploadFile: UploadFile
+  uploadFile: PotoUploadFile
   options: PbCollectionConfigType['upload-image-process-options']
 }
 
@@ -79,14 +80,6 @@ export const useUploadImageStore = defineStore(
     /** 非持久化：进度列表 */
     const uploadProgressInfoList = ref<UploadImageStoreProgressInfo[]>([])
 
-    /** 非持久化：拖拽暂存的图片文件 */
-    const uploadDropImages = ref<File[]>([])
-    // 只读 computed，用于暴露给外部
-    const dropImages = computed(() => uploadDropImages.value)
-    // 提供 setter 方法修改状态
-    const dropImagesSet = (val: File[]) => {
-      uploadDropImages.value = val
-    }
     const uploadImageStoreDependenciesDataForModule: UploadImageStoreDependenciesDataForModule =
       {
         uploadRecordList,
@@ -153,14 +146,18 @@ export const useUploadImageStore = defineStore(
       pollingDriverScheduler()
     }
 
+    /** 非持久化：拖拽暂存的图片文件 */
+    const uploadDropImages = ref<File[]>([])
+    // 只读 computed，用于暴露给外部
+    const dropImages = computed(() => uploadDropImages.value)
+    // 提供 setter 方法修改状态
+    const dropImagesSet = (val: File[]) => {
+      uploadDropImages.value = val
+    }
+
     return {
       // 上传记录 持久化
       uploadRecordList,
-      // 拖拽暂存的图片文件
-      // uploadDropImages 的外部接口
-      dropImages,
-      // 提供修改 uploadDropImages 的方法
-      dropImagesSet,
       // 上传管理相关函数
       ...uploadImageSystemControlModule,
       // 单项操作函数
@@ -168,6 +165,10 @@ export const useUploadImageStore = defineStore(
 
       initialize,
       initialized: computed(() => initialized.value),
+
+      // 拖拽暂存的图片文件
+      dropImages,
+      dropImagesSet,
     }
   },
   {

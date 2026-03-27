@@ -47,7 +47,9 @@ export const useUploadImageSystemControlModule = (
   const uploadRecordWithFileAndProgressInfoList = computed(() => {
     return uploadRecordList.value
       .map((i) => getUploadImageRecordWithFileAndProgressInfo(i.uuid))
-      .filter((i) => i != null) satisfies UploadImageRecordWithFileAndProgressInfo[]
+      .filter(
+        (i) => i != null
+      ) satisfies UploadImageRecordWithFileAndProgressInfo[]
   })
 
   /** 添加上传任务 */
@@ -63,7 +65,6 @@ export const useUploadImageSystemControlModule = (
     const uuid = uuidv4()
     uploadRecordList.value.push({
       uuid,
-      fileUid: uploadFile.uid,
       name: uploadFile.name,
       type: uploadFile.raw?.type ?? '',
       size: uploadFile.size ?? 0,

@@ -6,6 +6,7 @@ import { usePbCollectionConfigQuery } from '@/queries'
 import { useAuthStore, useI18nStore, useUploadImageStore } from '@/stores'
 import { onMounted } from 'vue'
 import type { UploadFile } from 'element-plus'
+import type { PotoUploadFile } from '@/types'
 
 // 定义允许的图片类型
 const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
@@ -22,14 +23,18 @@ onMounted(() => {
   const pending = uploadImageStore.dropImages
   if (pending.length === 0) return
   for (const image of pending) {
-    const fakerFile = { raw: image } as UploadFile
-    imageUploadAdd(fakerFile)
+    const potoUploadFile: PotoUploadFile = {
+      name: image.name,
+      size: image.size,
+      raw: image,
+    }
+    imageUploadAdd(potoUploadFile)
   }
   // 清空暂存
   uploadImageStore.dropImagesSet([])
 })
 
-const imageUploadAdd = async (uploadFile: UploadFile) => {
+const imageUploadAdd = async (uploadFile: PotoUploadFile) => {
   const rawFile = uploadFile.raw
   if (!rawFile) {
     console.warn('未找到原始文件对象')

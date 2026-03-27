@@ -65,7 +65,6 @@ export const useUploadFileSystemControlModule = (
     const uuid = uuidv4()
     uploadRecordList.value.push({
       uuid,
-      fileUid: uploadFile.uid,
       name: uploadFile.name,
       type: uploadFile.raw?.type ?? '',
       size: uploadFile.size ?? 0,
