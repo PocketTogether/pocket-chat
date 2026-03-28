@@ -93,9 +93,21 @@ const handleDragEnter = (e: DragEvent) => {
 }
 const handleDragLeave = (e: DragEvent) => {
   e.preventDefault()
+  // 修复拖出浏览器窗口时，dragCounter 不归零导致的遮罩不消失问题
+  if (
+    e.clientX <= 0 ||
+    e.clientY <= 0 ||
+    e.clientX >= window.innerWidth ||
+    e.clientY >= window.innerHeight
+  ) {
+    dragCounter = 0
+    isDragging.value = false
+    isHoveringFileZone.value = false
+    isHoveringImageZone.value = false
+    return
+  }
+  // 过滤非文件
   if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
-    // dragCounter--
-    // if (dragCounter === 0) {
     dragCounter = Math.max(0, dragCounter - 1)
     if (dragCounter <= 0) {
       dragCounter = 0
@@ -206,24 +218,20 @@ const handleImageDrop = (e: DragEvent) => {
       >
         <!-- 固定窗口位置 -->
         <div class="sticky top-0 flex h-dvh w-full">
-          <!--
-          enterActiveClass="transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-          leaveActiveClass="transition-all duration-200 ease-in"
-          enterFromClass="opacity-0 scale-[0.98]"
-          enterToClass="opacity-100 scale-100"
-          leaveFromClass="opacity-100 scale-100"
-          leaveToClass="opacity-0 scale-[0.98]"
-         -->
+          <!-- 显示 文件/图片 -->
           <div
             class="mx-[2000px] mb-[52px] mt-[40px] flex w-full flex-col gap-[8px]"
           >
             <!-- 文件 -->
             <div
               ref="FolderRef"
-              class="flex flex-1 flex-col items-center justify-center gap-2 rounded-b-[8px] rounded-t-[24px] border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
-              :class="
-                isHoveringFileZone ? 'border-glow' : 'border-color-text-soft'
-              "
+              class="flex flex-1 flex-col items-center justify-center gap-2 border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
+              :class="[
+                isHoveringFileZone ? 'border-glow' : 'border-color-text-soft',
+                FilesOrImages
+                  ? 'active-style rounded-b-[8px] rounded-t-[24px]'
+                  : 'normal-style rounded-[24px]',
+              ]"
               @dragenter="handleFileZoneDragEnter"
               @dragleave="handleFileZoneDragLeave"
               @dragover="handleZoneDragOver"
