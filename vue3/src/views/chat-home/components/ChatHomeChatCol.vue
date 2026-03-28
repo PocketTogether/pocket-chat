@@ -225,7 +225,7 @@ const handleImageDrop = (e: DragEvent) => {
             <!-- 文件 -->
             <div
               ref="FolderRef"
-              class="flex flex-1 flex-col items-center justify-center gap-2 border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
+              class="zone-animate flex flex-1 flex-col items-center justify-center gap-2 border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
               :class="[
                 isHoveringFileZone ? 'border-glow' : 'border-color-text-soft',
                 FilesOrImages
@@ -252,7 +252,7 @@ const handleImageDrop = (e: DragEvent) => {
             <div
               v-if="FilesOrImages"
               ref="ImageRef"
-              class="flex flex-1 flex-col items-center justify-center gap-2 rounded-b-[24px] rounded-t-[8px] border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
+              class="zone-animate flex flex-1 flex-col items-center justify-center gap-2 rounded-b-[24px] rounded-t-[8px] border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
               :class="
                 isHoveringImageZone ? 'border-glow' : 'border-color-text-soft'
               "
@@ -338,12 +338,14 @@ const handleImageDrop = (e: DragEvent) => {
 </template>
 
 <style lang="scss" scoped>
-.border-glow {
-  border-color: white;
-
+.zone-animate {
   transition:
     border-color 0.28s ease,
     box-shadow 0.28s ease;
+}
+
+.border-glow {
+  border-color: white;
 
   box-shadow:
     0 0 16px rgba(255, 255, 255, 0.14),
