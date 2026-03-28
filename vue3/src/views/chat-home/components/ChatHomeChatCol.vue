@@ -225,7 +225,7 @@ const handleImageDrop = (e: DragEvent) => {
             <!-- 文件 -->
             <div
               ref="FolderRef"
-              class="zone-animate flex flex-1 flex-col items-center justify-center gap-2 border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
+              class="zone-animate flex flex-1 border-[3.5px] border-dashed"
               :class="[
                 isHoveringFileZone ? 'border-glow' : 'border-color-text-soft',
                 FilesOrImages
@@ -237,22 +237,29 @@ const handleImageDrop = (e: DragEvent) => {
               @dragover="handleZoneDragOver"
               @drop="handleFileDrop"
             >
-              <RiFolderLine
-                size="40px"
-                class="pointer-events-none"
-              ></RiFolderLine>
-              <h1 v-if="isHoveringFileZone" class="pointer-events-none">
-                {{ i18nStore.t('chatDragZoneReleaseText')() }}
-              </h1>
-              <h1 v-else class="pointer-events-none">
-                {{ i18nStore.t('chatDragZoneFilePlaceholderText')() }}
-              </h1>
+              <!-- 文字容器 -->
+              <div
+                class="pointer-events-none flex h-full w-full flex-col items-center justify-center gap-2 text-[20px] font-bold text-color-text-soft transition-all duration-500 ease-out"
+                :class="isHoveringFileZone ? 'opacity-100' : 'opacity-70'"
+              >
+                <RiFolderLine
+                  size="40px"
+                  class="pointer-events-none"
+                ></RiFolderLine>
+                <h1 class="pointer-events-none">
+                  {{
+                    isHoveringFileZone
+                      ? i18nStore.t('chatDragZoneReleaseText')()
+                      : i18nStore.t('chatDragZoneFilePlaceholderText')()
+                  }}
+                </h1>
+              </div>
             </div>
             <!-- 图片 -->
             <div
               v-if="FilesOrImages"
               ref="ImageRef"
-              class="zone-animate flex flex-1 flex-col items-center justify-center gap-2 rounded-b-[24px] rounded-t-[8px] border-[3.5px] border-dashed text-[20px] font-bold text-color-text-soft"
+              class="zone-animate flex flex-1 rounded-b-[24px] rounded-t-[8px] border-[3.5px] border-dashed"
               :class="
                 isHoveringImageZone ? 'border-glow' : 'border-color-text-soft'
               "
@@ -261,16 +268,23 @@ const handleImageDrop = (e: DragEvent) => {
               @dragover="handleZoneDragOver"
               @drop="handleImageDrop"
             >
-              <RiImageLine
-                size="40px"
-                class="pointer-events-none"
-              ></RiImageLine>
-              <h1 v-if="isHoveringImageZone" class="pointer-events-none">
-                {{ i18nStore.t('chatDragZoneReleaseText')() }}
-              </h1>
-              <h1 v-else class="pointer-events-none">
-                {{ i18nStore.t('chatDragZoneImagePlaceholderText')() }}
-              </h1>
+              <!-- 文字容器 -->
+              <div
+                class="pointer-events-none flex h-full w-full flex-col items-center justify-center gap-2 text-[20px] font-bold text-color-text-soft transition-all duration-500 ease-out"
+                :class="isHoveringImageZone ? 'opacity-100' : 'opacity-70'"
+              >
+                <RiImageLine
+                  size="40px"
+                  class="pointer-events-none"
+                ></RiImageLine>
+                <h1 class="pointer-events-none">
+                  {{
+                    isHoveringImageZone
+                      ? i18nStore.t('chatDragZoneReleaseText')()
+                      : i18nStore.t('chatDragZoneImagePlaceholderText')()
+                  }}
+                </h1>
+              </div>
             </div>
           </div>
         </div>
