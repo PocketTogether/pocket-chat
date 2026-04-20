@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-04-20
+<details>
+<summary>📝 查看中文版本 (Chinese Version)</summary>
+
+### 修复
+- 修复拖拽上传时快速拖出浏览器窗口导致遮罩不消失的问题，并优化拖拽区域动画 by @KIPPUDESU in https://github.com/PocketTogether/pocket-chat/pull/38
+
+</details>
+
+### Fixed
+- Fixed drag‑and‑drop overlay not disappearing when quickly dragging files out of the browser window, and improved drag‑area animations by @KIPPUDESU in https://github.com/PocketTogether/pocket-chat/pull/38
+
 ## [0.7.0] - 2026-03-11
 <details>
 <summary>📝 查看中文版本 (Chinese Version)</summary>
@@ -248,7 +260,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pocket-chat: 一个基于 PocketBase 与 Vue3 的实时聊天平台 | A real-time chat platform built with PocketBase and Vue3. 
 
-[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.7.0...HEAD
+[unreleased]: https://github.com/PocketTogether/pocket-chat/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/PocketTogether/pocket-chat/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/PocketTogether/pocket-chat/compare/v0.5.0...v0.5.1
