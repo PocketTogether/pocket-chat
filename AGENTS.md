@@ -37,6 +37,18 @@ pnpm type-check # vue-tsc --build
 - **config 集合默认值双份**：`vue3/src/config/pb-collection-config.ts` 与 `pocketbase/pb_hooks/init-config.pb.js`。两处被 `【pbCollectionConfigDefault_public START/END】` 标记括住的区域必须保持一致，改一端必须同步另一端
 - **PocketBase 版本号三处同步**：`project-tools-node/project-config.js`、`pocketbase/CHANGELOG.md`、`Dockerfile`（ARG PB_VERSION）
 
+## Skills（opencode 自动加载）
+
+`.opencode/skills/` 下有 5 个 skill，opencode 会根据当前任务自动加载对应的上下文：
+
+| Skill | 触发场景 |
+|-------|---------|
+| `vue3-styling` | 样式、颜色、CSS变量、Tailwind、头像、滚动条、对话框、下拉菜单 |
+| `vue3-layout-routing` | 页面布局（单列/双列）、路由配置、响应式、页面返回内容恢复 |
+| `pb-type-safety` | PocketBase 类型定义、expand/filter/sort 类型安全构造、Create/Update 工具类型 |
+| `vue3-dev-conventions` | 文件命名、组合式函数（desuwa 模式）、Pinia store、API 封装、TanStack Query |
+| `i18n` | 多语言文案、useI18nStore |
+
 ## 开发环境注意
 
 - `pocketbase/pocketbase.exe` 已在 `.gitignore` 忽略，不在 git 仓库内。新环境需从 https://github.com/pocketbase/pocketbase/releases 手动下载对应版本放入 `pocketbase/`（版本以 `pocketbase/CHANGELOG.md` 最靠上为准）
