@@ -106,11 +106,13 @@ uploadFileStore.initialize()
 
 // 启动用户实时状态订阅
 const realtimeUsersStatusSubscription = useRealtimeUsersStatusSubscription()
-realtimeUsersStatusSubscription.startSubscription()
-
-// 启动当前状态循环检查
 const selfPresenceLoopAndViewingHook = useSelfPresenceLoopAndViewingHook()
-selfPresenceLoopAndViewingHook.startPresenceLoopAndViewingHook()
+
+// 先完成实时状态订阅，再启动presence循环
+;(async () => {
+  await realtimeUsersStatusSubscription.startSubscription()
+  selfPresenceLoopAndViewingHook.startPresenceLoopAndViewingHook()
+})()
 
 const isDark = useDark()
 

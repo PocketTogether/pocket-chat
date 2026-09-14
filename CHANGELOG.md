@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- 修一下在线查询顺序问题，就是先等完成实时状态订阅realtimeUsersStatusSubscription订阅完成，然后再启动selfPresenceLoopAndViewingHook
+
 
 ## [0.7.1] - 2026-04-20
 <details>
