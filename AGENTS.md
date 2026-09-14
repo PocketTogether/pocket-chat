@@ -49,6 +49,16 @@ pnpm type-check # vue-tsc --build
 | `vue3-dev-conventions` | 文件命名、组合式函数（desuwa 模式）、Pinia store、API 封装、TanStack Query |
 | `i18n` | 多语言文案、useI18nStore |
 
+## 提示词编号追溯
+
+用户在提示词（日记/草稿）中有时会附带编号如 `【4513】`，格式为 `【` + （分+秒）四位或更多数字 + `】`。
+
+当你收到带有此类编号的提示词时，**在生成的代码中也必须带上该编号**，放在代码注释中（如 `// 【4513】`），以便用户日后搜索此编号追溯到对应的原始提示词。
+
+- 适用于所有目录（`vue3/`、`pocketbase/` 等）
+- `skill` 文档（`.opencode/skills/` 下的 SKILL.md）不需要保留编号
+- 编号放在相关代码行的注释中，位置由你根据上下文判断，但一定带上
+
 ## 开发环境注意
 
 - `pocketbase/pocketbase.exe` 已在 `.gitignore` 忽略，不在 git 仓库内。新环境需从 https://github.com/pocketbase/pocketbase/releases 手动下载对应版本放入 `pocketbase/`（版本以 `pocketbase/CHANGELOG.md` 最靠上为准）
