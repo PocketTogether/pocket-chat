@@ -10,14 +10,60 @@ import {
 import { useTimestamp } from '@vueuse/core'
 import { effectScope } from 'vue'
 
+/**
+ * 【5722】
+ * 模块级单例（懒初始化）缓存。
+ *
+ * 为什么需要单例？
+ * ---------------
+ * 本组合式函数内部中有 useTimestamp（每 2 秒的定时器），以及两个 init 查询的
+ * 包装（useUsersPresencesStatusInitGetListWithMapByUserProcessQuery /
+ * useUsersNotViewingMarksInitGetListWithMapByUserProcessQuery）。
+ *
+ * 在未优化前（直接导出的原始函数），它被以下多处重复调用：
+ *   - useRealtimeUsersStatusComputedForUserRealtimeStatus （用户列表项/聊天消息）
+ *   - useRealtimeUsersStatusComputedForUserRealtimeStatusWithLastOnline （用户详情页）
+ *   - useRealtimeUsersStatusComputedForUserList （在线/最近活跃用户列表）
+ *
+ * 每调用一次，就会：
+ *   - 新建一个 2 秒定时器（useTimestamp）
+ *   - 新建一组 init 查询的响应式包装（TanStack Query 网络请求会去重，但响应式包装各自独立）
+ *   多余实例白白占用 CPU 与内存，且本组合式函数整体只依赖全局 store / query，
+ *   不依赖任何组件参数，天然适合全局共享一份。
+ *
+ * 为什么用模块级 let 变量（而不是 Vue 的 provide/inject）？
+ * -------------------------------------------------------
+ * 这是"最小改动"方案：所有现有调用方（user-realtime-status.ts / user-list.ts）
+ * 的 import 与写法完全不变，零迁移成本；首次被调用时才惰性创建，之后全部复用同一实例。
+ *
+ * 为什么不直接 let 存实例就够了，还要 _scope？
+ * -------------------------------------------
+ * 关键风险：如果首次调用发生在某个「会销毁的组件」的 setup() 中，
+ * 那么本次调用期间创建的 effect（computed 的依赖追踪）、以及 useTimestamp 内部
+ * 通过 onScopeDispose 注册的定时器清理，都会绑定到「该组件的 effectScope」上。
+ * 组件一旦卸载 → scope.stop() → 定时器被永久停掉、computed 失去响应活性
+ * （值冻结成最后结果，不再更新）。而单例对象本身还活着，后续组件拿到的是
+ * 一个"僵尸实例"，在线状态判断将全部失准。
+ *
+ * effectScope(true) 的作用：
+ *   - effectScope 是 Vue 官方 API，用于把一组 effect 放进统一的生命周期容器
+ *   - 参数 true = detached（脱离父级），该 scope 不随任何组件销毁而连锁 stop
+ *   - 在 _scope.run() 内创建的所有 effect / onScopeDispose 清理回调，
+ *     都注册在这个独立 scope 上，与任何组件生命周期无关，活到应用结束
+ *
+ * 这也是 VueUse 官方 createGlobalState / createSharedComposable 的实现思路。
+ * 注意：Pinia store 与 TanStack Query 本就是全局的，不受组件销毁影响，
+ * 此方案真正需要防护的只有 useTimestamp 这类带 onScopeDispose 的副作用。
+ */
 let _instance: RealtimeUsersStatusComputedType | null = null
 
-// 脱离组件树的生命周期，使单例内的定时器/计算属性不随任何组件的销毁而停止
+// 独立（detached）effectScope：作为全局单例的"永驻宿主"，任何组件销毁都不会波及它
 const _scope = effectScope(true)
 
-// 【已优化的】
+/** 【已优化的】懒初始化全局单例：首次调用时创建，之后复用同一实例 */
 export const useRealtimeUsersStatusComputed = () => {
   if (_instance == null) {
+    // 在 _scope 内创建，使定时器/computed 注册到独立作用域，不随组件销毁
     _instance = _scope.run(() => {
       return useRealtimeUsersStatusComputedWithoutOptimization()
     })!
@@ -26,9 +72,11 @@ export const useRealtimeUsersStatusComputed = () => {
 }
 
 /**
+ * 【未优化的】原始实现，仅被全局单例 useRealtimeUsersStatusComputed 调用一次。
+ * 保留该命名以明确它不应被直接多处调用。
+ *
  * 用于供其他地方使用实时数据的组合式函数
  * 就是会使用两个store中的数据，有一些函数和计算属性以供外界使用
- * 【未优化的】
  */
 const useRealtimeUsersStatusComputedWithoutOptimization = () => {
   // 用户实时状态相关store
