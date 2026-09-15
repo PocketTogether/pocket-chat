@@ -1,1788 +1,1788 @@
 [
-    {
-        "id": "_pb_users_auth_",
-        "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问，或当前为访问自己的\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned\n  (\n    // 不为 isBanned 才能通过\n    (\n      @collection.users:isBannedCheck.id ?= @request.auth.id &&\n      @collection.users:isBannedCheck.isBanned ?= false\n    ) ||\n    // isBanned 时，只查自己的用户数据，可以通过\n    id = @request.auth.id\n  )\n)",
-        "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问，或当前为访问自己的\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned\n  (\n    // 不为 isBanned 才能通过\n    (\n      @collection.users:isBannedCheck.id ?= @request.auth.id &&\n      @collection.users:isBannedCheck.isBanned ?= false\n    ) ||\n    // isBanned 时，只查自己的用户数据，可以通过\n    id = @request.auth.id\n  )\n)",
-        "createRule": "// 根据config，允许注册时 才通过（且进行下一条件判断）\n(\n  @collection.config:allowRegister.key ?= 'allow-users-to-register' &&\n  @collection.config:allowRegister.value ?= true\n) &&\n// 配置中并非只允许oauth2注册时 或 oauth2注册时 才通过（且进行下一条件判断）\n(\n  // config配置中，非 只允许oauth2注册 通过\n  (\n    @collection.config:oauthOnly.key ?= 'user-register-oauth2-only' &&\n    @collection.config:oauthOnly.value ?= false\n  ) || \n  // 这里即只允许oauth2注册\n  (\n    // 上下文为oauth2 且 当前未登录时 通过\n    // 当前未登录这个判断主要用于防止已登录的用户再次注册\n    @request.context = 'oauth2' &&\n    @request.auth.id = ''\n  )\n) &&\n// 资源本身的可访问性条件\n(\n  // 这些值不能由用户控制，不能设置\n  @request.body.canSendMessage:isset = false &&\n  @request.body.canUploadImage:isset = false &&\n  @request.body.canUploadFile:isset = false &&\n  @request.body.maxUploadFileSize:isset = false &&\n  @request.body.isBanned:isset = false\n)",
-        "updateRule": "// 访问主体的前置条件 ，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，isBanned为false的用户才能访问\n(\n  @collection.users:isBannedCheck.id ?= @request.auth.id &&\n  @collection.users:isBannedCheck.isBanned ?= false\n) &&\n// 资源本身的可访问性条件\n(\n  // 只能修改用户自己的\n  id = @request.auth.id &&\n  // 这些值不能由用户控制，不能设置\n  @request.body.canSendMessage:isset = false &&\n  @request.body.canUploadImage:isset = false &&\n  @request.body.canUploadFile:isset = false &&\n  @request.body.maxUploadFileSize:isset = false &&\n  @request.body.isBanned:isset = false\n)",
-        "deleteRule": null,
-        "name": "users",
-        "type": "auth",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "cost": 0,
-                "help": "",
-                "hidden": true,
-                "id": "password901924565",
-                "max": 0,
-                "min": 8,
-                "name": "password",
-                "pattern": "",
-                "presentable": false,
-                "required": true,
-                "system": true,
-                "type": "password"
-            },
-            {
-                "autogeneratePattern": "[a-zA-Z0-9]{50}",
-                "help": "",
-                "hidden": true,
-                "id": "text2504183744",
-                "max": 60,
-                "min": 30,
-                "name": "tokenKey",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "exceptDomains": [],
-                "help": "",
-                "hidden": false,
-                "id": "email3885137012",
-                "name": "email",
-                "onlyDomains": [],
-                "presentable": false,
-                "required": true,
-                "system": true,
-                "type": "email"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool1547992806",
-                "name": "emailVisibility",
-                "presentable": false,
-                "required": false,
-                "system": true,
-                "type": "bool"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool256245529",
-                "name": "verified",
-                "presentable": false,
-                "required": false,
-                "system": true,
-                "type": "bool"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text4166911607",
-                "max": 32,
-                "min": 1,
-                "name": "username",
-                "pattern": "^[a-zA-Z0-9_]+$",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text1579384326",
-                "max": 0,
-                "min": 0,
-                "name": "name",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text3709889147",
-                "max": 0,
-                "min": 0,
-                "name": "bio",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "file376926767",
-                "maxSelect": 1,
-                "maxSize": 1000000,
-                "mimeTypes": [
-                    "image/jpeg",
-                    "image/png",
-                    "image/webp"
-                ],
-                "name": "avatar",
-                "presentable": false,
-                "protected": false,
-                "required": false,
-                "system": false,
-                "thumbs": [
-                    "100x100",
-                    "200x200",
-                    "400x400"
-                ],
-                "type": "file"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool1512114028",
-                "name": "isBanned",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "bool"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "select3254728963",
-                "maxSelect": 1,
-                "name": "canSendMessage",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "select",
-                "values": [
-                    "YES",
-                    "NO"
-                ]
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "select55021050",
-                "maxSelect": 1,
-                "name": "canUploadImage",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "select",
-                "values": [
-                    "YES",
-                    "NO"
-                ]
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "select4207878442",
-                "maxSelect": 1,
-                "name": "canUploadFile",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "select",
-                "values": [
-                    "YES",
-                    "NO"
-                ]
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number2537851761",
-                "max": null,
-                "min": 0,
-                "name": "maxUploadFileSize",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
-            "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''",
-            "CREATE UNIQUE INDEX `idx_1fdbvxxIaT` ON `users` (`username`)",
-            "CREATE INDEX `idx_ZVfkPUJG9Z` ON `users` (`created`)",
-            "CREATE INDEX `idx_tCqATPBWyD` ON `users` (`updated`)"
-        ],
-        "system": false,
-        "authRule": "",
-        "manageRule": null,
-        "authAlert": {
-            "enabled": false,
-            "emailTemplate": {
-                "subject": "Login from a new location",
-                "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-            }
-        },
-        "oauth2": {
-            "mappedFields": {
-                "id": "",
-                "name": "name",
-                "username": "username",
-                "avatarURL": "avatar"
-            },
-            "enabled": true
-        },
-        "passwordAuth": {
-            "enabled": true,
-            "identityFields": [
-                "username",
-                "email"
-            ]
-        },
-        "mfa": {
-            "enabled": false,
-            "duration": 1800,
-            "rule": ""
-        },
-        "otp": {
-            "enabled": true,
-            "duration": 180,
-            "length": 8,
-            "emailTemplate": {
-                "subject": "OTP for {APP_NAME}",
-                "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-            }
-        },
-        "authToken": {
-            "duration": 604800
-        },
-        "passwordResetToken": {
-            "duration": 1800
-        },
-        "emailChangeToken": {
-            "duration": 1800
-        },
-        "verificationToken": {
-            "duration": 259200
-        },
-        "fileToken": {
-            "duration": 180
-        },
-        "verificationTemplate": {
-            "subject": "Verify your {APP_NAME} email",
-            "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        },
-        "resetPasswordTemplate": {
-            "subject": "Reset your {APP_NAME} password",
-            "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        },
-        "confirmEmailChangeTemplate": {
-            "subject": "Confirm your {APP_NAME} new email address",
-            "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        }
-    },
-    {
-        "id": "pbc_3142635823",
-        "listRule": null,
-        "viewRule": null,
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": null,
-        "name": "_superusers",
-        "type": "auth",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "cost": 0,
-                "help": "",
-                "hidden": true,
-                "id": "password901924565",
-                "max": 0,
-                "min": 8,
-                "name": "password",
-                "pattern": "",
-                "presentable": false,
-                "required": true,
-                "system": true,
-                "type": "password"
-            },
-            {
-                "autogeneratePattern": "[a-zA-Z0-9]{50}",
-                "help": "",
-                "hidden": true,
-                "id": "text2504183744",
-                "max": 60,
-                "min": 30,
-                "name": "tokenKey",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "exceptDomains": [],
-                "help": "",
-                "hidden": false,
-                "id": "email3885137012",
-                "name": "email",
-                "onlyDomains": [],
-                "presentable": false,
-                "required": true,
-                "system": true,
-                "type": "email"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool1547992806",
-                "name": "emailVisibility",
-                "presentable": false,
-                "required": false,
-                "system": true,
-                "type": "bool"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool256245529",
-                "name": "verified",
-                "presentable": false,
-                "required": false,
-                "system": true,
-                "type": "bool"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_tokenKey_pbc_3142635823` ON `_superusers` (`tokenKey`)",
-            "CREATE UNIQUE INDEX `idx_email_pbc_3142635823` ON `_superusers` (`email`) WHERE `email` != ''"
-        ],
+  {
+    "id": "_pb_users_auth_",
+    "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问，或当前为访问自己的\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned\n  (\n    // 不为 isBanned 才能通过\n    (\n      @collection.users:isBannedCheck.id ?= @request.auth.id &&\n      @collection.users:isBannedCheck.isBanned ?= false\n    ) ||\n    // isBanned 时，只查自己的用户数据，可以通过\n    id = @request.auth.id\n  )\n)",
+    "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问，或当前为访问自己的\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned\n  (\n    // 不为 isBanned 才能通过\n    (\n      @collection.users:isBannedCheck.id ?= @request.auth.id &&\n      @collection.users:isBannedCheck.isBanned ?= false\n    ) ||\n    // isBanned 时，只查自己的用户数据，可以通过\n    id = @request.auth.id\n  )\n)",
+    "createRule": "// 根据config，允许注册时 才通过（且进行下一条件判断）\n(\n  @collection.config:allowRegister.key ?= 'allow-users-to-register' &&\n  @collection.config:allowRegister.value ?= true\n) &&\n// 配置中并非只允许oauth2注册时 或 oauth2注册时 才通过（且进行下一条件判断）\n(\n  // config配置中，非 只允许oauth2注册 通过\n  (\n    @collection.config:oauthOnly.key ?= 'user-register-oauth2-only' &&\n    @collection.config:oauthOnly.value ?= false\n  ) || \n  // 这里即只允许oauth2注册\n  (\n    // 上下文为oauth2 且 当前未登录时 通过\n    // 当前未登录这个判断主要用于防止已登录的用户再次注册\n    @request.context = 'oauth2' &&\n    @request.auth.id = ''\n  )\n) &&\n// 资源本身的可访问性条件\n(\n  // 这些值不能由用户控制，不能设置\n  @request.body.canSendMessage:isset = false &&\n  @request.body.canUploadImage:isset = false &&\n  @request.body.canUploadFile:isset = false &&\n  @request.body.maxUploadFileSize:isset = false &&\n  @request.body.isBanned:isset = false\n)",
+    "updateRule": "// 访问主体的前置条件 ，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，isBanned为false的用户才能访问\n(\n  @collection.users:isBannedCheck.id ?= @request.auth.id &&\n  @collection.users:isBannedCheck.isBanned ?= false\n) &&\n// 资源本身的可访问性条件\n(\n  // 只能修改用户自己的\n  id = @request.auth.id &&\n  // 这些值不能由用户控制，不能设置\n  @request.body.canSendMessage:isset = false &&\n  @request.body.canUploadImage:isset = false &&\n  @request.body.canUploadFile:isset = false &&\n  @request.body.maxUploadFileSize:isset = false &&\n  @request.body.isBanned:isset = false\n)",
+    "deleteRule": null,
+    "name": "users",
+    "type": "auth",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
         "system": true,
-        "authRule": "",
-        "manageRule": null,
-        "authAlert": {
-            "enabled": true,
-            "emailTemplate": {
-                "subject": "Login from a new location",
-                "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-            }
-        },
-        "oauth2": {
-            "mappedFields": {
-                "id": "",
-                "name": "",
-                "username": "",
-                "avatarURL": ""
-            },
-            "enabled": false
-        },
-        "passwordAuth": {
-            "enabled": true,
-            "identityFields": [
-                "email"
-            ]
-        },
-        "mfa": {
-            "enabled": false,
-            "duration": 1800,
-            "rule": ""
-        },
-        "otp": {
-            "enabled": false,
-            "duration": 180,
-            "length": 8,
-            "emailTemplate": {
-                "subject": "OTP for {APP_NAME}",
-                "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-            }
-        },
-        "authToken": {
-            "duration": 86400
-        },
-        "passwordResetToken": {
-            "duration": 1800
-        },
-        "emailChangeToken": {
-            "duration": 1800
-        },
-        "verificationToken": {
-            "duration": 259200
-        },
-        "fileToken": {
-            "duration": 180
-        },
-        "verificationTemplate": {
-            "subject": "Verify your {APP_NAME} email",
-            "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        },
-        "resetPasswordTemplate": {
-            "subject": "Reset your {APP_NAME} password",
-            "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        },
-        "confirmEmailChangeTemplate": {
-            "subject": "Confirm your {APP_NAME} new email address",
-            "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        }
+        "type": "text"
+      },
+      {
+        "cost": 0,
+        "help": "",
+        "hidden": true,
+        "id": "password901924565",
+        "max": 0,
+        "min": 8,
+        "name": "password",
+        "pattern": "",
+        "presentable": false,
+        "required": true,
+        "system": true,
+        "type": "password"
+      },
+      {
+        "autogeneratePattern": "[a-zA-Z0-9]{50}",
+        "help": "",
+        "hidden": true,
+        "id": "text2504183744",
+        "max": 60,
+        "min": 30,
+        "name": "tokenKey",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "exceptDomains": [],
+        "help": "",
+        "hidden": false,
+        "id": "email3885137012",
+        "name": "email",
+        "onlyDomains": [],
+        "presentable": false,
+        "required": true,
+        "system": true,
+        "type": "email"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool1547992806",
+        "name": "emailVisibility",
+        "presentable": false,
+        "required": false,
+        "system": true,
+        "type": "bool"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool256245529",
+        "name": "verified",
+        "presentable": false,
+        "required": false,
+        "system": true,
+        "type": "bool"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text4166911607",
+        "max": 32,
+        "min": 1,
+        "name": "username",
+        "pattern": "^[a-zA-Z0-9_]+$",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1579384326",
+        "max": 0,
+        "min": 0,
+        "name": "name",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text3709889147",
+        "max": 0,
+        "min": 0,
+        "name": "bio",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "file376926767",
+        "maxSelect": 1,
+        "maxSize": 1000000,
+        "mimeTypes": [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ],
+        "name": "avatar",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": [
+          "100x100",
+          "200x200",
+          "400x400"
+        ],
+        "type": "file"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool1512114028",
+        "name": "isBanned",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "select3254728963",
+        "maxSelect": 1,
+        "name": "canSendMessage",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "YES",
+          "NO"
+        ]
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "select55021050",
+        "maxSelect": 1,
+        "name": "canUploadImage",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "YES",
+          "NO"
+        ]
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "select4207878442",
+        "maxSelect": 1,
+        "name": "canUploadFile",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "YES",
+          "NO"
+        ]
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number2537851761",
+        "max": null,
+        "min": 0,
+        "name": "maxUploadFileSize",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
+      "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''",
+      "CREATE UNIQUE INDEX `idx_1fdbvxxIaT` ON `users` (`username`)",
+      "CREATE INDEX `idx_ZVfkPUJG9Z` ON `users` (`created`)",
+      "CREATE INDEX `idx_tCqATPBWyD` ON `users` (`updated`)"
+    ],
+    "system": false,
+    "authRule": "",
+    "manageRule": null,
+    "authAlert": {
+      "enabled": false,
+      "emailTemplate": {
+        "subject": "Login from a new location",
+        "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+      }
     },
-    {
-        "id": "pbc_3818476082",
-        "listRule": "",
-        "viewRule": "",
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": null,
-        "name": "config",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text2324736937",
-                "max": 0,
-                "min": 0,
-                "name": "key",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "json494360628",
-                "maxSize": 0,
-                "name": "value",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "json"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_SvFaka2n6R` ON `config` (`key`)"
-        ],
-        "system": false
+    "oauth2": {
+      "mappedFields": {
+        "id": "",
+        "name": "name",
+        "username": "username",
+        "avatarURL": "avatar"
+      },
+      "enabled": true
     },
-    {
-        "id": "pbc_3446931122",
-        "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，isBanned需为false\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，isBanned需为false\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canUploadFile\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canUploadFile，为YES，或，为空且默认允许\n  (\n    // canUploadFile 为 YES，或\n    (\n      @collection.users:canUploadFileCheckYES.id ?= @request.auth.id &&\n      @collection.users:canUploadFileCheckYES.canUploadFile ?= 'YES'\n    ) ||\n    // canUploadFile 为空 且 默认允许\n    (\n      // canUploadFile 为空，且\n      (\n        @collection.users:canUploadFileCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canUploadFileCheckEmpty.canUploadFile ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCUFD.key ?= 'user-can-upload-file-default' &&\n        @collection.config:UCUFD.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的 author 需为当前用户）\n@request.body.author = @request.auth.id",
-        "updateRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canUploadFile\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canUploadFile，为YES，或，为空且默认允许\n  (\n    // canUploadFile 为 YES，或\n    (\n      @collection.users:canUploadFileCheckYES.id ?= @request.auth.id &&\n      @collection.users:canUploadFileCheckYES.canUploadFile ?= 'YES'\n    ) ||\n    // canUploadFile 为空 且 默认允许\n    (\n      // canUploadFile 为空，且\n      (\n        @collection.users:canUploadFileCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canUploadFileCheckEmpty.canUploadFile ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCUFD.key ?= 'user-can-upload-file-default' &&\n        @collection.config:UCUFD.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件\n(\n  // 修改需为创建者\n  author.id = @request.auth.id &&\n  // 禁止修改 author\n  @request.body.author:isset = false\n)",
-        "deleteRule": null,
-        "name": "files",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "file2359244304",
-                "maxSelect": 1,
-                "maxSize": 8000000000,
-                "mimeTypes": [],
-                "name": "file",
-                "presentable": false,
-                "protected": false,
-                "required": true,
-                "system": false,
-                "thumbs": [],
-                "type": "file"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number903486519",
-                "max": null,
-                "min": -1,
-                "name": "fileSize",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text1321496436",
-                "max": 0,
-                "min": 0,
-                "name": "fileType",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text2620999259",
-                "max": 0,
-                "min": 0,
-                "name": "fileName",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text1843675174",
-                "max": 0,
-                "min": 0,
-                "name": "description",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text1519612219",
-                "max": 0,
-                "min": 0,
-                "name": "keyword",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "_pb_users_auth_",
-                "help": "",
-                "hidden": false,
-                "id": "relation3182418120",
-                "maxSelect": 1,
-                "minSelect": 0,
-                "name": "author",
-                "presentable": false,
-                "required": true,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool2382110195",
-                "name": "isDeleted",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "bool"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE INDEX `idx_oQL2XaBBBV` ON `files` (`author`)",
-            "CREATE INDEX `idx_znjiiQYNvh` ON `files` (`created`)",
-            "CREATE INDEX `idx_pztAxKGtSi` ON `files` (`updated`)"
-        ],
-        "system": false
+    "passwordAuth": {
+      "enabled": true,
+      "identityFields": [
+        "username",
+        "email"
+      ]
     },
-    {
-        "id": "pbc_3607937828",
-        "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，isBanned需为false\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，isBanned需为false\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canUploadImage\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canUploadImage，为YES，或，为空且默认允许\n  (\n    // canUploadImage为YES，或\n    (\n      @collection.users:canUploadImageCheckYES.id ?= @request.auth.id &&\n      @collection.users:canUploadImageCheckYES.canUploadImage ?= 'YES'\n    ) ||\n    // canUploadImage为空 且 默认允许\n    (\n      // canUploadImage为空，且\n      (\n        @collection.users:canUploadImageCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canUploadImageCheckEmpty.canUploadImage ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCUID.key ?= 'user-can-upload-image-default' &&\n        @collection.config:UCUID.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的author需为当前用户）\n@request.body.author = @request.auth.id",
-        "updateRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canUploadImage\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canUploadImage，为YES，或，为空且默认允许\n  (\n    // canUploadImage为YES，或\n    (\n      @collection.users:canUploadImageCheckYES.id ?= @request.auth.id &&\n      @collection.users:canUploadImageCheckYES.canUploadImage ?= 'YES'\n    ) ||\n    // canUploadImage为空 且 默认允许\n    (\n      // canUploadImage为空，且\n      (\n        @collection.users:canUploadImageCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canUploadImageCheckEmpty.canUploadImage ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCUID.key ?= 'user-can-upload-image-default' &&\n        @collection.config:UCUID.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件\n(\n  // 修改需为创建者\n  author.id = @request.auth.id &&\n  // 禁止修改author\n  @request.body.author:isset = false\n)",
-        "deleteRule": null,
-        "name": "images",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "file3309110367",
-                "maxSelect": 1,
-                "maxSize": 10000000,
-                "mimeTypes": [
-                    "image/jpeg",
-                    "image/png",
-                    "image/webp"
-                ],
-                "name": "image",
-                "presentable": false,
-                "protected": false,
-                "required": true,
-                "system": false,
-                "thumbs": [],
-                "type": "file"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number3804557486",
-                "max": null,
-                "min": 0,
-                "name": "imageWidth",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number1872529420",
-                "max": null,
-                "min": 0,
-                "name": "imageHeight",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number771016896",
-                "max": null,
-                "min": 0,
-                "name": "imageFileSize",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "file2958181620",
-                "maxSelect": 1,
-                "maxSize": 20000000,
-                "mimeTypes": [
-                    "image/jpeg",
-                    "image/png",
-                    "image/webp"
-                ],
-                "name": "imageBig",
-                "presentable": false,
-                "protected": false,
-                "required": false,
-                "system": false,
-                "thumbs": [],
-                "type": "file"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number1877215162",
-                "max": null,
-                "min": 0,
-                "name": "imageBigWidth",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number1976269958",
-                "max": null,
-                "min": 0,
-                "name": "imageBigHeight",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number1447597139",
-                "max": null,
-                "min": 0,
-                "name": "imageBigFileSize",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "file463167378",
-                "maxSelect": 1,
-                "maxSize": 2000000,
-                "mimeTypes": [
-                    "image/jpeg",
-                    "image/png",
-                    "image/webp"
-                ],
-                "name": "imageSmall",
-                "presentable": false,
-                "protected": false,
-                "required": false,
-                "system": false,
-                "thumbs": [],
-                "type": "file"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number755211556",
-                "max": null,
-                "min": 0,
-                "name": "imageSmallWidth",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number1648239967",
-                "max": null,
-                "min": 0,
-                "name": "imageSmallHeight",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number335877280",
-                "max": null,
-                "min": 0,
-                "name": "imageSmallFileSize",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "file3842765150",
-                "maxSelect": 1,
-                "maxSize": 1000000,
-                "mimeTypes": [
-                    "image/jpeg",
-                    "image/png",
-                    "image/webp"
-                ],
-                "name": "imageTiny",
-                "presentable": false,
-                "protected": false,
-                "required": false,
-                "system": false,
-                "thumbs": [],
-                "type": "file"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number3682501131",
-                "max": null,
-                "min": 0,
-                "name": "imageTinyWidth",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number3373884697",
-                "max": null,
-                "min": 0,
-                "name": "imageTinyHeight",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "number3304724116",
-                "max": null,
-                "min": 0,
-                "name": "imageTinyFileSize",
-                "onlyInt": true,
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "number"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text678750603",
-                "max": 0,
-                "min": 0,
-                "name": "alt",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text1519612219",
-                "max": 0,
-                "min": 0,
-                "name": "keyword",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "_pb_users_auth_",
-                "help": "",
-                "hidden": false,
-                "id": "relation3182418120",
-                "maxSelect": 1,
-                "minSelect": 0,
-                "name": "author",
-                "presentable": false,
-                "required": true,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool2382110195",
-                "name": "isDeleted",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "bool"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE INDEX `idx_lq3ggmke7m` ON `images` (`author`)",
-            "CREATE INDEX `idx_21mpENhWUk` ON `images` (`created`)",
-            "CREATE INDEX `idx_IjuwXU8Pwx` ON `images` (`updated`)"
-        ],
-        "system": false
+    "mfa": {
+      "enabled": false,
+      "duration": 1800,
+      "rule": ""
     },
-    {
-        "id": "pbc_2605467279",
-        "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canSendMessage\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canSendMessage，为YES，或，为空且默认允许\n  (\n    // canSendMessage为YES，或\n    (\n      @collection.users:canSendMessageCheckYES.id ?= @request.auth.id &&\n      @collection.users:canSendMessageCheckYES.canSendMessage ?= 'YES'\n    ) ||\n    // canSendMessage为空 且 默认允许\n    (\n      // canSendMessage为空，且\n      (\n        @collection.users:canSendMessageCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canSendMessageCheckEmpty.canSendMessage ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCSMD.key ?= 'user-can-send-message-default' &&\n        @collection.config:UCSMD.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的author需为当前用户）\n@request.body.author = @request.auth.id",
-        "updateRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canSendMessage\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canSendMessage，为YES，或，为空且默认允许\n  (\n    // canSendMessage为YES，或\n    (\n      @collection.users:canSendMessageCheckYES.id ?= @request.auth.id &&\n      @collection.users:canSendMessageCheckYES.canSendMessage ?= 'YES'\n    ) ||\n    // canSendMessage为空 且 默认允许\n    (\n      // canSendMessage为空，且\n      (\n        @collection.users:canSendMessageCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canSendMessageCheckEmpty.canSendMessage ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCSMD.key ?= 'user-can-send-message-default' &&\n        @collection.config:UCSMD.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件\n(\n  // 修改消息需为创建者\n  author.id = @request.auth.id &&\n  // 禁止修改author\n  @request.body.author:isset = false\n)",
-        "deleteRule": null,
-        "name": "messages",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text4274335913",
-                "max": 0,
-                "min": 0,
-                "name": "content",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": false,
-                "type": "text"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "_pb_users_auth_",
-                "help": "",
-                "hidden": false,
-                "id": "relation3182418120",
-                "maxSelect": 1,
-                "minSelect": 0,
-                "name": "author",
-                "presentable": false,
-                "required": true,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "pbc_2605467279",
-                "help": "",
-                "hidden": false,
-                "id": "relation2303346800",
-                "maxSelect": 1,
-                "minSelect": 0,
-                "name": "replyMessage",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool2382110195",
-                "name": "isDeleted",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "bool"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "pbc_3607937828",
-                "help": "",
-                "hidden": false,
-                "id": "relation3760176746",
-                "maxSelect": 4,
-                "minSelect": 0,
-                "name": "images",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "pbc_3446931122",
-                "help": "",
-                "hidden": false,
-                "id": "relation2359244304",
-                "maxSelect": 1,
-                "minSelect": 0,
-                "name": "file",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "_pb_users_auth_",
-                "help": "",
-                "hidden": false,
-                "id": "relation1142616359",
-                "maxSelect": 999,
-                "minSelect": 0,
-                "name": "mentionedUsers",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "json3084938907",
-                "maxSize": 0,
-                "name": "mentionMap",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "json"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE INDEX `idx_EvGVtTLFw0` ON `messages` (`author`)",
-            "CREATE INDEX `idx_0HywW3Oa80` ON `messages` (`replyMessage`)",
-            "CREATE INDEX `idx_JWlR4e2P9J` ON `messages` (`images`)",
-            "CREATE INDEX `idx_6t47i1IN7l` ON `messages` (`file`)",
-            "CREATE INDEX `idx_sStLG437oQ` ON `messages` (`mentionedUsers`)",
-            "CREATE INDEX `idx_bRy1vmOOPn` ON `messages` (`created`)",
-            "CREATE INDEX `idx_2Wn4zSR3iY` ON `messages` (`updated`)"
-        ],
-        "system": false
+    "otp": {
+      "enabled": true,
+      "duration": 180,
+      "length": 8,
+      "emailTemplate": {
+        "subject": "OTP for {APP_NAME}",
+        "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+      }
     },
-    {
-        "id": "pbc_2654335481",
-        "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "createRule": "",
-        "updateRule": null,
-        "deleteRule": null,
-        "name": "usersNotViewingMarks",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "_pb_users_auth_",
-                "help": "",
-                "hidden": false,
-                "id": "relation3182418120",
-                "maxSelect": 1,
-                "minSelect": 0,
-                "name": "author",
-                "presentable": false,
-                "required": true,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE INDEX `idx_X5iw7XYOKP` ON `usersNotViewingMarks` (`author`)",
-            "CREATE INDEX `idx_D0NJG8AyBW` ON `usersNotViewingMarks` (`created`)"
-        ],
-        "system": false
+    "authToken": {
+      "duration": 604800
     },
-    {
-        "id": "pbc_3188303726",
-        "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
-        "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned\n(\n  @collection.users:isBannedCheck.id ?= @request.auth.id &&\n  @collection.users:isBannedCheck.isBanned ?= false\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的author需为当前用户）\n@request.body.author = @request.auth.id",
-        "updateRule": null,
-        "deleteRule": null,
-        "name": "usersPresencesStatus",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "_pb_users_auth_",
-                "help": "",
-                "hidden": false,
-                "id": "relation3182418120",
-                "maxSelect": 1,
-                "minSelect": 0,
-                "name": "author",
-                "presentable": false,
-                "required": true,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool624419442",
-                "name": "isNotViewing",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "bool"
-            },
-            {
-                "help": "",
-                "hidden": false,
-                "id": "bool273319153",
-                "name": "isTyping",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "bool"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": false,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE INDEX `idx_0YLKYveHTm` ON `usersPresencesStatus` (`author`)",
-            "CREATE INDEX `idx_jLcjZzoGzc` ON `usersPresencesStatus` (`created`)"
-        ],
-        "system": false
+    "passwordResetToken": {
+      "duration": 1800
     },
-    {
-        "id": "pbc_4275539003",
-        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "name": "_authOrigins",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text455797646",
-                "max": 0,
-                "min": 0,
-                "name": "collectionRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text127846527",
-                "max": 0,
-                "min": 0,
-                "name": "recordRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text4228609354",
-                "max": 0,
-                "min": 0,
-                "name": "fingerprint",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_authOrigins_unique_pairs` ON `_authOrigins` (collectionRef, recordRef, fingerprint)"
-        ],
-        "system": true
+    "emailChangeToken": {
+      "duration": 1800
     },
-    {
-        "id": "pbc_2281828961",
-        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "name": "_externalAuths",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text455797646",
-                "max": 0,
-                "min": 0,
-                "name": "collectionRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text127846527",
-                "max": 0,
-                "min": 0,
-                "name": "recordRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text2462348188",
-                "max": 0,
-                "min": 0,
-                "name": "provider",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text1044722854",
-                "max": 0,
-                "min": 0,
-                "name": "providerId",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_externalAuths_record_provider` ON `_externalAuths` (collectionRef, recordRef, provider)",
-            "CREATE UNIQUE INDEX `idx_externalAuths_collection_provider` ON `_externalAuths` (collectionRef, provider, providerId)"
-        ],
-        "system": true
+    "verificationToken": {
+      "duration": 259200
     },
-    {
-        "id": "pbc_2279338944",
-        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": null,
-        "name": "_mfas",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text455797646",
-                "max": 0,
-                "min": 0,
-                "name": "collectionRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text127846527",
-                "max": 0,
-                "min": 0,
-                "name": "recordRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text1582905952",
-                "max": 0,
-                "min": 0,
-                "name": "method",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE INDEX `idx_mfas_collectionRef_recordRef` ON `_mfas` (collectionRef,recordRef)"
-        ],
-        "system": true
+    "fileToken": {
+      "duration": 180
     },
-    {
-        "id": "pbc_1638494021",
-        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": null,
-        "name": "_otps",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "help": "",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text455797646",
-                "max": 0,
-                "min": 0,
-                "name": "collectionRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": false,
-                "id": "text127846527",
-                "max": 0,
-                "min": 0,
-                "name": "recordRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "cost": 8,
-                "help": "",
-                "hidden": true,
-                "id": "password901924565",
-                "max": 0,
-                "min": 0,
-                "name": "password",
-                "pattern": "",
-                "presentable": false,
-                "required": true,
-                "system": true,
-                "type": "password"
-            },
-            {
-                "autogeneratePattern": "",
-                "help": "",
-                "hidden": true,
-                "id": "text3866985172",
-                "max": 0,
-                "min": 0,
-                "name": "sentTo",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": false,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE INDEX `idx_otps_collectionRef_recordRef` ON `_otps` (collectionRef, recordRef)"
-        ],
-        "system": true
+    "verificationTemplate": {
+      "subject": "Verify your {APP_NAME} email",
+      "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+    },
+    "resetPasswordTemplate": {
+      "subject": "Reset your {APP_NAME} password",
+      "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+    },
+    "confirmEmailChangeTemplate": {
+      "subject": "Confirm your {APP_NAME} new email address",
+      "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
     }
+  },
+  {
+    "id": "pbc_3142635823",
+    "listRule": null,
+    "viewRule": null,
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "_superusers",
+    "type": "auth",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cost": 0,
+        "help": "",
+        "hidden": true,
+        "id": "password901924565",
+        "max": 0,
+        "min": 8,
+        "name": "password",
+        "pattern": "",
+        "presentable": false,
+        "required": true,
+        "system": true,
+        "type": "password"
+      },
+      {
+        "autogeneratePattern": "[a-zA-Z0-9]{50}",
+        "help": "",
+        "hidden": true,
+        "id": "text2504183744",
+        "max": 60,
+        "min": 30,
+        "name": "tokenKey",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "exceptDomains": [],
+        "help": "",
+        "hidden": false,
+        "id": "email3885137012",
+        "name": "email",
+        "onlyDomains": [],
+        "presentable": false,
+        "required": true,
+        "system": true,
+        "type": "email"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool1547992806",
+        "name": "emailVisibility",
+        "presentable": false,
+        "required": false,
+        "system": true,
+        "type": "bool"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool256245529",
+        "name": "verified",
+        "presentable": false,
+        "required": false,
+        "system": true,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_tokenKey_pbc_3142635823` ON `_superusers` (`tokenKey`)",
+      "CREATE UNIQUE INDEX `idx_email_pbc_3142635823` ON `_superusers` (`email`) WHERE `email` != ''"
+    ],
+    "system": true,
+    "authRule": "",
+    "manageRule": null,
+    "authAlert": {
+      "enabled": true,
+      "emailTemplate": {
+        "subject": "Login from a new location",
+        "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+      }
+    },
+    "oauth2": {
+      "mappedFields": {
+        "id": "",
+        "name": "",
+        "username": "",
+        "avatarURL": ""
+      },
+      "enabled": false
+    },
+    "passwordAuth": {
+      "enabled": true,
+      "identityFields": [
+        "email"
+      ]
+    },
+    "mfa": {
+      "enabled": false,
+      "duration": 1800,
+      "rule": ""
+    },
+    "otp": {
+      "enabled": false,
+      "duration": 180,
+      "length": 8,
+      "emailTemplate": {
+        "subject": "OTP for {APP_NAME}",
+        "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+      }
+    },
+    "authToken": {
+      "duration": 86400
+    },
+    "passwordResetToken": {
+      "duration": 1800
+    },
+    "emailChangeToken": {
+      "duration": 1800
+    },
+    "verificationToken": {
+      "duration": 259200
+    },
+    "fileToken": {
+      "duration": 180
+    },
+    "verificationTemplate": {
+      "subject": "Verify your {APP_NAME} email",
+      "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+    },
+    "resetPasswordTemplate": {
+      "subject": "Reset your {APP_NAME} password",
+      "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+    },
+    "confirmEmailChangeTemplate": {
+      "subject": "Confirm your {APP_NAME} new email address",
+      "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+    }
+  },
+  {
+    "id": "pbc_3818476082",
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "config",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text2324736937",
+        "max": 0,
+        "min": 0,
+        "name": "key",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "json494360628",
+        "maxSize": 0,
+        "name": "value",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "json"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_SvFaka2n6R` ON `config` (`key`)"
+    ],
+    "system": false
+  },
+  {
+    "id": "pbc_3446931122",
+    "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，isBanned需为false\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，isBanned需为false\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canUploadFile\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canUploadFile，为YES，或，为空且默认允许\n  (\n    // canUploadFile 为 YES，或\n    (\n      @collection.users:canUploadFileCheckYES.id ?= @request.auth.id &&\n      @collection.users:canUploadFileCheckYES.canUploadFile ?= 'YES'\n    ) ||\n    // canUploadFile 为空 且 默认允许\n    (\n      // canUploadFile 为空，且\n      (\n        @collection.users:canUploadFileCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canUploadFileCheckEmpty.canUploadFile ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCUFD.key ?= 'user-can-upload-file-default' &&\n        @collection.config:UCUFD.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的 author 需为当前用户）\n@request.body.author = @request.auth.id",
+    "updateRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canUploadFile\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canUploadFile，为YES，或，为空且默认允许\n  (\n    // canUploadFile 为 YES，或\n    (\n      @collection.users:canUploadFileCheckYES.id ?= @request.auth.id &&\n      @collection.users:canUploadFileCheckYES.canUploadFile ?= 'YES'\n    ) ||\n    // canUploadFile 为空 且 默认允许\n    (\n      // canUploadFile 为空，且\n      (\n        @collection.users:canUploadFileCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canUploadFileCheckEmpty.canUploadFile ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCUFD.key ?= 'user-can-upload-file-default' &&\n        @collection.config:UCUFD.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件\n(\n  // 修改需为创建者\n  author.id = @request.auth.id &&\n  // 禁止修改 author\n  @request.body.author:isset = false\n)",
+    "deleteRule": null,
+    "name": "files",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "file2359244304",
+        "maxSelect": 1,
+        "maxSize": 8000000000,
+        "mimeTypes": [],
+        "name": "file",
+        "presentable": false,
+        "protected": false,
+        "required": true,
+        "system": false,
+        "thumbs": [],
+        "type": "file"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number903486519",
+        "max": null,
+        "min": -1,
+        "name": "fileSize",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1321496436",
+        "max": 0,
+        "min": 0,
+        "name": "fileType",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text2620999259",
+        "max": 0,
+        "min": 0,
+        "name": "fileName",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1843675174",
+        "max": 0,
+        "min": 0,
+        "name": "description",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1519612219",
+        "max": 0,
+        "min": 0,
+        "name": "keyword",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "help": "",
+        "hidden": false,
+        "id": "relation3182418120",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "author",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool2382110195",
+        "name": "isDeleted",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_oQL2XaBBBV` ON `files` (`author`)",
+      "CREATE INDEX `idx_znjiiQYNvh` ON `files` (`created`)",
+      "CREATE INDEX `idx_pztAxKGtSi` ON `files` (`updated`)"
+    ],
+    "system": false
+  },
+  {
+    "id": "pbc_3607937828",
+    "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，isBanned需为false\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，isBanned需为false\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canUploadImage\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canUploadImage，为YES，或，为空且默认允许\n  (\n    // canUploadImage为YES，或\n    (\n      @collection.users:canUploadImageCheckYES.id ?= @request.auth.id &&\n      @collection.users:canUploadImageCheckYES.canUploadImage ?= 'YES'\n    ) ||\n    // canUploadImage为空 且 默认允许\n    (\n      // canUploadImage为空，且\n      (\n        @collection.users:canUploadImageCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canUploadImageCheckEmpty.canUploadImage ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCUID.key ?= 'user-can-upload-image-default' &&\n        @collection.config:UCUID.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的author需为当前用户）\n@request.body.author = @request.auth.id",
+    "updateRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canUploadImage\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canUploadImage，为YES，或，为空且默认允许\n  (\n    // canUploadImage为YES，或\n    (\n      @collection.users:canUploadImageCheckYES.id ?= @request.auth.id &&\n      @collection.users:canUploadImageCheckYES.canUploadImage ?= 'YES'\n    ) ||\n    // canUploadImage为空 且 默认允许\n    (\n      // canUploadImage为空，且\n      (\n        @collection.users:canUploadImageCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canUploadImageCheckEmpty.canUploadImage ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCUID.key ?= 'user-can-upload-image-default' &&\n        @collection.config:UCUID.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件\n(\n  // 修改需为创建者\n  author.id = @request.auth.id &&\n  // 禁止修改author\n  @request.body.author:isset = false\n)",
+    "deleteRule": null,
+    "name": "images",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "file3309110367",
+        "maxSelect": 1,
+        "maxSize": 10000000,
+        "mimeTypes": [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ],
+        "name": "image",
+        "presentable": false,
+        "protected": false,
+        "required": true,
+        "system": false,
+        "thumbs": [],
+        "type": "file"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number3804557486",
+        "max": null,
+        "min": 0,
+        "name": "imageWidth",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number1872529420",
+        "max": null,
+        "min": 0,
+        "name": "imageHeight",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number771016896",
+        "max": null,
+        "min": 0,
+        "name": "imageFileSize",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "file2958181620",
+        "maxSelect": 1,
+        "maxSize": 20000000,
+        "mimeTypes": [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ],
+        "name": "imageBig",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": [],
+        "type": "file"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number1877215162",
+        "max": null,
+        "min": 0,
+        "name": "imageBigWidth",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number1976269958",
+        "max": null,
+        "min": 0,
+        "name": "imageBigHeight",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number1447597139",
+        "max": null,
+        "min": 0,
+        "name": "imageBigFileSize",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "file463167378",
+        "maxSelect": 1,
+        "maxSize": 2000000,
+        "mimeTypes": [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ],
+        "name": "imageSmall",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": [],
+        "type": "file"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number755211556",
+        "max": null,
+        "min": 0,
+        "name": "imageSmallWidth",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number1648239967",
+        "max": null,
+        "min": 0,
+        "name": "imageSmallHeight",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number335877280",
+        "max": null,
+        "min": 0,
+        "name": "imageSmallFileSize",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "file3842765150",
+        "maxSelect": 1,
+        "maxSize": 1000000,
+        "mimeTypes": [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ],
+        "name": "imageTiny",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": [],
+        "type": "file"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number3682501131",
+        "max": null,
+        "min": 0,
+        "name": "imageTinyWidth",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number3373884697",
+        "max": null,
+        "min": 0,
+        "name": "imageTinyHeight",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "number3304724116",
+        "max": null,
+        "min": 0,
+        "name": "imageTinyFileSize",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text678750603",
+        "max": 0,
+        "min": 0,
+        "name": "alt",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1519612219",
+        "max": 0,
+        "min": 0,
+        "name": "keyword",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "help": "",
+        "hidden": false,
+        "id": "relation3182418120",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "author",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool2382110195",
+        "name": "isDeleted",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_lq3ggmke7m` ON `images` (`author`)",
+      "CREATE INDEX `idx_21mpENhWUk` ON `images` (`created`)",
+      "CREATE INDEX `idx_IjuwXU8Pwx` ON `images` (`updated`)"
+    ],
+    "system": false
+  },
+  {
+    "id": "pbc_2605467279",
+    "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canSendMessage\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canSendMessage，为YES，或，为空且默认允许\n  (\n    // canSendMessage为YES，或\n    (\n      @collection.users:canSendMessageCheckYES.id ?= @request.auth.id &&\n      @collection.users:canSendMessageCheckYES.canSendMessage ?= 'YES'\n    ) ||\n    // canSendMessage为空 且 默认允许\n    (\n      // canSendMessage为空，且\n      (\n        @collection.users:canSendMessageCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canSendMessageCheckEmpty.canSendMessage ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCSMD.key ?= 'user-can-send-message-default' &&\n        @collection.config:UCSMD.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的author需为当前用户）\n@request.body.author = @request.auth.id",
+    "updateRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned 且 判断canSendMessage\n(\n  // 非isBanned，且\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  ) &&\n  // 判断canSendMessage，为YES，或，为空且默认允许\n  (\n    // canSendMessage为YES，或\n    (\n      @collection.users:canSendMessageCheckYES.id ?= @request.auth.id &&\n      @collection.users:canSendMessageCheckYES.canSendMessage ?= 'YES'\n    ) ||\n    // canSendMessage为空 且 默认允许\n    (\n      // canSendMessage为空，且\n      (\n        @collection.users:canSendMessageCheckEmpty.id ?= @request.auth.id &&\n        @collection.users:canSendMessageCheckEmpty.canSendMessage ?= ''\n      ) &&\n      // 配置中默认允许\n      (\n        @collection.config:UCSMD.key ?= 'user-can-send-message-default' &&\n        @collection.config:UCSMD.value ?= true\n      )\n    )\n  )\n) &&\n// 资源本身的可访问性条件\n(\n  // 修改消息需为创建者\n  author.id = @request.auth.id &&\n  // 禁止修改author\n  @request.body.author:isset = false\n)",
+    "deleteRule": null,
+    "name": "messages",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text4274335913",
+        "max": 0,
+        "min": 0,
+        "name": "content",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "help": "",
+        "hidden": false,
+        "id": "relation3182418120",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "author",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2605467279",
+        "help": "",
+        "hidden": false,
+        "id": "relation2303346800",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "replyMessage",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool2382110195",
+        "name": "isDeleted",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_3607937828",
+        "help": "",
+        "hidden": false,
+        "id": "relation3760176746",
+        "maxSelect": 4,
+        "minSelect": 0,
+        "name": "images",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_3446931122",
+        "help": "",
+        "hidden": false,
+        "id": "relation2359244304",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "file",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "help": "",
+        "hidden": false,
+        "id": "relation1142616359",
+        "maxSelect": 999,
+        "minSelect": 0,
+        "name": "mentionedUsers",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "json3084938907",
+        "maxSize": 0,
+        "name": "mentionMap",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "json"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_EvGVtTLFw0` ON `messages` (`author`)",
+      "CREATE INDEX `idx_0HywW3Oa80` ON `messages` (`replyMessage`)",
+      "CREATE INDEX `idx_JWlR4e2P9J` ON `messages` (`images`)",
+      "CREATE INDEX `idx_6t47i1IN7l` ON `messages` (`file`)",
+      "CREATE INDEX `idx_sStLG437oQ` ON `messages` (`mentionedUsers`)",
+      "CREATE INDEX `idx_bRy1vmOOPn` ON `messages` (`created`)",
+      "CREATE INDEX `idx_2Wn4zSR3iY` ON `messages` (`updated`)"
+    ],
+    "system": false
+  },
+  {
+    "id": "pbc_2654335481",
+    "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "createRule": "",
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "usersNotViewingMarks",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "help": "",
+        "hidden": false,
+        "id": "relation3182418120",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "author",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_X5iw7XYOKP` ON `usersNotViewingMarks` (`author`)",
+      "CREATE INDEX `idx_D0NJG8AyBW` ON `usersNotViewingMarks` (`created`)"
+    ],
+    "system": false
+  },
+  {
+    "id": "pbc_3188303726",
+    "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看消息\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看消息\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned 为 false 才能通过\n  (\n    @collection.users:isBannedCheck.id ?= @request.auth.id &&\n    @collection.users:isBannedCheck.isBanned ?= false\n  )\n)",
+    "createRule": "// 访问主体的前置条件，需登录\n@request.auth.id != '' &&\n// 访问主体的权限条件，非isBanned\n(\n  @collection.users:isBannedCheck.id ?= @request.auth.id &&\n  @collection.users:isBannedCheck.isBanned ?= false\n) &&\n// 资源本身的可访问性条件，创建时需为创建者（传入的author需为当前用户）\n@request.body.author = @request.auth.id",
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "usersPresencesStatus",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "help": "",
+        "hidden": false,
+        "id": "relation3182418120",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "author",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool624419442",
+        "name": "isNotViewing",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "bool273319153",
+        "name": "isTyping",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_0YLKYveHTm` ON `usersPresencesStatus` (`author`)",
+      "CREATE INDEX `idx_jLcjZzoGzc` ON `usersPresencesStatus` (`created`)"
+    ],
+    "system": false
+  },
+  {
+    "id": "pbc_4275539003",
+    "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "name": "_authOrigins",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text455797646",
+        "max": 0,
+        "min": 0,
+        "name": "collectionRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text127846527",
+        "max": 0,
+        "min": 0,
+        "name": "recordRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text4228609354",
+        "max": 0,
+        "min": 0,
+        "name": "fingerprint",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_authOrigins_unique_pairs` ON `_authOrigins` (collectionRef, recordRef, fingerprint)"
+    ],
+    "system": true
+  },
+  {
+    "id": "pbc_2281828961",
+    "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "name": "_externalAuths",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text455797646",
+        "max": 0,
+        "min": 0,
+        "name": "collectionRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text127846527",
+        "max": 0,
+        "min": 0,
+        "name": "recordRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text2462348188",
+        "max": 0,
+        "min": 0,
+        "name": "provider",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1044722854",
+        "max": 0,
+        "min": 0,
+        "name": "providerId",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_externalAuths_record_provider` ON `_externalAuths` (collectionRef, recordRef, provider)",
+      "CREATE UNIQUE INDEX `idx_externalAuths_collection_provider` ON `_externalAuths` (collectionRef, provider, providerId)"
+    ],
+    "system": true
+  },
+  {
+    "id": "pbc_2279338944",
+    "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "_mfas",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text455797646",
+        "max": 0,
+        "min": 0,
+        "name": "collectionRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text127846527",
+        "max": 0,
+        "min": 0,
+        "name": "recordRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1582905952",
+        "max": 0,
+        "min": 0,
+        "name": "method",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_mfas_collectionRef_recordRef` ON `_mfas` (collectionRef,recordRef)"
+    ],
+    "system": true
+  },
+  {
+    "id": "pbc_1638494021",
+    "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "_otps",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text455797646",
+        "max": 0,
+        "min": 0,
+        "name": "collectionRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text127846527",
+        "max": 0,
+        "min": 0,
+        "name": "recordRef",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cost": 8,
+        "help": "",
+        "hidden": true,
+        "id": "password901924565",
+        "max": 0,
+        "min": 0,
+        "name": "password",
+        "pattern": "",
+        "presentable": false,
+        "required": true,
+        "system": true,
+        "type": "password"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": true,
+        "id": "text3866985172",
+        "max": 0,
+        "min": 0,
+        "name": "sentTo",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": true,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_otps_collectionRef_recordRef` ON `_otps` (collectionRef, recordRef)"
+    ],
+    "system": true
+  }
 ]
