@@ -8,13 +8,19 @@ import {
   useRealtimeUsersPresencesStatusStore,
 } from '@/stores'
 import { useTimestamp } from '@vueuse/core'
+import { effectScope } from 'vue'
 
 let _instance: RealtimeUsersStatusComputedType | null = null
+
+// 脱离组件树的生命周期，使单例内的定时器/计算属性不随任何组件的销毁而停止
+const _scope = effectScope(true)
 
 // 【已优化的】
 export const useRealtimeUsersStatusComputed = () => {
   if (_instance == null) {
-    _instance = useRealtimeUsersStatusComputedWithoutOptimization()
+    _instance = _scope.run(() => {
+      return useRealtimeUsersStatusComputedWithoutOptimization()
+    })!
   }
   return _instance
 }
