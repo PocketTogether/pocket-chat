@@ -9,11 +9,22 @@ import {
 } from '@/stores'
 import { useTimestamp } from '@vueuse/core'
 
+let _instance: RealtimeUsersStatusComputedType | null = null
+
+// 【已优化的】
+export const useRealtimeUsersStatusComputed = () => {
+  if (_instance == null) {
+    _instance = useRealtimeUsersStatusComputedWithoutOptimization()
+  }
+  return _instance
+}
+
 /**
  * 用于供其他地方使用实时数据的组合式函数
  * 就是会使用两个store中的数据，有一些函数和计算属性以供外界使用
+ * 【未优化的】
  */
-export const useRealtimeUsersStatusComputed = () => {
+const useRealtimeUsersStatusComputedWithoutOptimization = () => {
   // 用户实时状态相关store
   const realtimeUsersPresencesStatusStore =
     useRealtimeUsersPresencesStatusStore()
@@ -189,3 +200,7 @@ export const useRealtimeUsersStatusComputed = () => {
     usersPresencesStatusInitEarliestMapByUser,
   }
 }
+
+type RealtimeUsersStatusComputedType = ReturnType<
+  typeof useRealtimeUsersStatusComputedWithoutOptimization
+>
