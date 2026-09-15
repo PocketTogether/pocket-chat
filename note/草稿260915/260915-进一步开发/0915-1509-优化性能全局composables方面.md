@@ -286,6 +286,46 @@ function createSharedComposable(composable) {
 
 **注意**：内部调用的 `tryOnScopeDispose(dispose)` 注册到的是**当前调用方组件的 scope**（非 detached），所以当该组件销毁时 dispose 才会执行。这也是为什么它能正确跟踪引用计数——每个调用方组件"为自己注册了一份 dispose 回调"。
 
+**⚠️ 重要限制：不支持参数化共享**
+
+`createSharedComposable` 的设计是"**第一次调用的 args 被锁死，之后所有调用返回同一份 state**"，而不是"相同参数共享实例"。
+
+```ts
+const useUserStatus = createSharedComposable(useUserRealtimeStatusForUserRealtimeStatus)
+
+// 组件 A：userId = "user-1"
+const statusA = useUserStatus({ userId: "user-1" })  // 创建 user-1 的状态 ✅
+
+// 组件 B：userId = "user-2"
+const statusB = useUserStatus({ userId: "user-2" })  // 拿到的还是 user-1 的状态 ❌
+
+// 组件 C：userId = "user-1"
+const statusC = useUserStatus({ userId: "user-1" })  // 拿到 user-1 ✅（碰巧对了，但只是因为第一次恰好也是 user-1）
+```
+
+组件 B 期望的是 user-2 的状态，但 `createSharedComposable` 忽略了它的参数，直接返回了第一次创建的 user-1 状态。所以它**不能做到"相同 userId 共享，不同 userId 各自创建"**。
+
+**那为什么 `useRealtimeUsersStatusComputedForUserRealtimeStatus` 不值得优化？**
+
+当前架构的分层其实已经是最优的：
+
+```
+第一层：useRealtimeUsersStatusComputed（全局单例）
+  ├─ useTimestamp 1 个定时器（非单例时最多 4 个）   ← 性能大头，已解决
+  ├─ init 查询包装 1 组（非单例时最多 4 组）         ← 已解决
+  └─ 无状态工具函数：getStatusByUserId / checkIsOnlineByStatusIsoDate
+
+第二层：useRealtimeUsersStatusComputedForUserRealtimeStatus（每组件各一份）
+  └─ 3 个 computed，全部 O(1)：
+     - userRealtimeStatus        → Map.get（O(1)）
+     - userRealtimeStatusWithIsOnline  → 一次比较（O(1)）
+     - userRealtimeStatusForShow  → 三次 if 判断（O(1)）
+```
+
+真正的性能瓶颈（定时器、查询包装）在第一层已经全局化了。第二层的 3 个 computed 极其轻量（纯 O(1) 查找），即使有 100 个同 userId 的组件，也只是 300 个微不足道的 computed。想对它做共享优化，引入的复杂度远大于收益。
+
+**正确的原则**：把"无参数的重逻辑"全局化，"有参数的轻逻辑"让各组件各自持有——这正是我们当前的架构。
+
 ---
 
 #### 3. createInjectionState — provide/inject 官方封装
