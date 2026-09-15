@@ -1,177 +1,5 @@
 [
     {
-        "id": "pbc_3142635823",
-        "listRule": null,
-        "viewRule": null,
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": null,
-        "name": "_superusers",
-        "type": "auth",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "cost": 0,
-                "hidden": true,
-                "id": "password901924565",
-                "max": 0,
-                "min": 8,
-                "name": "password",
-                "pattern": "",
-                "presentable": false,
-                "required": true,
-                "system": true,
-                "type": "password"
-            },
-            {
-                "autogeneratePattern": "[a-zA-Z0-9]{50}",
-                "hidden": true,
-                "id": "text2504183744",
-                "max": 60,
-                "min": 30,
-                "name": "tokenKey",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "exceptDomains": null,
-                "hidden": false,
-                "id": "email3885137012",
-                "name": "email",
-                "onlyDomains": null,
-                "presentable": false,
-                "required": true,
-                "system": true,
-                "type": "email"
-            },
-            {
-                "hidden": false,
-                "id": "bool1547992806",
-                "name": "emailVisibility",
-                "presentable": false,
-                "required": false,
-                "system": true,
-                "type": "bool"
-            },
-            {
-                "hidden": false,
-                "id": "bool256245529",
-                "name": "verified",
-                "presentable": false,
-                "required": false,
-                "system": true,
-                "type": "bool"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_tokenKey_pbc_3142635823` ON `_superusers` (`tokenKey`)",
-            "CREATE UNIQUE INDEX `idx_email_pbc_3142635823` ON `_superusers` (`email`) WHERE `email` != ''"
-        ],
-        "system": true,
-        "authRule": "",
-        "manageRule": null,
-        "authAlert": {
-            "enabled": true,
-            "emailTemplate": {
-                "subject": "Login from a new location",
-                "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-            }
-        },
-        "oauth2": {
-            "mappedFields": {
-                "id": "",
-                "name": "",
-                "username": "",
-                "avatarURL": ""
-            },
-            "enabled": false
-        },
-        "passwordAuth": {
-            "enabled": true,
-            "identityFields": [
-                "email"
-            ]
-        },
-        "mfa": {
-            "enabled": false,
-            "duration": 1800,
-            "rule": ""
-        },
-        "otp": {
-            "enabled": false,
-            "duration": 180,
-            "length": 8,
-            "emailTemplate": {
-                "subject": "OTP for {APP_NAME}",
-                "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-            }
-        },
-        "authToken": {
-            "duration": 86400
-        },
-        "passwordResetToken": {
-            "duration": 1800
-        },
-        "emailChangeToken": {
-            "duration": 1800
-        },
-        "verificationToken": {
-            "duration": 259200
-        },
-        "fileToken": {
-            "duration": 180
-        },
-        "verificationTemplate": {
-            "subject": "Verify your {APP_NAME} email",
-            "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        },
-        "resetPasswordTemplate": {
-            "subject": "Reset your {APP_NAME} password",
-            "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        },
-        "confirmEmailChangeTemplate": {
-            "subject": "Confirm your {APP_NAME} new email address",
-            "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-        }
-    },
-    {
         "id": "_pb_users_auth_",
         "listRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问，或当前为访问自己的\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned\n  (\n    // 不为 isBanned 才能通过\n    (\n      @collection.users:isBannedCheck.id ?= @request.auth.id &&\n      @collection.users:isBannedCheck.isBanned ?= false\n    ) ||\n    // isBanned 时，只查自己的用户数据，可以通过\n    id = @request.auth.id\n  )\n)",
         "viewRule": "// 访问主体的前置条件 ，根据配置值判断未登录用户是否可以查看\n(\n  // 用户已登录，可以查看\n  @request.auth.id != '' ||\n  // 根据config，判断是否允许未登录用户查看\n  (\n    @collection.config:allowAnonymousView.key ?= 'allow-anonymous-view' &&\n    @collection.config:allowAnonymousView.value ?= true\n  )\n) &&\n// 访问主体的权限条件，只有isBanned为false的用户才能访问，或当前为访问自己的\n(\n  // 用户未登录时可通过，因为匿名访问已在前置条件控制\n  @request.auth.id = '' ||\n  // 用户已登录，检查其isBanned\n  (\n    // 不为 isBanned 才能通过\n    (\n      @collection.users:isBannedCheck.id ?= @request.auth.id &&\n      @collection.users:isBannedCheck.isBanned ?= false\n    ) ||\n    // isBanned 时，只查自己的用户数据，可以通过\n    id = @request.auth.id\n  )\n)",
@@ -183,6 +11,7 @@
         "fields": [
             {
                 "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
                 "hidden": false,
                 "id": "text3208210256",
                 "max": 15,
@@ -197,6 +26,7 @@
             },
             {
                 "cost": 0,
+                "help": "",
                 "hidden": true,
                 "id": "password901924565",
                 "max": 0,
@@ -210,6 +40,7 @@
             },
             {
                 "autogeneratePattern": "[a-zA-Z0-9]{50}",
+                "help": "",
                 "hidden": true,
                 "id": "text2504183744",
                 "max": 60,
@@ -223,17 +54,19 @@
                 "type": "text"
             },
             {
-                "exceptDomains": null,
+                "exceptDomains": [],
+                "help": "",
                 "hidden": false,
                 "id": "email3885137012",
                 "name": "email",
-                "onlyDomains": null,
+                "onlyDomains": [],
                 "presentable": false,
                 "required": true,
                 "system": true,
                 "type": "email"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "bool1547992806",
                 "name": "emailVisibility",
@@ -243,6 +76,7 @@
                 "type": "bool"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "bool256245529",
                 "name": "verified",
@@ -253,6 +87,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text4166911607",
                 "max": 32,
@@ -267,6 +102,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text1579384326",
                 "max": 0,
@@ -281,6 +117,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text3709889147",
                 "max": 0,
@@ -294,6 +131,7 @@
                 "type": "text"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "file376926767",
                 "maxSelect": 1,
@@ -316,6 +154,7 @@
                 "type": "file"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "bool1512114028",
                 "name": "isBanned",
@@ -325,6 +164,7 @@
                 "type": "bool"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "select3254728963",
                 "maxSelect": 1,
@@ -339,6 +179,7 @@
                 ]
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "select55021050",
                 "maxSelect": 1,
@@ -353,6 +194,7 @@
                 ]
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "select4207878442",
                 "maxSelect": 1,
@@ -367,6 +209,7 @@
                 ]
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number2537851761",
                 "max": null,
@@ -475,216 +318,18 @@
         }
     },
     {
-        "id": "pbc_4275539003",
-        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "name": "_authOrigins",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text455797646",
-                "max": 0,
-                "min": 0,
-                "name": "collectionRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text127846527",
-                "max": 0,
-                "min": 0,
-                "name": "recordRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text4228609354",
-                "max": 0,
-                "min": 0,
-                "name": "fingerprint",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_authOrigins_unique_pairs` ON `_authOrigins` (collectionRef, recordRef, fingerprint)"
-        ],
-        "system": true
-    },
-    {
-        "id": "pbc_2281828961",
-        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "name": "_externalAuths",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text455797646",
-                "max": 0,
-                "min": 0,
-                "name": "collectionRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text127846527",
-                "max": 0,
-                "min": 0,
-                "name": "recordRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text2462348188",
-                "max": 0,
-                "min": 0,
-                "name": "provider",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text1044722854",
-                "max": 0,
-                "min": 0,
-                "name": "providerId",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE UNIQUE INDEX `idx_externalAuths_record_provider` ON `_externalAuths` (collectionRef, recordRef, provider)",
-            "CREATE UNIQUE INDEX `idx_externalAuths_collection_provider` ON `_externalAuths` (collectionRef, provider, providerId)"
-        ],
-        "system": true
-    },
-    {
-        "id": "pbc_2279338944",
-        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "id": "pbc_3142635823",
+        "listRule": null,
+        "viewRule": null,
         "createRule": null,
         "updateRule": null,
         "deleteRule": null,
-        "name": "_mfas",
-        "type": "base",
+        "name": "_superusers",
+        "type": "auth",
         "fields": [
             {
                 "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
                 "hidden": false,
                 "id": "text3208210256",
                 "max": 15,
@@ -698,131 +343,12 @@
                 "type": "text"
             },
             {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text455797646",
-                "max": 0,
-                "min": 0,
-                "name": "collectionRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text127846527",
-                "max": 0,
-                "min": 0,
-                "name": "recordRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text1582905952",
-                "max": 0,
-                "min": 0,
-                "name": "method",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "hidden": false,
-                "id": "autodate2990389176",
-                "name": "created",
-                "onCreate": true,
-                "onUpdate": false,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            },
-            {
-                "hidden": false,
-                "id": "autodate3332085495",
-                "name": "updated",
-                "onCreate": true,
-                "onUpdate": true,
-                "presentable": false,
-                "system": true,
-                "type": "autodate"
-            }
-        ],
-        "indexes": [
-            "CREATE INDEX `idx_mfas_collectionRef_recordRef` ON `_mfas` (collectionRef,recordRef)"
-        ],
-        "system": true
-    },
-    {
-        "id": "pbc_1638494021",
-        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-        "createRule": null,
-        "updateRule": null,
-        "deleteRule": null,
-        "name": "_otps",
-        "type": "base",
-        "fields": [
-            {
-                "autogeneratePattern": "[a-z0-9]{15}",
-                "hidden": false,
-                "id": "text3208210256",
-                "max": 15,
-                "min": 15,
-                "name": "id",
-                "pattern": "^[a-z0-9]+$",
-                "presentable": false,
-                "primaryKey": true,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text455797646",
-                "max": 0,
-                "min": 0,
-                "name": "collectionRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "autogeneratePattern": "",
-                "hidden": false,
-                "id": "text127846527",
-                "max": 0,
-                "min": 0,
-                "name": "recordRef",
-                "pattern": "",
-                "presentable": false,
-                "primaryKey": false,
-                "required": true,
-                "system": true,
-                "type": "text"
-            },
-            {
-                "cost": 8,
+                "cost": 0,
+                "help": "",
                 "hidden": true,
                 "id": "password901924565",
                 "max": 0,
-                "min": 0,
+                "min": 8,
                 "name": "password",
                 "pattern": "",
                 "presentable": false,
@@ -831,18 +357,51 @@
                 "type": "password"
             },
             {
-                "autogeneratePattern": "",
+                "autogeneratePattern": "[a-zA-Z0-9]{50}",
+                "help": "",
                 "hidden": true,
-                "id": "text3866985172",
-                "max": 0,
-                "min": 0,
-                "name": "sentTo",
+                "id": "text2504183744",
+                "max": 60,
+                "min": 30,
+                "name": "tokenKey",
                 "pattern": "",
                 "presentable": false,
                 "primaryKey": false,
-                "required": false,
+                "required": true,
                 "system": true,
                 "type": "text"
+            },
+            {
+                "exceptDomains": [],
+                "help": "",
+                "hidden": false,
+                "id": "email3885137012",
+                "name": "email",
+                "onlyDomains": [],
+                "presentable": false,
+                "required": true,
+                "system": true,
+                "type": "email"
+            },
+            {
+                "help": "",
+                "hidden": false,
+                "id": "bool1547992806",
+                "name": "emailVisibility",
+                "presentable": false,
+                "required": false,
+                "system": true,
+                "type": "bool"
+            },
+            {
+                "help": "",
+                "hidden": false,
+                "id": "bool256245529",
+                "name": "verified",
+                "presentable": false,
+                "required": false,
+                "system": true,
+                "type": "bool"
             },
             {
                 "hidden": false,
@@ -866,9 +425,75 @@
             }
         ],
         "indexes": [
-            "CREATE INDEX `idx_otps_collectionRef_recordRef` ON `_otps` (collectionRef, recordRef)"
+            "CREATE UNIQUE INDEX `idx_tokenKey_pbc_3142635823` ON `_superusers` (`tokenKey`)",
+            "CREATE UNIQUE INDEX `idx_email_pbc_3142635823` ON `_superusers` (`email`) WHERE `email` != ''"
         ],
-        "system": true
+        "system": true,
+        "authRule": "",
+        "manageRule": null,
+        "authAlert": {
+            "enabled": true,
+            "emailTemplate": {
+                "subject": "Login from a new location",
+                "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+            }
+        },
+        "oauth2": {
+            "mappedFields": {
+                "id": "",
+                "name": "",
+                "username": "",
+                "avatarURL": ""
+            },
+            "enabled": false
+        },
+        "passwordAuth": {
+            "enabled": true,
+            "identityFields": [
+                "email"
+            ]
+        },
+        "mfa": {
+            "enabled": false,
+            "duration": 1800,
+            "rule": ""
+        },
+        "otp": {
+            "enabled": false,
+            "duration": 180,
+            "length": 8,
+            "emailTemplate": {
+                "subject": "OTP for {APP_NAME}",
+                "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+            }
+        },
+        "authToken": {
+            "duration": 86400
+        },
+        "passwordResetToken": {
+            "duration": 1800
+        },
+        "emailChangeToken": {
+            "duration": 1800
+        },
+        "verificationToken": {
+            "duration": 259200
+        },
+        "fileToken": {
+            "duration": 180
+        },
+        "verificationTemplate": {
+            "subject": "Verify your {APP_NAME} email",
+            "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        },
+        "resetPasswordTemplate": {
+            "subject": "Reset your {APP_NAME} password",
+            "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        },
+        "confirmEmailChangeTemplate": {
+            "subject": "Confirm your {APP_NAME} new email address",
+            "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        }
     },
     {
         "id": "pbc_3818476082",
@@ -882,6 +507,7 @@
         "fields": [
             {
                 "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
                 "hidden": false,
                 "id": "text3208210256",
                 "max": 15,
@@ -896,6 +522,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text2324736937",
                 "max": 0,
@@ -909,6 +536,7 @@
                 "type": "text"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "json494360628",
                 "maxSize": 0,
@@ -956,6 +584,7 @@
         "fields": [
             {
                 "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
                 "hidden": false,
                 "id": "text3208210256",
                 "max": 15,
@@ -969,6 +598,7 @@
                 "type": "text"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "file2359244304",
                 "maxSelect": 1,
@@ -983,6 +613,7 @@
                 "type": "file"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number903486519",
                 "max": null,
@@ -996,6 +627,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text1321496436",
                 "max": 0,
@@ -1010,6 +642,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text2620999259",
                 "max": 0,
@@ -1024,6 +657,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text1843675174",
                 "max": 0,
@@ -1038,6 +672,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text1519612219",
                 "max": 0,
@@ -1053,6 +688,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "_pb_users_auth_",
+                "help": "",
                 "hidden": false,
                 "id": "relation3182418120",
                 "maxSelect": 1,
@@ -1064,6 +700,7 @@
                 "type": "relation"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "bool2382110195",
                 "name": "isDeleted",
@@ -1112,6 +749,7 @@
         "fields": [
             {
                 "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
                 "hidden": false,
                 "id": "text3208210256",
                 "max": 15,
@@ -1125,6 +763,7 @@
                 "type": "text"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "file3309110367",
                 "maxSelect": 1,
@@ -1143,6 +782,7 @@
                 "type": "file"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number3804557486",
                 "max": null,
@@ -1155,6 +795,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number1872529420",
                 "max": null,
@@ -1167,6 +808,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number771016896",
                 "max": null,
@@ -1179,6 +821,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "file2958181620",
                 "maxSelect": 1,
@@ -1197,6 +840,7 @@
                 "type": "file"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number1877215162",
                 "max": null,
@@ -1209,6 +853,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number1976269958",
                 "max": null,
@@ -1221,6 +866,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number1447597139",
                 "max": null,
@@ -1233,6 +879,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "file463167378",
                 "maxSelect": 1,
@@ -1251,6 +898,7 @@
                 "type": "file"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number755211556",
                 "max": null,
@@ -1263,6 +911,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number1648239967",
                 "max": null,
@@ -1275,6 +924,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number335877280",
                 "max": null,
@@ -1287,6 +937,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "file3842765150",
                 "maxSelect": 1,
@@ -1305,6 +956,7 @@
                 "type": "file"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number3682501131",
                 "max": null,
@@ -1317,6 +969,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number3373884697",
                 "max": null,
@@ -1329,6 +982,7 @@
                 "type": "number"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "number3304724116",
                 "max": null,
@@ -1342,6 +996,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text678750603",
                 "max": 0,
@@ -1356,6 +1011,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text1519612219",
                 "max": 0,
@@ -1371,6 +1027,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "_pb_users_auth_",
+                "help": "",
                 "hidden": false,
                 "id": "relation3182418120",
                 "maxSelect": 1,
@@ -1382,6 +1039,7 @@
                 "type": "relation"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "bool2382110195",
                 "name": "isDeleted",
@@ -1430,6 +1088,7 @@
         "fields": [
             {
                 "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
                 "hidden": false,
                 "id": "text3208210256",
                 "max": 15,
@@ -1444,6 +1103,7 @@
             },
             {
                 "autogeneratePattern": "",
+                "help": "",
                 "hidden": false,
                 "id": "text4274335913",
                 "max": 0,
@@ -1459,6 +1119,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "_pb_users_auth_",
+                "help": "",
                 "hidden": false,
                 "id": "relation3182418120",
                 "maxSelect": 1,
@@ -1472,6 +1133,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "pbc_2605467279",
+                "help": "",
                 "hidden": false,
                 "id": "relation2303346800",
                 "maxSelect": 1,
@@ -1483,6 +1145,7 @@
                 "type": "relation"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "bool2382110195",
                 "name": "isDeleted",
@@ -1494,6 +1157,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "pbc_3607937828",
+                "help": "",
                 "hidden": false,
                 "id": "relation3760176746",
                 "maxSelect": 4,
@@ -1507,6 +1171,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "pbc_3446931122",
+                "help": "",
                 "hidden": false,
                 "id": "relation2359244304",
                 "maxSelect": 1,
@@ -1520,6 +1185,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "_pb_users_auth_",
+                "help": "",
                 "hidden": false,
                 "id": "relation1142616359",
                 "maxSelect": 999,
@@ -1531,6 +1197,7 @@
                 "type": "relation"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "json3084938907",
                 "maxSize": 0,
@@ -1584,6 +1251,7 @@
         "fields": [
             {
                 "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
                 "hidden": false,
                 "id": "text3208210256",
                 "max": 15,
@@ -1599,6 +1267,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "_pb_users_auth_",
+                "help": "",
                 "hidden": false,
                 "id": "relation3182418120",
                 "maxSelect": 1,
@@ -1638,6 +1307,7 @@
         "fields": [
             {
                 "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
                 "hidden": false,
                 "id": "text3208210256",
                 "max": 15,
@@ -1653,6 +1323,7 @@
             {
                 "cascadeDelete": false,
                 "collectionId": "_pb_users_auth_",
+                "help": "",
                 "hidden": false,
                 "id": "relation3182418120",
                 "maxSelect": 1,
@@ -1664,6 +1335,7 @@
                 "type": "relation"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "bool624419442",
                 "name": "isNotViewing",
@@ -1673,6 +1345,7 @@
                 "type": "bool"
             },
             {
+                "help": "",
                 "hidden": false,
                 "id": "bool273319153",
                 "name": "isTyping",
@@ -1697,5 +1370,419 @@
             "CREATE INDEX `idx_jLcjZzoGzc` ON `usersPresencesStatus` (`created`)"
         ],
         "system": false
+    },
+    {
+        "id": "pbc_4275539003",
+        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "name": "_authOrigins",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text455797646",
+                "max": 0,
+                "min": 0,
+                "name": "collectionRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text127846527",
+                "max": 0,
+                "min": 0,
+                "name": "recordRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text4228609354",
+                "max": 0,
+                "min": 0,
+                "name": "fingerprint",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX `idx_authOrigins_unique_pairs` ON `_authOrigins` (collectionRef, recordRef, fingerprint)"
+        ],
+        "system": true
+    },
+    {
+        "id": "pbc_2281828961",
+        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "name": "_externalAuths",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text455797646",
+                "max": 0,
+                "min": 0,
+                "name": "collectionRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text127846527",
+                "max": 0,
+                "min": 0,
+                "name": "recordRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text2462348188",
+                "max": 0,
+                "min": 0,
+                "name": "provider",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text1044722854",
+                "max": 0,
+                "min": 0,
+                "name": "providerId",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX `idx_externalAuths_record_provider` ON `_externalAuths` (collectionRef, recordRef, provider)",
+            "CREATE UNIQUE INDEX `idx_externalAuths_collection_provider` ON `_externalAuths` (collectionRef, provider, providerId)"
+        ],
+        "system": true
+    },
+    {
+        "id": "pbc_2279338944",
+        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "_mfas",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text455797646",
+                "max": 0,
+                "min": 0,
+                "name": "collectionRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text127846527",
+                "max": 0,
+                "min": 0,
+                "name": "recordRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text1582905952",
+                "max": 0,
+                "min": 0,
+                "name": "method",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE INDEX `idx_mfas_collectionRef_recordRef` ON `_mfas` (collectionRef,recordRef)"
+        ],
+        "system": true
+    },
+    {
+        "id": "pbc_1638494021",
+        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "_otps",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "help": "",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text455797646",
+                "max": 0,
+                "min": 0,
+                "name": "collectionRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": false,
+                "id": "text127846527",
+                "max": 0,
+                "min": 0,
+                "name": "recordRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cost": 8,
+                "help": "",
+                "hidden": true,
+                "id": "password901924565",
+                "max": 0,
+                "min": 0,
+                "name": "password",
+                "pattern": "",
+                "presentable": false,
+                "required": true,
+                "system": true,
+                "type": "password"
+            },
+            {
+                "autogeneratePattern": "",
+                "help": "",
+                "hidden": true,
+                "id": "text3866985172",
+                "max": 0,
+                "min": 0,
+                "name": "sentTo",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE INDEX `idx_otps_collectionRef_recordRef` ON `_otps` (collectionRef, recordRef)"
+        ],
+        "system": true
     }
 ]
