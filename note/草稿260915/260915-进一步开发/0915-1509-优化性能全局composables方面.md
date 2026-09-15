@@ -155,13 +155,204 @@ App（根 scope，永存）
 
 `effectScope(true)` 把创建动作放进独立宿主，定时器/computed 与任何组件生命周期无关。
 
-### 生态佐证
+### 生态佐证：VueUse 三个相关 API 详解
 
-VueUse 官方：
-- `createGlobalState()` — 全局永久单例，内部 detached effectScope
-- `createSharedComposable()` — 共享实例，同样用 `effectScope(true)` 保护
+这三个函数都在 `@vueuse/shared` 包（本项目已装 `@vueuse/core 13.3.0`，core 用 `export * from '@vueuse/shared'` 重导出，直接从 `@vueuse/core` 即可 import）。
 
-手工实现模块级单例本质就是 `createGlobalState`。
+---
+
+#### 1. createGlobalState — 全局永久单例
+
+**用途**：把任意组合式函数包装成模块级懒初始化单例，活到页面关闭（应用生命周期）。
+
+**源码（v13.3.0 真实代码）**：
+
+```ts
+function createGlobalState(stateFactory) {
+  let initialized = false
+  let state
+  const scope = effectScope(true)  // detached，不随任何组件销毁
+  return (...args) => {
+    if (!initialized) {
+      state = scope.run(() => stateFactory(...args))
+      initialized = true
+    }
+    return state
+  }
+}
+```
+
+**逻辑**：
+- 接受一个"工厂函数"（也就是组合式函数本体）
+- 返回一个新的函数，该函数首次被调用时在 `effectScope(true)` 内执行工厂，之后永远复用同一份 `state`
+- 定时器、computed、onScopeDispose 清理全部注册在独立 scope 上，与组件生命周期无关
+
+**与我们手写版的对照**：
+
+```
+我们手写的                          createGlobalState 内部
+────────────────────────────────   ──────────────────────────────
+let _instance = null                let state
+const _scope = effectScope(true)    const scope = effectScope(true)
+if (_instance == null) {            if (!initialized) {
+  _instance = _scope.run(...)         state = scope.run(...)
+}                                   }
+return _instance                    return state
+```
+
+几乎逐行对应。手写版的好处是直观、可加自定义逻辑（比如注释），createGlobalState 的好处是代码更短且有官方背书。
+
+**用法示例**：
+
+```ts
+import { createGlobalState } from '@vueuse/core'
+
+export const useRealtimeUsersStatusComputed = createGlobalState(() => {
+  // 原函数体搬进来，自动变成单例
+  const nowRefTimestamp = useTimestamp({ interval: 2000 })
+  // ...
+  return { getStatusByUserId, checkIsOnlineByStatusIsoDate, ... }
+})
+```
+
+**适用场景**：需要永久存在、常驻的全局数据（定时器、全局权限计算、在线状态等）。
+
+---
+
+#### 2. createSharedComposable — 引用计数的共享实例
+
+**用途**：多个组件共享同一个 composable 实例，**最后一个使用者销毁后自动销毁**，再被调用时重新创建。
+
+**源码（v13.3.0 真实代码）**：
+
+```ts
+function createSharedComposable(composable) {
+  let subscribers = 0   // 当前"正在使用此实例"的组件数量
+  let state
+  let scope
+  const dispose = () => {
+    subscribers -= 1
+    if (scope && subscribers <= 0) {
+      // 没有组件在用了 → 主动销毁：停掉内部所有 effect + 清空引用
+      scope.stop()
+      state = void 0
+      scope = void 0
+    }
+  }
+  return (...args) => {
+    subscribers += 1     // 每次有组件调用，计数 +1
+    if (!scope) {
+      // 首次调用（或上一个实例被销毁后的重新创建）
+      scope = effectScope(true)
+      state = scope.run(() => composable(...args))
+    }
+    // 注册到「当前组件的 scope」上：组件销毁时会触发 dispose，计数 -1
+    tryOnScopeDispose(dispose)
+    return state
+  }
+}
+```
+
+**与 createGlobalState 的核心区别**：
+
+| | createGlobalState | createSharedComposable |
+|---|---|---|
+| 生命周期 | 永久，活到页面关闭 | 随引用计数，最后一个使用者走后销毁 |
+| 被销毁后再次调用 | 不会（永远存在） | 会重新创建 |
+| 适合场景 | 常驻数据（定时器、全局权限、在线状态） | 非常驻但可共享的资源（重的计算、很少用的图表库实例等） |
+| 实现 | module 级 let + detached scope | module scope + tryOnScopeDispose 引用计数 |
+
+**生命周期图解**：
+
+```
+时间线（createSharedComposable）
+
+组件 A mount    → subscribers=1, 创建 scope, 创建 state
+组件 B mount    → subscribers=2, 复用 state
+组件 A destroy  → subscribers=1（scope 未停，state 还活着）
+组件 B destroy  → subscribers=0, scope.stop() 销毁 state
+组件 C mount    → subscribers=1, scope 重建, state 重新创建（全新实例）
+```
+
+**为什么 `useRealtimeUsersStatusComputed` 不适合用它**：
+- `useTimestamp` 的 2 秒定时器 + init 查询包装，我们希望**始终存在**
+- 如果用 `createSharedComposable`，当某时刻所有列表项组件都离开后，定时器会被销毁；下一个组件再进入时重建，重新初始化定时器和查询，有不必要的开销和短暂的数据中断
+- 所以应该用 `createGlobalState`（或手写单例），保证应用级永驻
+
+**`createSharedComposable` 更适合的场景举例**：
+- 某个重型图表 composable（比如用 D3 绑定 canvas），但只在特定页面偶尔使用
+- 所有使用者销毁后，D3 实例应该释放内存
+- 下次有组件要用时，再重新初始化
+
+**注意**：内部调用的 `tryOnScopeDispose(dispose)` 注册到的是**当前调用方组件的 scope**（非 detached），所以当该组件销毁时 dispose 才会执行。这也是为什么它能正确跟踪引用计数——每个调用方组件"为自己注册了一份 dispose 回调"。
+
+---
+
+#### 3. createInjectionState — provide/inject 官方封装
+
+**用途**：把"一个组合式函数 provide 给子树，子组件通过 inject 消费"这个模式封装成一对函数。正是我们最初设计的 `global-provide-inject/` + `composables-global/` 两件套的官方版。
+
+**源码（v13.3.0 真实代码）**：
+
+```ts
+function createInjectionState(composable, options) {
+  const key = options?.injectionKey || Symbol(composable.name || "InjectionState")
+  const defaultValue = options?.defaultValue
+  const useProvidingState = (...args) => {
+    const state = composable(...args)   // 执行组合式函数，拿到实例
+    provideLocal(key, state)            // provide 到当前组件树
+    return state
+  }
+  const useInjectedState = () => injectLocal(key, defaultValue)
+  return [useProvidingState, useInjectedState]
+}
+```
+
+**用法示例**：
+
+```ts
+import { createInjectionState } from '@vueuse/core'
+
+const [useProvidePermissions, useInjectPermissions] = createInjectionState(
+  useUserPermissionsDesuwa  // 直接把整个组合式函数传进去
+)
+
+// App.vue
+useProvidePermissions()  // 内部：执行组合式函数 + provide
+
+// 某个子组件
+const { permissionSendMessage } = useInjectPermissions()  // 内部：inject
+```
+
+**与我们手写版 `global-provide-inject/` 的对比**：
+
+| | 手写版 | createInjectionState |
+|---|---|---|
+| provide/inject key | 手动定义 Symbol + InjectionKey | 内部自动生成 Symbol（可自定义） |
+| 写法 | 两个文件：composable 定义 + provide/inject 函数 | 一行返回 [provider, injector] |
+| 响应性 | 取决于手写实现（Vue 的 provide/inject 天然是响应式的） | 同（基于 Vue provide/inject） |
+
+**适用场景**：当你需要**按组件树层级**隔离状态（不同子树可能有不同的状态值，或者需要测试时替换默认值）时，用这个比全局单例更灵活。
+
+---
+
+#### 三者选型速查
+
+```
+需要全局唯一，活到页面关闭？
+├─ 是 → createGlobalState 或手写单例
+│       （定时器、全局权限、在线状态等常驻数据）
+│
+├─ 不是永久的，但要共享，用完可释放？
+│   └─ createSharedComposable
+│       （重型计算实例、偶尔使用的图表库等非恒驻资源）
+│
+└─ 要按组件树隔离，有 provide/inject 需求？
+    └─ createInjectionState
+        （多套主题配置、多权限作用域、测试 mock 等）
+```
+
+---
 
 ## 最终落地：computed.ts 的方案
 

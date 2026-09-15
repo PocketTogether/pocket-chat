@@ -110,7 +110,7 @@ const selfPresenceLoopAndViewingHook = useSelfPresenceLoopAndViewingHook()
 
 // 先完成实时状态订阅，再启动presence循环
 ;(async () => {
-  await realtimeUsersStatusSubscription.startSubscription()
+  await realtimeUsersStatusSubscription.startSubscription().catch(() => {})
   selfPresenceLoopAndViewingHook.startPresenceLoopAndViewingHook()
 })()
 
