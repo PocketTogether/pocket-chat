@@ -13,7 +13,7 @@ const PROJECT_ROOT_DIR = path.resolve(__dirname, "..");
 const POCKETBASE_DOWNLOAD_DIR = path.join(PROJECT_ROOT_DIR, "pocketbase-release-file");
 
 /** pocketbase版本 */
-const POCKETBASE_VERSION = "0.33.0";
+const POCKETBASE_VERSION = "0.40.4";
 
 /** 打包平台数组 */
 const POCKETBASE_PLATFORMS = [
@@ -30,7 +30,7 @@ const POCKETBASE_PLATFORMS = [
 
 /**
  * pocketbase下载链接拼接函数
- * https://github.com/pocketbase/pocketbase/releases/download/v0.33.0/pocketbase_0.33.0_windows_amd64.zip
+ * https://github.com/pocketbase/pocketbase/releases/download/v0.40.4/pocketbase_0.40.4_windows_amd64.zip
  * @param {string} platformStr
  * @returns {string}
  */

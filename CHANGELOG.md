@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - 修一下在线查询顺序问题，就是先等完成实时状态订阅realtimeUsersStatusSubscription订阅完成，然后再启动selfPresenceLoopAndViewingHook
+- 优化性能全局composables方面
+- pb更新
 
 
 ## [0.7.1] - 2026-04-20
