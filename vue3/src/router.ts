@@ -21,6 +21,7 @@ import {
 } from './stores'
 import { getAppMainElScrollbarWrap } from './utils'
 import { pb } from './lib'
+import Test1438 from './views/temp/Test1438.vue'
 
 // 路由
 const router = createRouter({
@@ -31,6 +32,11 @@ const router = createRouter({
       component: LayoutSimple,
       redirect: routerDict.ChatHome.path,
       children: [
+        {
+          path: '/test1438',
+          name: 'Test1438',
+          component: Test1438,
+        },
         {
           ...routerDict.LoginPage,
           component: LoginPage,
