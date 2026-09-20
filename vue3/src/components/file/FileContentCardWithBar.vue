@@ -58,6 +58,7 @@ const sizeContentDiv = useElementSize(refContentDiv)
       </div>
     </div>
     <div class="border-t-[3px] border-color-background"></div>
+    <!-- 下载按钮与打开按钮 -->
     <div class="text-color-text">
       <div class="flex items-stretch">
         <!-- 左 下载 -->

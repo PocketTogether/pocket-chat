@@ -21,7 +21,7 @@ import {
 } from './stores'
 import { getAppMainElScrollbarWrap } from './utils'
 import { pb } from './lib'
-import Test1438 from './views/temp/Test1438.vue'
+import Test1438 from './views/test/Test1438.vue'
 
 // 路由
 const router = createRouter({
